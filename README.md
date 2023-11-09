@@ -22,6 +22,7 @@ Well here we present... PROMPT BATTLE!
 - Chainlink Upkeep
 - Lens
 - OpenAI - APIs
+- The Graph Indexer for matchmaking, events tracking in website...
 - PolygonID (maybe)
 
 ---
