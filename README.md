@@ -1,8 +1,4 @@
-# IDEAS 💡
-
-<details> <summary> Prompt Fighters 👽 </summary>
-
-# PROMPT FIGHTERS❗
+# PROMPT FIGHTERS❗🤯
 
 Do you remember when you were a kid and you were using your toys to create legendary fights?
 
@@ -14,18 +10,48 @@ Well here we present... PROMPT BATTLE!
 
 ---
 
-#### ***`Tech Used`***
+### `Deep dive details` 💻
+
+<details> <summary> Detailed Mechanics 📜 </summary>
+
+#### Read the details of all mechanics and its reason why at [whitepaper](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/docs/whitepaper.md).
+
+#### **_`Mechanics Implemented`_**
+
+- Personalized NFTs.
+- Fight against other NFTs.
+- Social Media Reputation of NFTs.
+- Automated Fighting.
+- Lending&Borrowing of NFTs.
+- Friends System.
+
+</details>
+
+<details> <summary> Technical details 🧑‍💻 </summary>
+
+#### Read technical details at [docs](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/docs).
+
+#### **_`Tech Used`_**
 
 - Chainlink VRF
 - Chainlink CCIP
 - Chainlink Functions
 - Chainlink Upkeep
 - Lens
+- ENS for challenging friends
 - OpenAI - APIs
 - The Graph Indexer for matchmaking, events tracking in website...
 - PolygonID (maybe)
 
+</details>
+
 ---
+---
+
+## OVERALL MECHANICS & LOCAL SET-UP 🌐-⚙️
+
+
+<details> <summary> Overall Mechanics 🌐 </summary> 
 
 ## What is it❓
 
@@ -80,6 +106,7 @@ Fear: Exploding
 
 (Rest of the promt...)
 ```
+
 </details>
 
 <details> <summary> Leonardo: the 2 tails leopard that has a knife and plays golf really well 🐆</summary>
@@ -94,11 +121,12 @@ Fear: Looking himself in the mirror
 
 (Rest of the promt...)
 ```
+
 </details>
 
 <details> <summary> Leonardo and C4 after their fight</summary>
 
-<img src="./readme-images/c4-leonardo.png"> 
+<img src="./readme-images/c4-leonardo.png">
 
 </details>
 
@@ -148,15 +176,12 @@ Would you like to play with your imagination like your kid inside but you don't 
 
 DONT WORRY! You can leave a fighter in the ETHERNAL ARENA and let it automatically fight non-stop until you want so every night, when coming back from work, you can just enter the website and read the amazing battles your NFT has been battleing around while you were working.
 
-For cheap ETHERNAL FIGHTING we use CCIP to load-off computing costs and Chainlink Upkeep to make it automated. 
+For cheap ETHERNAL FIGHTING we use CCIP to load-off computing costs and Chainlink Upkeep to make it automated.
 
 </details>
 
-<details> <summary> Perlucidus 📫 (Privacy Preserving Decentralized Institutional Voting) </summary>
+<details> <summary> Local set-up ⚙️ </summary> 
 
-Using Chainlink DECO to verify citizenship via official goverments or institutions APIs we can create a smart contract system where citizens register and vote in a zk-way just proving they are valid citizens.
-
-Chainlink CCIP to couting votes chepaer.
-Chainlink UpKeep to put a deadline on the elections time.
+Run a node bla bla... (TODO)
 
 </details>
