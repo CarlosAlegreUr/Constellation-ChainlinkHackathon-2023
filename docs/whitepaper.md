@@ -143,4 +143,11 @@ Register your profile on ENS to be able to match in a easy way with your friends
 ---
 
 
+## Fighters Market 🪖
+
+You can lend and borrow NFTs and get a percentage of the earnings another player got while using your NFT.
+
+---
+
+
 

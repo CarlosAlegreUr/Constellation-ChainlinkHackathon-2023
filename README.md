@@ -14,7 +14,7 @@ Well here we present... PROMPT BATTLE!
 
 <details> <summary> Detailed Mechanics 📜 </summary>
 
-#### Read the details of all mechanics and its reason why at [whitepaper](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/docs/whitepaper.md).
+#### Read the details of all mechanics and its reason why at [whitepaper](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/blob/ideasCreation/docs/whitepaper.md).
 
 #### **_`Mechanics Implemented`_**
 
@@ -29,7 +29,7 @@ Well here we present... PROMPT BATTLE!
 
 <details> <summary> Technical details 🧑‍💻 </summary>
 
-#### Read technical details at [docs](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/docs).
+#### Read technical details at [docs](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/tree/ideasCreation/docs).
 
 #### **_`Tech Used`_**
 

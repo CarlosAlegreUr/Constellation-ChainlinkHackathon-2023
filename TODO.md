@@ -44,3 +44,5 @@ The website flow and design can be already deduced by the features. The logic in
     - Design Smart Contract of automated matchmaking mechanic.
 
 - ENS profile registration for fight proposals to friends.
+
+**`Impove and complete docs`**
