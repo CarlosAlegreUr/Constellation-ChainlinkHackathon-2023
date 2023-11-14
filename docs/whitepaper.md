@@ -60,7 +60,7 @@ Fear: Apple juice
 
 ### Result (AI used `DALL.E`) 🎨
 
-<img src="../readme-images/game-images/fernando.png">
+<img src="../repo-images/game-images/fernando.png">
 
 </details>
 
@@ -79,7 +79,7 @@ Fear: Pencils that have been sharpened recently
 
 ### Result (AI used `DALL.E`) 🎨
 
-<img src="../readme-images/game-images/ana.png">
+<img src="../repo-images/game-images/ana.png">
 
 </details>
 
