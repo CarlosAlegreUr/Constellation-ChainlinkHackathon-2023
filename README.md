@@ -14,7 +14,7 @@ Well here we present... PROMPT BATTLE!
 
 <details> <summary> Detailed Mechanics 📜 </summary>
 
-#### Read the details of all mechanics and its reason why at [whitepaper](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/blob/ideasCreation/docs/whitepaper.md).
+#### Read the details of all mechanics and its reason why at [whitepaper](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/blob/designDev/docs/whitepaper.md).
 
 #### **_`Mechanics Implemented`_**
 
@@ -29,7 +29,7 @@ Well here we present... PROMPT BATTLE!
 
 <details> <summary> Technical details 🧑‍💻 </summary>
 
-#### Read technical details at [docs](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/tree/ideasCreation/docs).
+#### Read technical details at [docs](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/tree/designDev/docs).
 
 #### **_`Tech Used`_**
 
@@ -126,7 +126,7 @@ Fear: Looking himself in the mirror
 
 <details> <summary> Leonardo and C4 after their fight</summary>
 
-<img src="./readme-images/c4-leonardo.png">
+<img src="./repo-images/c4-leonardo.png">
 
 </details>
 
@@ -184,7 +184,7 @@ Run a node bla bla... (TODO)
 
 <details> <summary> Future Ideas 🪄🔮 </summary>
 
-> 📘 **Note** ℹ️: We had more features in plan but due to the deadline we decided to leave them here as an interesting example on what else can be done with this kind of game. 
+> 📘 **Note** ℹ️: We had more features in plan but due to the deadline we decided to leave them here as an interesting example on what else can be done with this kind of game.
 
 ### THE MARKET OF WARRIORS 🪖💸
 
