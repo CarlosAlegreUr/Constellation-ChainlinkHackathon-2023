@@ -1,5 +1,39 @@
-## ⚙️ Diagrams and explanations on how the app works ⚙️
+# ⚙️ Architecture Diagrams ⚙️
 
-For now this is how I envision at a high level the components of the system:
+---
 
-<img src="../readme-images/architecture.png">
+## Contracts on `Ethereum`
+
+<details> <summary> png 🖼️ </summary>
+
+<img src="../repo-images/architecture-images/eth-contracts.png">
+
+</details>
+
+---
+
+---
+
+### Contracts on `Avalanche`
+
+<details> <summary> png 🖼️ </summary>
+
+<img src="../repo-images/architecture-images/avl-contracts.png">
+
+## </details>
+
+---
+
+---
+
+### All togheter
+
+<details> <summary> png 🖼️ </summary>
+
+<img src="../repo-images/architecture-images/architecture-2.png">
+
+</details>
+
+---
+
+---

@@ -10,11 +10,11 @@ Well here we present... PROMPT BATTLE!
 
 ---
 
-### `Deep dive details` 💻
+## `Deep dive details` 💻
 
 <details> <summary> Detailed Mechanics 📜 </summary>
 
-#### Read the details of all mechanics and its reason why at [whitepaper](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/blob/ideasCreation/docs/whitepaper.md).
+#### Read the details of all mechanics and its reason why at [whitepaper](./docs/whitepaper.md).
 
 #### **_`Mechanics Implemented`_**
 
@@ -29,7 +29,9 @@ Well here we present... PROMPT BATTLE!
 
 <details> <summary> Technical details 🧑‍💻 </summary>
 
-#### Read technical details at [docs](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/tree/ideasCreation/docs).
+#### Read technical details at [docs](./docs).
+
+#### Check the full-stack source code at [src](./src)
 
 #### **_`Tech Used`_**
 
@@ -46,12 +48,12 @@ Well here we present... PROMPT BATTLE!
 </details>
 
 ---
+
 ---
 
 ## OVERALL MECHANICS & LOCAL SET-UP 🌐-⚙️
 
-
-<details> <summary> Overall Mechanics 🌐 </summary> 
+<details> <summary> Overall Mechanics 🌐 </summary>
 
 ## What is it❓
 
@@ -126,7 +128,7 @@ Fear: Looking himself in the mirror
 
 <details> <summary> Leonardo and C4 after their fight</summary>
 
-<img src="./readme-images/c4-leonardo.png">
+<img src="./repo-images/game-images/c4-leonardo.png">
 
 </details>
 
@@ -162,14 +164,6 @@ Your NFTs will have a life on their own and social media profiles on Lens with t
 
 ---
 
-### THE MARKET OF WARRIORS 🪖💸
-
-As your fighters are NFT you can trade it as much as you want.
-
-You can even lend your imaginative fighters (NFTs) to other plaers anad earn interest on the fight they win when other players use them.
-
----
-
 ### AUTOMATED GAMING 🎲🎮
 
 Would you like to play with your imagination like your kid inside but you don't have time cause of adulthood???
@@ -180,8 +174,24 @@ For cheap ETHERNAL FIGHTING we use CCIP to load-off computing costs and Chainlin
 
 </details>
 
-<details> <summary> Local set-up ⚙️ </summary> 
+<details> <summary> Local set-up ⚙️ </summary>
 
 Run a node bla bla... (TODO)
+
+</details>
+
+---
+
+<br/>
+
+<details> <summary> Future Ideas 🪄🔮 </summary>
+
+> 📘 **Note** ℹ️: We had more features in plan but due to the deadline we decided to leave them here as an interesting example on what else can be done with this kind of game.
+
+### THE MARKET OF WARRIORS 🪖💸
+
+As your fighters are NFT you can trade them as much as you want.
+
+You can even lend your imaginative fighters (NFTs) to other plaers anad earn interest on the fights they win when other players use them.
 
 </details>

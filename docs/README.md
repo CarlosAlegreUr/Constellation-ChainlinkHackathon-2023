@@ -1,11 +1,13 @@
 # 📖 Docs 📖
 
-(TODO: when merging with main, change image links)
+## Whitepaer 📜
+
+- [Whitepaper](./whitepaper.md)
 
 ## Techncial Docs 🧑‍💻
 
-[Architercure Diagram](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/blob/ideasCreation/docs/architechture.md)
+- [Architercure Diagrams](./architechture.md)
 
-## Whitepaer 📜
+- [Features' Workflows](./backend-workflows/)
 
-[Whitepaper](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/blob/ideasCreation/docs/whitepaper.md)
+- [UX Workflow and Design](./ux-workflows/)

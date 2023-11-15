@@ -60,7 +60,7 @@ Fear: Apple juice
 
 ### Result (AI used `DALL.E`) 🎨
 
-<img src="../readme-images/fernando.png">
+<img src="../repo-images/game-images/fernando.png">
 
 </details>
 
@@ -79,7 +79,7 @@ Fear: Pencils that have been sharpened recently
 
 ### Result (AI used `DALL.E`) 🎨
 
-<img src="../readme-images/ana.png">
+<img src="../repo-images/game-images/ana.png">
 
 </details>
 
@@ -141,13 +141,3 @@ There you can check its reputation, wins, loses etc.
 Register your profile on ENS to be able to match in a easy way with your friends wallets and NFTs and challenge your chatacters to each other.
 
 ---
-
-
-## Fighters Market 🪖
-
-You can lend and borrow NFTs and get a percentage of the earnings another player got while using your NFT.
-
----
-
-
-
