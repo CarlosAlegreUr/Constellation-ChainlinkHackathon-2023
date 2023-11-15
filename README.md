@@ -1,3 +1,14 @@
+# Contribution guidelines 🚧👷⚠️
+## (delete this section before dev branch is merged to main)
+
+Just` create branches` for any work you do `that originate from` this `dev branch`.
+
+`Never commit to main` branch, always commit to dev (development) branch. 
+There will be just **1 final commit to the main branch after all is coded and all docs are revised**. 
+
+---
+---
+
 # PROMPT FIGHTERS❗🤯
 
 Do you remember when you were a kid and you were using your toys to create legendary fights?
