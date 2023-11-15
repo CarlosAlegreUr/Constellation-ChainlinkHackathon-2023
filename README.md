@@ -14,7 +14,7 @@ Well here we present... PROMPT BATTLE!
 
 <details> <summary> Detailed Mechanics 📜 </summary>
 
-#### Read the details of all mechanics and its reason why at [whitepaper](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/blob/designDev/docs/whitepaper.md).
+#### Read the details of all mechanics and its reason why at [whitepaper](./docs/whitepaper.md).
 
 #### **_`Mechanics Implemented`_**
 
@@ -29,7 +29,9 @@ Well here we present... PROMPT BATTLE!
 
 <details> <summary> Technical details 🧑‍💻 </summary>
 
-#### Read technical details at [docs](https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023/tree/designDev/docs).
+#### Read technical details at [docs](./docs).
+
+#### Check the full-stack source code at [src](./src)
 
 #### **_`Tech Used`_**
 
@@ -126,7 +128,7 @@ Fear: Looking himself in the mirror
 
 <details> <summary> Leonardo and C4 after their fight</summary>
 
-<img src="./repo-images/c4-leonardo.png">
+<img src="./repo-images/game-images/c4-leonardo.png">
 
 </details>
 
