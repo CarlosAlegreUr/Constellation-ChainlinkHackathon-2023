@@ -33,7 +33,6 @@ Well here we present... PROMPT BATTLE!
 - Fight against other NFTs.
 - Social Media Reputation of NFTs.
 - Automated Fighting.
-- Lending&Borrowing of NFTs.
 - Friends System.
 
 </details>
@@ -50,11 +49,10 @@ Well here we present... PROMPT BATTLE!
 - Chainlink CCIP
 - Chainlink Functions
 - Chainlink Upkeep
-- Lens
 - ENS for challenging friends
 - OpenAI - APIs
 - The Graph Indexer for matchmaking, events tracking in website...
-- PolygonID (maybe)
+
 
 </details>
 
@@ -203,6 +201,7 @@ Run a node bla bla... (TODO)
 
 As your fighters are NFT you can trade them as much as you want.
 
-You can even lend your imaginative fighters (NFTs) to other plaers anad earn interest on the fights they win when other players use them.
+
+You can even lend your imaginative fighters (NFTs) to other players and earn interest on the fights they win when other players use them.
 
 </details>
