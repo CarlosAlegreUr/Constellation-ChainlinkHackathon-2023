@@ -1,6 +1,6 @@
 ## Naming convention 📝
 
-### This rule applies for `all contracts but CCIP bridges`.
+### This rule applies for `all` [contracts](./src/) `but CCIP bridges`.
 
 If a smart contract starts with:
 

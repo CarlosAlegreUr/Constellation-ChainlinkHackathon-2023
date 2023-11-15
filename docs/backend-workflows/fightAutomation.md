@@ -8,4 +8,6 @@
 
 3️⃣ Chainlink Automation will keep checking if the automated NFTs are in a fight already and if not it will check to see if there is a fight available.
 
+[Back to main workflow page](./)
+
 ---
