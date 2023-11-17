@@ -5,7 +5,9 @@ import "@openzeppelin/token/ERC721/ERC721.sol";
 import "@openzeppelin/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/access/manager/AccessManaged.sol";
 
-contract PromptFightersNFT is ERC721, ERC721Enumerable {
+import {ICcipNftBridge} from "../interfaces/ICcipNftBridge.sol";
+
+contract PromptFightersNFT is ERC721, ERC721Enumerable, ICcipNftBridge {
     uint256 private _nextTokenId;
 
     constructor(address initialAuthority) ERC721("PromptFightersNFT", "PFT") {}
@@ -37,4 +39,15 @@ contract PromptFightersNFT is ERC721, ERC721Enumerable {
     function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
+
+    // CCIP
+    // Senders
+    function sendNft(uint256 nftId) external {}
+
+    // Getters
+    function isNftOnChain(uint256 nftId) external returns (bool) {}
+
+    // Setters
+    // Set by Chainlink CCIP
+    function setNftOnChain(uint256 nftId, bool isOnChain) external returns (bool) {}
 }

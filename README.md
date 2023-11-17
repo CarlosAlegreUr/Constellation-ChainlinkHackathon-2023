@@ -181,7 +181,9 @@ Would you like to play with your imagination like your kid inside but you don't 
 
 DONT WORRY! You can leave a fighter in the ETHERNAL ARENA and let it automatically fight non-stop until you want so every night, when coming back from work, you can just enter the website and read the amazing battles your NFT has been battleing around while you were working.
 
-For cheap ETHERNAL FIGHTING we use CCIP to load-off computing costs and Chainlink Upkeep to make it automated.
+For cheap ETHERNAL FIGHTING we use CCIP to off-load computing costs to cheaper chains and Chainlink Upkeep to make it automated.
+
+> **Note** ⚠️: For now only 5 players can be in automated mode at once. When Chainlink Functions gets more development and allows to parse blockchain logs in an easier way or allows for bigger execution files, then the automated matchmaking service can be expanded a lot.
 
 </details>
 
@@ -204,5 +206,11 @@ Run a node bla bla... (TODO)
 As your fighters are NFT you can trade them as much as you want.
 
 You can even lend your imaginative fighters (NFTs) to other plaers anad earn interest on the fights they win when other players use them.
+
+### Bet on other peoples fights 💸 (to write) betting house
+
+Standy by time for betting before fight starts
+
+### Batch fights option so people wait but its cheaper
 
 </details>

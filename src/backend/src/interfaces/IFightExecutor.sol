@@ -5,18 +5,25 @@ interface IFightExecutor {
     event FightExecutor__Results(bytes indexed firstEnd, bytes indexed secondEnd);
     event FightExecutor__WinnerIs(bytes32 indexed fightId, address indexed winner, uint256 timestamp);
 
+    struct FightResult {
+        address winner;
+        address loser;
+        uint256 nftWinner;
+        uint256 nftLoser;
+    }
+
     // Calls Chainlink Functions, in the return calls VRF and in VRF return sets winner.
     /**
      * @dev This function must always be called by `FightMatchmaker` and then it starts
      * a fight via Chainlink Functions.
-     * 
+     *
      * After receiving the data from Chainlink Functions:
      * When receiving the 2 outcomes it requests a VRF random number with some bias based
      * on (something) or in a 50% chance of winning.
-     * 
+     *
      * After receiving the winning number then it sends the bets and announces the winners
      * via events.
-     * 
+     *
      * @param participants of the fight
      * @param nftIds of the nfts fighting
      */

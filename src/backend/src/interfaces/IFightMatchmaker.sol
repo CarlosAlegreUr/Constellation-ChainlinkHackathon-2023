@@ -11,13 +11,35 @@ interface IFightMatchmaker {
     // Events
     //************************ */
 
+    /**
+     * @dev Event emitted just when challenging addresses at random.
+     */
     event FightMatchmaker__FightRequested(
-        address indexed challenger, uint256 indexed nftId, uint256 indexed bet, uint256 timestamp, bytes32 fightId
+        bytes32 indexed fightId, uint256 indexed nftId, uint256 indexed bet, address challenger, uint256 timestamp
     );
+    /**
+     * @dev Event emitted when challenging address trhuogh ENS.
+     */
     event FightMatchmaker__FightRequestedTo(
-        address indexed challenger, address indexed challenged, uint256 nftIdChallenger, uint256 nftIdChallenged
+        address indexed challenger, address indexed challengee, uint256 nftIdChallenger, uint256 nftIdChallengee
     );
-    event FightMatchmaker__FightAccepted(address indexed challenger, uint256 indexed bet, uint256 nftId);
+    /**
+     * @dev Event emitted when a challenge is accepted.
+     */
+    event FightMatchmaker__FightAccepted(
+        address indexed challenger,
+        address indexed challengee,
+        uint256 indexed timestamp,
+        uint256 nftIdChallenger,
+        uint256 nftIdChallengee,
+        uint256 betChallenguer,
+        uint256 betChallenguee
+    );
+
+    event IFightAutomator__NftAutoamteStart(uint256 indexed nftId, uint256 startTimestamp);
+    event IFightAutomator__NftAutomateStop(
+        uint256 indexed nftId, uint256 earnings, uint256 startTimestamp, uint256 endTimestamp
+    );
 
     //************************ */
     // Data Structures
@@ -56,8 +78,10 @@ interface IFightMatchmaker {
      * @notice msg.sender must be the owner of `nftId`'s NFT.
      *
      * @param nftId The ID of the nft that will particiapte in the fight.
+     * @param acceptanceDeadline is the time where the bet you put, if no-one accepted your challenge, can be withdrawed from
+     * the `BetsVault`.
      */
-    function requestFight(uint256 nftId) external;
+    function requestFight(uint256 nftId, uint256 minimumBet, uint256 acceptanceDeadline) external;
 
     /**
      * @dev This function gathers all the information necessary to call the
@@ -77,9 +101,12 @@ interface IFightMatchmaker {
      * @dev Function only callable by the `FightExecutor` to set the state
      * of a finished fight to AVAILABLE.
      *
+     * And also only callable from BetsVault to set fights as AVAILABLE when
+     * user unlocks bet if request is not accepted.
+     *
      * @param fightId Id of the fight to set its state to AVAILABLE
      */
-    function declareFightFinished(bytes32 fightId) external;
+    function changeFightState(bytes32 fightId, FightState newState) external;
 
     //********************************* */
     // Challenge Addresses Matchmaking
@@ -91,20 +118,18 @@ interface IFightMatchmaker {
      *
      * @notice msg.value is the bet on the fight if desired.
      *
-     * @param challenged The address you wanna fight.
+     * @param challengee The address you wanna fight.
      * @param opponentsNftId The id of your opponents nft.
      * @param nftId Id of the NFT you will be using.
+     * @param minimumBet is the least amount of bet the challenger is willing to play against.
      */
-    function requestFightTo(address challenged, uint256 opponentsNftId, uint256 nftId) external;
-
-    /**
-     * @dev First resolves the names using the `EnsOperator` and then calls requestFightTo()
-     *
-     * @param username ENS username of the address you wanna fight.
-     * @param nftName Name of the opponents NFT you wanna fight.
-     * @param nftId Your NFT ID you are gonna use in the battle.
-     */
-    function requestFightTo(string calldata username, string calldata nftName, uint256 nftId) external;
+    function requestFightTo(
+        address challengee,
+        uint256 opponentsNftId,
+        uint256 nftId,
+        uint256 minimumBet,
+        uint256 acceptanceDeadline
+    ) external;
 
     /**
      * @dev Accepts and starts a fight that has ben personally requested.
@@ -115,22 +140,30 @@ interface IFightMatchmaker {
      * @param challenger The address challenging you.
      * @param nftId Nft Id of the challenger.
      */
-    function acceptFightFrom(address challenger, uint256 nftId) external;
+    function acceptChallengeFrom(address challenger, uint256 nftId) external;
 
-    /**
-     * @dev Resolves ENS addresses trhough `EnsOperator` adn then calls acceptFightFrom().
-     *
-     * @notice msg.value is the bet you are putting in the fight. It must be greater than the
-     * minimum bet your challenger set.
-     *
-     * @param username The ENS username of the address challenging you.
-     * @param nftName name of the challenger nft
-     */
-    function acceptFightFrom(string calldata username, string calldata nftName) external;
+    //********************************* */
+    // Automated Matchmaking
+    //********************************* */
 
+    function getNftIsAutomated(uint256 nftId) external returns (bool);
+
+    function setNftToAutomatedMode(uint256 nftId, bool isAutomated) external returns (bool);
+
+    //************* */
     // Getters
+    //************* */
+
+    function getUserCurrentFightId(address user) external returns (bytes32);
+
     function getFightState(bytes32 fightId) external returns (FightState);
 
-    // Setters
-    function setFightState(bytes32 fightId, FightState newState) external;
+    function getChallengeId(
+        address challenger,
+        address challengee,
+        uint256 nftIdChallenger,
+        uint256 nftIdChallengee,
+        uint256 betChallenger,
+        uint256 betChallengee
+    ) external returns (bytes32);
 }
