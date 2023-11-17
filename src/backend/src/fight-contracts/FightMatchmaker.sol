@@ -10,36 +10,48 @@ import {IBetsVault} from "../interfaces/IBetsVault.sol";
 // This contract might need more state
 // variables or interface functions.
 //
-// Feel free to add them if you deem it
+// Feel free to add them if you deem them
 // necessary.
 //************************************** */
 
 /**
- * @title IFightMatchmaker
+ * @title FightMatchmaker
  * @author PromptFighters team: Carlos
- * @notice This contract assumes that a player can only be having 1 fight at a time.
- * @notice When a fight is made trhough invitation to some specific address it is called a challenge.
+ * @dev This contract handles everything related to matchmaking.
+ * Automated matchmaking and normal matchmaking is handled here.
+ * @notice This contract assumes that a player can only have 1 fight at a time.
  */
 contract FightMatchmaker is IFightMatchmaker {
     //******************** */
     // CONTRACT'S STATE
     //******************** */
 
-    // External contracs interacted with
+    // [ External contracts interacted with ]
+
     IFightExecutor private immutable i_FIGHT_EXECUTOR_CONTRACT;
     IBetsVault private immutable i_BETS_VAULT;
 
-    mapping(bytes32 => FightState) private s_fightIdToFightState;
+    // [ Matchmaking related state ]
+
+    mapping(bytes32 => Fight) private s_fightIdToFightState;
     // As a user can only be having 1 fight at a time we only need this mapping
     // to check if the user is busy or not.
     // If ID == 0 then user is not fighting neither looking for one.
     // Make sure address 0 can never appear while creating fights, revert if.
     mapping(address => bytes32) private s_userToFightId;
 
-    // State for automatic matchmaking
-    uint8 constant AUTOMATED_FITHGTS_SIZE = 5;
+    // [ Automated matchmaking related state ]
+
+    uint8 constant AUTOAMTED_NFTS_ALLOWED = 5;
+    mapping(uint256 => bool) private s_isNftAutomated;
+    mapping(uint256 => uint256) private s_atmNftToAtmBet;
+    mapping(uint256 => uint256) private s_atmNftToMinBetAcepted;
+    // This mapping is treated as an array. For cheaper computation
+    // uint8 are indexes and they map to nft's ids. Change it to a normal
+    // array if I'm wrong cause I'm not sure.
     mapping(uint8 => uint256) private s_nftsAutomated;
-    FightState[AUTOMATED_FITHGTS_SIZE] private s_fightsQueue;
+    // Whenver someone request a fight acceptable by anyone then its added to this array.
+    FightState[AUTOAMTED_NFTS_ALLOWED] private s_fightsQueue;
 
     constructor(IFightExecutor _fightExecutorAddress, IBetsVault _betsVaultAddress) {
         i_FIGHT_EXECUTOR_CONTRACT = _fightExecutorAddress;
@@ -47,86 +59,36 @@ contract FightMatchmaker is IFightMatchmaker {
     }
 
     //******************** */
-    // MODIFIERS
-    //******************** */
-
-    /**
-     * @dev Checks if msg.sender is `FightExecutor` contract.
-     * If not then revert.
-     */
-    modifier onlyFightExecutorOrBetsVault() {
-        require(
-            msg.sender == address(i_FIGHT_EXECUTOR_CONTRACT) || msg.sender == address(i_BETS_VAULT),
-            "Only FightExecutor or BetsVault can call this."
-        );
-        _;
-    }
-
-    //******************** */
     // EXTERNAL FUNCTIONS
     //******************** */
 
-    //******************** */
-    // REQUEST FIGHT FUNCTIONS
-    //******************** */
+    function requestFight(FightRequest calldata fightRequest) external {}
 
-    function requestFight(uint256 _nftId, uint256 _minimumBet, uint256 _acceptanceDeadline) external {}
+    function acceptFight(bytes32 fightId, uint256 nftId) external {}
 
-    function requestFightTo(
-        address _challenged,
-        uint256 _opponentsNftId,
-        uint256 _nftId,
-        uint256 _minimumBet,
-        uint256 _acceptanceDeadline
-    ) external {}
+    function setFightState(bytes32 fightId, FightState newState) external {}
 
     //******************** */
-    // START FIGHT FUNCTIONS
+    // PUBLIC FUNCTIONS
     //******************** */
-    function acceptFight(bytes32 _fightId) external {}
 
-    function acceptChallengeFrom(address _challenger, uint256 _nftId) external {}
-
-    function changeFightState(bytes32 _fightId, FightState _newState) external onlyFightExecutorOrBetsVault {}
-
-    //*********************** */
-    // AUTOMATED MATCHMAKING
-    //*********************** */
-    function getNftIsAutomated(uint256 nftId) external returns (bool) {}
-
-    function setNftToAutomatedMode(uint256 nftId, bool isAutomated) external returns (bool) {}
-
-    //******************** */
-    // GETTERS
-    //******************** */
-    function getFightState(bytes32 _fightId) external returns (FightState) {}
-
-    function getUserCurrentFightId(address _user) external returns (bytes32) {}
-
-    function getExecutorContractAddress() public view returns (address) {
-        return address(i_FIGHT_EXECUTOR_CONTRACT);
+    function getFigthId(address _challenger, uint256 _challengerNftId, address _challengee, uint256 _challengeeNftId)
+        public
+        pure
+        returns (bytes32)
+    {
+        return keccak256(abi.encode(_challenger, _challengerNftId, _challengee, _challengeeNftId));
     }
 
-    function getFightId(address _challenger, uint256 _nftId, uint256 _bet) public pure returns (bytes32) {
-        return keccak256(abi.encode(_challenger, _nftId, _bet));
-    }
+    function getFightDetails(bytes32 fightId) public returns (Fight memory) {}
+    function getUserCurrentFightId(address _user) public returns (bytes32) {}
 
-    function getChallengeId(
-        address _challenger,
-        address _challengee,
-        uint256 _nftIdChallenger,
-        uint256 _nftIdChallengee,
-        uint256 _betChallenger,
-        uint256 _betChallengee
-    ) public pure returns (bytes32) {
-        return keccak256(
-            abi.encode(_challenger, _challengee, _nftIdChallenger, _nftIdChallengee, _betChallenger, _betChallengee)
-        );
-    }
+    function getIsNftAutomated(uint256 nftId) public returns (bool) {}
+
+    function setNftAutomated(uint256 nftId, bool isAutomated) public returns (bool) {}
 
     //******************** */
     // INTERNAL FUNCTIONS
     //******************** */
-
     function _setFightState(bytes32 _fightId, FightState _newState) internal {}
 }

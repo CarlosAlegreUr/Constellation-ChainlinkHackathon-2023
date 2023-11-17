@@ -5,37 +5,39 @@ import {IFightMatchmaker} from "./IFightMatchmaker.sol";
 
 interface IBetsVault {
     // Data structures
-
-    /**
-     * @param timestampEndOfFightLimit is the time where, in the low likelihood that
-     * any of chainlink services fail or are not active users will be able to withdraw
-     * each its own bet.
-     */
     struct BetsState {
         address userOne;
         uint256 betOne;
         address userTwo;
         uint256 betTwo;
-        IFightMatchmaker.FightState fightState;
-        uint256 timestampAcceptanceDeadline;
-        uint256 timestampEndOfFightLimit;
+        bool betsLocked;
+        uint256 minBet;
+        uint256 acceptanceDeadline;
     }
 
     // Events
-    event IBetsVault__FightLocked(address indexed user, uint256 indexed bet, uint256 timestamp);
-    event IBetsVault__FightUnocked(address indexed user, uint256 indexed bet, uint256 timestamp);
+    event IBetsVault__BetLocked(address indexed user, uint256 bet, uint256 timestamp);
+    event IBetsVault__BetUnocked(address indexed user, uint256 bet, uint256 timestamp);
 
-    // Functions called by requestFight from matchmaker.
-    function lockBet(address player) external payable;
-    function unlockBet(address player) external payable;
+    // Function called by requestFight() from matchmaker.
+    // Function called by acceptFight() from matchmaker.
+    // bet is msg.value && bet >= mintBet else revert
+    function lockBet(bytes32 fightId, address player) external payable;
 
-    function checkBetsAreValid(bytes32 fightId, address userOne, uint256 betOne, address userTwo, uint256 betTwo)
-        external
-        returns (bool);
+    // Called by setFightState() from matchmaker when FightExeutor VRF decides winner
+    function distributeBetsPrize(bytes32 _fightId, address _winner) external;
 
-    // Setters
-    function setBetState(uint256 fightId, BetsState calldata state) external;
+    /**
+     * Unlocks your part of the bet in the fightId and
+     * sends it back to msg.sender.
+     *
+     * Only callable if timestamp > acceptanceDeadline && fightState != ONGOING.
+     * Or if chainlink services failed.
+     *
+     * @notice You must be part of fightId.
+     */
+    function unlockAndRetrieveBet(bytes32 fightId) external;
 
     // Getters
-    function getBet(address user, bytes32 fightId) external returns (uint256);
+    function getBetsState(bytes32 fightId) external returns (BetsState memory);
 }

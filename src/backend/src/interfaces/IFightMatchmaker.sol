@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 /**
  * @title IFightMatchmaker
  * @author PromptFighters team: Carlos
- * @notice This interface assumes that a player can only be having 1 fight at a time.
+ * @notice This interface assumes that a player can only have 1 fight at a time.
  */
 interface IFightMatchmaker {
     //************************ */
@@ -36,8 +36,12 @@ interface IFightMatchmaker {
         uint256 betChallenguee
     );
 
-    event IFightAutomator__NftAutoamteStart(uint256 indexed nftId, uint256 startTimestamp);
-    event IFightAutomator__NftAutomateStop(
+    event FightMatchmaker__FightStateChange(
+        bytes32 indexed fightId, FightState indexed oldState, FightState indexed newState, address calledFrom
+    );
+
+    event FightMatchmaker__NftAutoamteStart(uint256 indexed nftId, uint256 startTimestamp);
+    event FightMatchmaker__NftAutomateStop(
         uint256 indexed nftId, uint256 earnings, uint256 startTimestamp, uint256 endTimestamp
     );
 
@@ -58,30 +62,75 @@ interface IFightMatchmaker {
         Ongoing
     }
 
+    /**
+     * Struct used for preserving fight components
+     * required for logic but not emitted in logs.
+     */
+    struct Fight {
+        uint256 nftOne;
+        uint256 nftTwo;
+        uint256 minBet;
+        uint256 acceptanceDeadline;
+        FightState state;
+    }
+
+    /**
+     * @param nftIdUsing The nft msg.sender will use
+     * @param minBet The minimum ammount of Ether msg.sender is willing to accept
+     * as the challengee's bet.
+     * @param acceptanceDeadline In case the request is not accepted by anyone. This
+     * parameter marks the amount of time to wait before msg.sender can
+     * delete the fight request and recover its bet.
+     * @param challengee The address you want to challenge, If == address(0) anyone can
+     * accept your request. If not, only `challengee` address can accept it.
+     * @param challengeeNftId The NFT id of the fighter you want to challenge, if 0 any NFT
+     * is valid if != 0 then only that NFT's owner can accept the fight.
+     * @notice NFT id 0 in PromptFighter NFT contract is not possible to mint thus is the empty
+     * NFT ID value.
+     */
+    struct FightRequest {
+        uint256 nftIdUsing;
+        uint256 minBet;
+        uint256 acceptanceDeadline;
+        address challengee;
+        uint256 challengeeNftId;
+    }
+
     //************************ */
     // Functions
     //************************ */
 
     //************************ */
-    // General Matchmaking
+    // Matchmaking
     //************************ */
 
     /**
-     * @dev Calculates the fightId = keccack(msg.sender, bet, nftId),
+     * @dev Calculates the fightId = keccack(fightRequest),
      * plus emits an FightMatchmaker__FightRequested event.
      *
      * Sets the fightState of the ID to REQUESTED.
+     * Locks bet with deadline to the BetsVault.
+     * Creates new Fight struct on storage.
+     * Set nftId to can't move in NFT collection or barracks.
      *
-     * @notice The bet parameter == msg.value. For simplicity this protocl only operates with
-     * the native coin Ether bridged accross chains though Chainlink CCIP.
+     * @notice Bet == msg.value. For simplicity this protocol only operates with
+     * the native coin Ether.
      *
      * @notice msg.sender must be the owner of `nftId`'s NFT.
+     * @notice the NFT has to be on the chain at the moment.
+     * @notice if challengee != address(0) then challengee must own challengeeNftId
+     * @notice if challengeeNftId != 0  && challengee == address(0) then the only
+     * one who can accept that fight is ownerOf(challengeeNftId) but,
+     * ownerOf(challengeeNftId) != address(0)
      *
-     * @param nftId The ID of the nft that will particiapte in the fight.
-     * @param acceptanceDeadline is the time where the bet you put, if no-one accepted your challenge, can be withdrawed from
-     * the `BetsVault`.
+     * @notice If its a fight anyone can accept add it to the automated fights
+     * system so automated nfts can accept it.
+     *
+     * @notice Proper events must be emitted depending on the case.
+     *
+     * @param fightRequest The fight request struct
      */
-    function requestFight(uint256 nftId, uint256 minimumBet, uint256 acceptanceDeadline) external;
+    function requestFight(FightRequest calldata fightRequest) external;
 
     /**
      * @dev This function gathers all the information necessary to call the
@@ -90,80 +139,57 @@ interface IFightMatchmaker {
      * If successful sets fight state to ONGOING.
      * Otherwise it reverts.
      *
-     * @notice fightId must have REQUESTED state.
-     * @notice Both participants must be registered as busy fighting.
+     * Both participants are marked as fighting so they can't create more fights
+     * until this one finishes.
      *
-     * @param fightId The ID of the fight you want to accept.
+     * @notice fightId must be in REQUESTED state.
+     *
+     * @param fightId The fightId you want to accept. Retrieved from logs.
+     * @param nftId The NFT you want to use.
      */
-    function acceptFight(bytes32 fightId) external;
+    function acceptFight(bytes32 fightId, uint256 nftId) external;
 
     /**
-     * @dev Function only callable by the `FightExecutor` to set the state
-     * of a finished fight to AVAILABLE.
+     * @dev Function callable by requestFight(), or the `FightExecutor` contract
+     * to set the state of a finished fight to AVAILABLE, or by `BetsVault` to set
+     * fights as AVAILABLE when user unlocks bet if request no-one accepted.
      *
-     * And also only callable from BetsVault to set fights as AVAILABLE when
-     * user unlocks bet if request is not accepted.
+     * @notice If called from `FightExecutor` then this must hold FightState == ONGOING
+     * If called from `BetsVault` then this must hold FightState == REQUESTED or ONGOING
+     * (ONGOING is an edge case where Chainlink Services stop operating so we need a way to
+     * withdraw the money of ongoing fights)
+     * If called from requestFight() then this must hold FightState == AVAILABLE
+     *
+     * @notice If called from `FightExecutor` then mark fight participants as not in fight
+     * by setting the fightId assosiated with their addresses to bytes32(0). Also call BetsVault
+     * and distribute the bets.
+     *
+     * @notice If called from Bets or Executor contracts then newState == AVAILABLE
+     * otherwise revert.
+     *
+     * If final state is AVAILABLE sets nfts to can move in NFT collection or barracks.
      *
      * @param fightId Id of the fight to set its state to AVAILABLE
      */
-    function changeFightState(bytes32 fightId, FightState newState) external;
-
-    //********************************* */
-    // Challenge Addresses Matchmaking
-    //********************************* */
-
-    /**
-     * @dev Requests a fight to someone. It creates a different fightId that includes
-     * both participants
-     *
-     * @notice msg.value is the bet on the fight if desired.
-     *
-     * @param challengee The address you wanna fight.
-     * @param opponentsNftId The id of your opponents nft.
-     * @param nftId Id of the NFT you will be using.
-     * @param minimumBet is the least amount of bet the challenger is willing to play against.
-     */
-    function requestFightTo(
-        address challengee,
-        uint256 opponentsNftId,
-        uint256 nftId,
-        uint256 minimumBet,
-        uint256 acceptanceDeadline
-    ) external;
-
-    /**
-     * @dev Accepts and starts a fight that has ben personally requested.
-     *
-     * @notice msg.value is the bet you are putting in the fight. It must be greater than the
-     * minimum bet your challenger set.
-     *
-     * @param challenger The address challenging you.
-     * @param nftId Nft Id of the challenger.
-     */
-    function acceptChallengeFrom(address challenger, uint256 nftId) external;
+    function setFightState(bytes32 fightId, FightState newState) external;
 
     //********************************* */
     // Automated Matchmaking
     //********************************* */
 
-    function getNftIsAutomated(uint256 nftId) external returns (bool);
+    function getIsNftAutomated(uint256 nftId) external returns (bool);
 
-    function setNftToAutomatedMode(uint256 nftId, bool isAutomated) external returns (bool);
+    function setNftAutomated(uint256 nftId, bool isAutomated) external returns (bool);
 
     //************* */
     // Getters
     //************* */
 
+    function getFigthId(address challenger, uint256 challengerNftId, address challengee, uint256 challengeeNftId)
+        external
+        returns (bytes32);
+
     function getUserCurrentFightId(address user) external returns (bytes32);
 
-    function getFightState(bytes32 fightId) external returns (FightState);
-
-    function getChallengeId(
-        address challenger,
-        address challengee,
-        uint256 nftIdChallenger,
-        uint256 nftIdChallengee,
-        uint256 betChallenger,
-        uint256 betChallengee
-    ) external returns (bytes32);
+    function getFightDetails(bytes32 fightId) external returns (Fight calldata);
 }

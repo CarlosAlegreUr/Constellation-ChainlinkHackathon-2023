@@ -13,24 +13,19 @@ import {IBetsVault} from "./interfaces/IBetsVault.sol";
 //************************************** */
 
 contract BetsVault is IBetsVault {
-    mapping(bytes32 => BetsState) s_fightIdToBetState;
+    // In case Chainlink Services fail and users funds are locked
+    // after 1 day they will be able to retrieve them from the contract.
+    uint256 constant APOCALIPSIS_SAFETY_NET = 1 days;
+
+    mapping(bytes32 => BetsState) s_fightIdToBetsState;
 
     // Functions ONLY called by requestFight from matchmaker.
-    function lockBet(address player) external payable {}
-    function unlockBet(address player) external payable {}
+    function lockBet(bytes32 fightId, address player) external payable {}
 
-    function checkBetsAreValid(bytes32 _fightId, address _userOne, uint256 _betOne, address _userTwo, uint256 _betTwo)
-        external
-        returns (bool)
-    {}
+    // Only callable by FightMatchmaker contract
+    function distributeBetsPrize(bytes32 _fightId, address _winner) external {}
 
-    // Internal funcs
+    function unlockAndRetrieveBet(bytes32 fightId) external {}
 
-    function _getIsBetUnlockable(BetsState calldata _state) internal returns (bool) {}
-
-    // Setters
-    function setBetState(uint256 _fightId, BetsState calldata _state) external {}
-
-    // Getters
-    function getBet(address _user, bytes32 _fightId) external returns (uint256) {}
+    function getBetsState(bytes32 fightId) external returns (BetsState memory) {}
 }

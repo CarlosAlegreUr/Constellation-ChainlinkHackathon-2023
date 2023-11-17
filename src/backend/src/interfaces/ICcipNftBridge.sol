@@ -7,16 +7,16 @@ pragma solidity ^0.8.20;
 // coin in a bridge contract and mint a collateral asset on the destination chain.
 interface ICcipNftBridge {
     // Events
-    event ICCIPNftBridge__NftSent(address indexed user, uint256 indexed chain, uint256 nftID, uint256 timestamp);
-    event ICCIPNftBridge__NftReceived(address indexed user, uint256 indexed chain, uint256 nftID, uint256 timestamp);
+    event ICCIPNftBridge__NftSent(
+        address indexed user, uint256 indexed chain, uint256 indexed nftID, uint256 timestamp
+    );
+    event ICCIPNftBridge__NftReceived(
+        address indexed user, uint256 indexed chain, uint256 indexed nftID, uint256 timestamp
+    );
 
     // Senders
     function sendNft(uint256 nftId) external;
 
     // Getters
     function isNftOnChain(uint256 nftId) external returns (bool);
-
-    // Setters
-    // Set by Chainlink CCIP
-    function setNftOnChain(uint256 nftId, bool isOnChain) external returns (bool);
 }

@@ -2,15 +2,10 @@
 pragma solidity ^0.8.20;
 
 interface IFightExecutor {
-    event FightExecutor__Results(bytes indexed firstEnd, bytes indexed secondEnd);
+    // Check if more parameters needed for easier track of historical data in front-end graph
+    event FightExecutor__FunctionsResults(bytes indexed firstEnd, bytes indexed secondEnd);
+    event FightExecutor__VrfResults(bytes indexed firstEnd, bytes indexed secondEnd);
     event FightExecutor__WinnerIs(bytes32 indexed fightId, address indexed winner, uint256 timestamp);
-
-    struct FightResult {
-        address winner;
-        address loser;
-        uint256 nftWinner;
-        uint256 nftLoser;
-    }
 
     // Calls Chainlink Functions, in the return calls VRF and in VRF return sets winner.
     /**
