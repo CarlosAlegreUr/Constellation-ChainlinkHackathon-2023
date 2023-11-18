@@ -5,21 +5,35 @@ import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
 import {IFightExecutor} from "../interfaces/IFightExecutor.sol";
 import {IBetsVault} from "../interfaces/IBetsVault.sol";
 
-//************************************** */
+//**************************************** */
 //            FOR DEVS!
 // This contract might need more state
-// variables or interface functions.
+// variables or functions.
 //
 // Feel free to add them if you deem them
-// necessary.
-//************************************** */
+// necessary while coding. If so, mark them with a comment saying NEW.
+//**************************************** */
 
 /**
  * @title FightMatchmaker
- * @author PromptFighters team: Carlos
- * @dev This contract handles everything related to matchmaking.
- * Automated matchmaking and normal matchmaking is handled here.
- * @notice This contract assumes that a player can only have 1 fight at a time.
+ * @author PromptFighters dev team: Carlos
+ * @dev Handles matchmaking processes in the game. The matchmaking involves two main steps:
+ * 
+ * 1. requestFight(): Initiates a fight request and emits an event for off-chain detection.
+ * 2. acceptFight(): Used to accept a detected fight request and also starts the fight execution.
+ * 
+ * The contract supports automated matchmaking for up to 5 NFTs simultaneously.
+ * This limitation is due to the current scope of Chainlink Functions.
+ * Future enhancements in Chainlink may allow more NFTs to participate in automated fighting 
+ * without significantly affecting cost of implementing this mechanic.
+ * 
+ * The current implementation requires storing part of the fight data on-chain for subsequent verifications.
+ * Future enhancements are anticipated with Chainlink Functions, especially regarding the import of 
+ * libraries capable of parsing blockchain logs in the scripts executed by DONs. This advancement 
+ * will enable encapsulating all necessary fight parameters within event logs. Such a shift will significantly 
+ * cheapen the fight initiation process, making its automation affordable.
+ * 
+ * @notice Assumes each player is engaged in only one fight at a time.
  */
 contract FightMatchmaker is IFightMatchmaker {
     //******************** */
@@ -31,24 +45,25 @@ contract FightMatchmaker is IFightMatchmaker {
     IFightExecutor private immutable i_FIGHT_EXECUTOR_CONTRACT;
     IBetsVault private immutable i_BETS_VAULT;
 
-    // [ Matchmaking related state ]
+    // [ Matchmaking - state ]
 
     mapping(bytes32 => Fight) private s_fightIdToFightState;
-    // As a user can only be having 1 fight at a time we only need this mapping
-    // to check if the user is busy or not.
+    // As a user can only have 1 fight at a time we only need this mapping
+    // to check if the user is fighting or not.
     // If ID == 0 then user is not fighting neither looking for one.
-    // Make sure address 0 can never appear while creating fights, revert if.
+    // @notice Make sure address 0 can never appear while creating fightIds, revert if so.
     mapping(address => bytes32) private s_userToFightId;
 
-    // [ Automated matchmaking related state ]
+    // [ Automated matchmaking - state ]
 
     uint8 constant AUTOAMTED_NFTS_ALLOWED = 5;
     mapping(uint256 => bool) private s_isNftAutomated;
+    // For now, every fight you do in automated mode will have the same amount of bet.
     mapping(uint256 => uint256) private s_atmNftToAtmBet;
     mapping(uint256 => uint256) private s_atmNftToMinBetAcepted;
     // This mapping is treated as an array. For cheaper computation
-    // uint8 are indexes and they map to nft's ids. Change it to a normal
-    // array if I'm wrong cause I'm not sure.
+    // every uint8 is an index and it maps to an nft id. 
+    // @TODO:Change to a normal array if I'm wrong cause I'm not sure.
     mapping(uint8 => uint256) private s_nftsAutomated;
     // Whenver someone request a fight acceptable by anyone then its added to this array.
     FightState[AUTOAMTED_NFTS_ALLOWED] private s_fightsQueue;

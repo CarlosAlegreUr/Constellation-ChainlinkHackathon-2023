@@ -9,17 +9,28 @@ import {FunctionsRequest} from "@chainlink/functions/dev/v1_0_0/libraries/Functi
 import "@chainlink/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/vrf/VRFConsumerBaseV2.sol";
 
-//************************************** */
+//**************************************** */
 //            FOR DEVS!
 // This contract might need more state
-// variables or interface functions.
+// variables or functions.
 //
-// Feel free to add them if you deem it
-// necessary.
-//************************************** */
+// Feel free to add them if you deem them
+// necessary while coding. If so, mark them with a comment saying NEW.
+//**************************************** */
 
 //@dev TODO: COMPLETE CHAINLINK FUNCTIONS AND VRF INTEGRATION TO THE CONTRACT
 //@dev TODO: MAYBE JUST MAKE FIGHT MATCHMAKER AND EXECUTOR INHERITANCE IF CONTRACT IS NOT TOO LARGE TO BE DEPLOYED
+/**
+ * @title FightExecutor
+ * @author PromptFighters team: Carlos
+ * @dev This contract all the logic for executing a fight.
+ * Whenever FightMatchmaker calls this contract then it uses Chainlink Functions
+ * to generate the fight lore and then uses VRF to generate a fair winner.
+ * 
+ * As of now, for simplicity, the chances of winning are 50% for each player. 
+ * Future plans are to use speific NFT traits to redistribute probability based on 
+ * fighter descriptions and how they relate to each other.
+ */
 contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
     using FunctionsRequest for FunctionsRequest.Request;
 

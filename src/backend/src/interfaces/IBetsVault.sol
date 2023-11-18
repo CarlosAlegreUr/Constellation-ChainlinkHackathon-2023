@@ -3,6 +3,11 @@ pragma solidity ^0.8.20;
 
 import {IFightMatchmaker} from "./IFightMatchmaker.sol";
 
+/**
+ * @title IBetsVault
+ * @author PromptFighters team: Carlos
+ * @dev Interface for the BetsVault contract.
+ */
 interface IBetsVault {
     // Data structures
     struct BetsState {
@@ -10,7 +15,7 @@ interface IBetsVault {
         uint256 betOne;
         address userTwo;
         uint256 betTwo;
-        bool betsLocked;
+        bool areBetsLocked;
         uint256 minBet;
         uint256 acceptanceDeadline;
     }

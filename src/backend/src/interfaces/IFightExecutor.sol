@@ -1,9 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+/**
+ * @title IFightExecutor
+ * @author PromptFighters team: Carlos
+ * @dev Interface for the FightExecutor contract.
+ */
 interface IFightExecutor {
     // Check if more parameters needed for easier track of historical data in front-end graph
     event FightExecutor__FunctionsResults(bytes indexed firstEnd, bytes indexed secondEnd);
+    // probably needs subId etc
     event FightExecutor__VrfResults(bytes indexed firstEnd, bytes indexed secondEnd);
     event FightExecutor__WinnerIs(bytes32 indexed fightId, address indexed winner, uint256 timestamp);
 

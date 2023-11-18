@@ -3,15 +3,27 @@ pragma solidity ^0.8.20;
 
 import {IBetsVault} from "./interfaces/IBetsVault.sol";
 
-//************************************** */
+//**************************************** */
 //            FOR DEVS!
 // This contract might need more state
-// variables or interface functions.
+// variables or functions.
 //
-// Feel free to add them if you deem it
-// necessary.
-//************************************** */
+// Feel free to add them if you deem them
+// necessary while coding. If so, mark them with a comment saying NEW.
+//**************************************** */
 
+/**
+ * @title BetsVault
+ * @author PromptFighters team: Carlos
+ * @dev This contract handles and stores all the value that is moved
+ * around during the systems workflow.
+ * 
+ * When users look for fights they lock their bets here.
+ * When users accept any fight they lock their bets here.
+ * This contract, whena fight ends, distributes the bets to the winner.
+ * In edge-cases where no-one accepts a request or chainlink services fail
+ * then this contract also allows for each player to unlock their bets. 
+ */
 contract BetsVault is IBetsVault {
     // In case Chainlink Services fail and users funds are locked
     // after 1 day they will be able to retrieve them from the contract.

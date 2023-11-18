@@ -13,6 +13,9 @@ import {OwnerIsCreator} from "@chainlink/ccip/src/v0.8/shared/access/OwnerIsCrea
 import {Client} from "@chainlink/ccip/src/v0.8/ccip/libraries/Client.sol";
 import {CCIPReceiver} from "@chainlink/ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
+// Mint process
+// Encript prompt, secrets is the prompt, hash from blockchain, script checks validity and then calls chatGPT-API
+// Drawbacks, evey person you battle against can get information about your prompt and can copy it.
 contract PromptFightersNFT is ERC721, ERC721Enumerable, CCIPReceiver, ICcipNftBridge, FunctionsClient {
     using FunctionsRequest for FunctionsRequest.Request;
 
@@ -39,6 +42,7 @@ contract PromptFightersNFT is ERC721, ERC721Enumerable, CCIPReceiver, ICcipNftBr
         return "https://ipfs.io";
     }
 
+    // Call chainlink functions here to verify prompt
     function safeMint(address to) public {
         require(msg.sender == to, "You can't mint to others.");
         uint256 tokenId = _nextTokenId;
