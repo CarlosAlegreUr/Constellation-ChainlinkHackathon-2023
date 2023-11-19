@@ -89,7 +89,7 @@ contract BetsVault is IBetsVault {
         IFightMatchmaker.Fight memory fightDetails = i_FIGHT_MATCHMAKER.getFightDetails(_fightId);
 
         // If can't unlock it will revert
-        _checkAndHanldeUnlockConditions(fightDetails);
+        _checkUnlockConditions(fightDetails);
 
         // Sending unlocked bet
         bool isRequester = (msg.sender == betsState.requester);
@@ -123,7 +123,7 @@ contract BetsVault is IBetsVault {
      * Fight is REQUESTED && current time > acceptance deadline
      * Fight is ONGOING && current time > start time + APOCALIPSIS_SAFETY_NET
      */
-    function _checkAndHanldeUnlockConditions(IFightMatchmaker.Fight memory _fightDetails) private view {
+    function _checkUnlockConditions(IFightMatchmaker.Fight memory _fightDetails) private view {
         bool canUnlock;
 
         // Check for no-one accepted on time.
