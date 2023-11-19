@@ -10,39 +10,68 @@ import {IFightMatchmaker} from "./IFightMatchmaker.sol";
  */
 interface IBetsVault {
     // Data structures
+
+    /**
+     * @param areBetsLocked bool indicating if both bets are locked
+     * @param minBet minimum bet tolerated by requester
+     * @param acceptanceDeadline date/time when a non-accepted request's bet can be unlocked
+     */
     struct BetsState {
-        address userOne;
-        uint256 betOne;
-        address userTwo;
-        uint256 betTwo;
+        address requester;
+        uint256 requesterBet;
+        address acceptor;
+        uint256 acceptorBet;
         bool areBetsLocked;
-        uint256 minBet;
-        uint256 acceptanceDeadline;
     }
 
     // Events
-    event IBetsVault__BetLocked(address indexed user, uint256 bet, uint256 timestamp);
-    event IBetsVault__BetUnocked(address indexed user, uint256 bet, uint256 timestamp);
+    event BetsVault__BetLocked(address indexed user, bytes32 indexed fightId, uint256 bet, uint256 timestamp);
+    event BetsVault__BetUnocked(address indexed user, bytes32 indexed fightId, uint256 bet, uint256 timestamp);
+    event BetsVault__BetsSentToWinner(
+        address indexed winner, bytes32 indexed fightId, uint256 totalBets, uint256 timestamp
+    );
 
-    // Function called by requestFight() from matchmaker.
-    // Function called by acceptFight() from matchmaker.
-    // bet is msg.value && bet >= mintBet else revert
-    function lockBet(bytes32 fightId, address player) external payable;
-
-    // Called by setFightState() from matchmaker when FightExeutor VRF decides winner
-    function distributeBetsPrize(bytes32 _fightId, address _winner) external;
+    // Functions
 
     /**
-     * Unlocks your part of the bet in the fightId and
-     * sends it back to msg.sender.
+     * @dev This functions locks the bets of fighters before a fight starts.
+     * Function called by requestFight() || acceptFight() from matchmaker.
      *
-     * Only callable if timestamp > acceptanceDeadline && fightState != ONGOING.
-     * Or if chainlink services failed.
+     * @notice This func expects all input and state sanity checks have been done
+     * in `FightMatchmaker` contract.
      *
-     * @notice You must be part of fightId.
+     * @param fightId id of fight
+     * @param player player requesting or accepting a fight
+     */
+    function lockBet(bytes32 fightId, address player) external payable;
+
+    /**
+     * @dev Checks if `_winner` is requester or acceptor and sends the sum
+     * of the bets in the fight to the winner.
+     *
+     * Called by setFightState() from matchmaker after `FightExeutor` VRF notifies
+     * the winner bit to matchmaker.
+     *
+     * @notice This func expects all input and state
+     * sanity checks have been done in `FightMatchmaker` contract.
+     */
+    function distributeBetsPrize(bytes32 _fightId, address _winner) external payable;
+
+    /**
+     * @dev Anyone can call this function to claim their bets in case the
+     * conditions for unloking them are met:
+     *
+     * 1.- No-one accepted fight in time.
+     * 2.- Chainlink services failed.
+     *
+     * @notice This func doesn't expect sanity of input either state.
+     * @notice Checks for msg.sender being involved in the fight.
+     * @notice Checks for fight state and acceptance deadline from
+     * `FightMatchamker` getters.
      */
     function unlockAndRetrieveBet(bytes32 fightId) external;
 
     // Getters
-    function getBetsState(bytes32 fightId) external returns (BetsState memory);
+
+    function getBetsState(bytes32 fightId) external view returns (BetsState memory);
 }

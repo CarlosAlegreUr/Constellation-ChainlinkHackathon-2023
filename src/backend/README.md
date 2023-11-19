@@ -48,9 +48,9 @@ contract ContractName {
     //******************** */
     // e.g., modifier onlyOwner { ...; _; }
 
-    //************************************** */
-    //              CONSTRUCTOR
-    //************************************** */
+    //******************** */
+    // CONSTRUCTOR
+    //******************** */
     /**
      * @dev Constructor for initializing the contract.
      */

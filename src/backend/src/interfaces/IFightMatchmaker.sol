@@ -81,16 +81,16 @@ interface IFightMatchmaker {
     }
 
     /**
-     * @dev Available => Fight can be started
+     * @dev AVAILBALE => Fight can be started
      *
-     * @dev Requested => A fight is waiting for someone else, player who requested it can't start more fights
+     * @dev REQUESTED => A fight is waiting for someone else, player who requested it can't start more fights
      *
-     * @dev Ongoing => A fight is being processed.
+     * @dev ONGOING => A fight is being processed.
      */
     enum FightState {
-        Available,
-        Requested,
-        Ongoing
+        AVAILBALE,
+        REQUESTED,
+        ONGOING
     }
 
     /**
@@ -102,6 +102,7 @@ interface IFightMatchmaker {
         uint256 nftTwo;
         uint256 minBet;
         uint256 acceptanceDeadline;
+        uint256 startedAt;
         FightState state;
     }
 
@@ -179,7 +180,7 @@ interface IFightMatchmaker {
      * otherwise revert.
      *
      * If final state is AVAILABLE sets nfts to can move in NFT collection or barracks.
-     * 
+     *
      * If any of the NFT was in automation mode, check if its funds allow him to keep being automated,
      * if not then take it out from the automated NFTs list.
      *
@@ -211,5 +212,5 @@ interface IFightMatchmaker {
 
     function getUserCurrentFightId(address user) external returns (bytes32);
 
-    function getFightDetails(bytes32 fightId) external returns (Fight calldata);
+    function getFightDetails(bytes32 fightId) external returns (Fight memory);
 }
