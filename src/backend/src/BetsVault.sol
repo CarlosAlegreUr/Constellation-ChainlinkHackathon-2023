@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {IBetsVault} from "./interfaces/IBetsVault.sol";
 import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
+import {NOT_DECIDING_WINNER_VALUE} from "./Utils.sol";
 
 /**
  * @title BetsVault
@@ -20,9 +21,9 @@ import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
  * are correctly handled by the `FightMatchmaker` contract.
  */
 contract BetsVault is IBetsVault {
-    //******************** */
-    // CONTRACT'S STATE
-    //******************** */
+    //******************************* */
+    // CONTRACT'S STATE && CONSTANTS
+    //******************************* */
 
     // In case Chainlink Services fail and users funds are locked,
     // after 1 day they will be able to retrieve them from the contract.
@@ -105,7 +106,7 @@ contract BetsVault is IBetsVault {
 
         // If both players already retrieved their bets the fight becomes AVAILABLE again.
         if (betsState.requesterBet + betsState.acceptorBet == 0) {
-            i_FIGHT_MATCHMAKER.setFightState(_fightId, IFightMatchmaker.FightState.AVAILBALE);
+            i_FIGHT_MATCHMAKER.setFightState(_fightId, IFightMatchmaker.FightState.AVAILABLE, NOT_DECIDING_WINNER_VALUE);
             delete s_fightIdToBetsState[_fightId];
         }
 

@@ -88,7 +88,7 @@ interface IFightMatchmaker {
      * @dev ONGOING => A fight is being processed.
      */
     enum FightState {
-        AVAILBALE,
+        AVAILABLE,
         REQUESTED,
         ONGOING
     }
@@ -185,8 +185,11 @@ interface IFightMatchmaker {
      * if not then take it out from the automated NFTs list.
      *
      * @param fightId Id of the fight to set its state to newState.
+     * @param winner it is etiher 0 or 1, if any other value then ignore. 0 indicates requester won, 1 indicates acceptor won.
+     * This param is only used when calling from FightExecutor and state changes from ONGOING to
+     * AVAILABLE but the edge-case Chainlink services stop working is not given.
      */
-    function setFightState(bytes32 fightId, FightState newState) external;
+    function setFightState(bytes32 fightId, FightState newState, uint256 winner) external;
 
     //********************************* */
     // Automated Matchmaking

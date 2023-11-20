@@ -38,9 +38,9 @@ pragma solidity ^0.8.20;
 contract ContractName {
     // Used libraries statements
 
-    //******************** */
-    // CONTRACT'S STATE
-    //******************** */
+    //******************************* */
+    // CONTRACT'S STATE && CONSTANTS
+    //******************************* */
     // e.g., uint256 private count;
 
     //******************** */
