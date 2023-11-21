@@ -7,6 +7,7 @@ import "../Utils.sol";
 
 import {FunctionsClient} from "@chainlink/functions/dev/v1_0_0/FunctionsClient.sol";
 import {FunctionsRequest} from "@chainlink/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
+import {IFunctionsSubscriptions} from "@chainlink/functions/dev/v1_0_0/interfaces/IFunctionsSubscriptions.sol";
 import "@chainlink/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/vrf/VRFConsumerBaseV2.sol";
 
@@ -19,8 +20,10 @@ import "@chainlink/vrf/VRFConsumerBaseV2.sol";
 // necessary while coding.
 //**************************************** */
 
-//@dev TODO: COMPLETE CHAINLINK FUNCTIONS AND VRF INTEGRATION TO THE CONTRACT
-//@dev TODO: MAYBE JUST MAKE FIGHT MATCHMAKER AND EXECUTOR INHERITANCE IF CONTRACT IS NOT TOO LARGE TO BE DEPLOYED
+// TODO: If contract sizes are to large, add here ChainlinkSubsManager interaction mechanisms.
+// otherwise all funding checks will be done by matchmacker contract before calling the logic in
+// this one.
+
 /**
  * @title FightExecutor
  * @author PromptFighters team: Carlos
@@ -45,7 +48,8 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
     VRFCoordinatorV2Interface private immutable i_VRF_COORDINATOR;
 
     // Chainlink Functions related
-    bytes private constant s_apiCallDenoFile = "";
+    uint64 immutable i_funcsSubsId;
+    bytes32 immutable i_DON_ID;
 
     // Chainlink VRF related
     uint32 constant WINNER_BIT_SIZE = 1;
@@ -57,6 +61,7 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
     // First the ID will be a funcReqId and then a vftReqId
     mapping(bytes32 => bool) s_reqIsValid;
     mapping(bytes32 => bytes32) s_requestsIdToFightId;
+    mapping(bytes32 => address) s_requestsIdToUser;
 
     constructor(IFightMatchmaker _fightMatchmakerAddress, address _router, address _vrfCoordinator)
         FunctionsClient(_router)
@@ -65,9 +70,15 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
         i_FIGHT_MATCHMAKER_CONTRACT = _fightMatchmakerAddress;
         i_LINK_TOKEN = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_LINK : AVL_FUJI_LINK;
         i_VRF_COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
+        // Indeed if deployed in any other blockchain than SEPOLIA or FUJI it won't work.
+        i_DON_ID = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_DON_ID : AVL_FUJI_DON_ID;
 
-        // TODO: call LINK token and create a subscription.
-        i_vrfSubsId = 0;
+        // TODO: manage users subs with LINK token.
+        i_vrfSubsId = i_VRF_COORDINATOR.createSubscription();
+        i_VRF_COORDINATOR.addConsumer(i_vrfSubsId, address(this));
+
+        i_funcsSubsId = IFunctionsSubscriptions(_router).createSubscription();
+        IFunctionsSubscriptions(_router).addConsumer(i_funcsSubsId, address(this));
     }
 
     //******************** */
@@ -83,7 +94,26 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
         _;
     }
 
-    modifier userHasEnoughLink() {
+    enum ComingFrom {
+        VRF,
+        FUNCS
+    }
+
+    /**
+     * @dev Checks that the user is not expecting the contract to encode args.
+     * Checks user has provided a non empty URL object.
+     * Checks that user is using the valid fight script.
+     */
+    modifier checkChainlinkFuncsParams(ChainlinkFuncsGist memory cfParam) {
+        require(
+            cfParam.encryptedSecretsUrls.length > 0 && cfParam.donHostedSecretsVersion == 0,
+            "Only gists service supported here."
+        );
+        require(cfParam.bytesArgs.length == 0, "We don't use off-chain encoded data here.");
+        require(
+            keccak256(abi.encode(cfParam.source)) == GENERATE_FIGHT_SCRIPT,
+            "Thats not a PromptFighters fight execution file."
+        );
         _;
     }
 
@@ -91,34 +121,27 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
     // EXTERNAL FUNCTIONS
     //******************** */
 
-    function fundChainlinkServicesUse(uint256 _linkAmount) external {}
-
     /**
      * @notice Send a simple request sendRequest()
+     *
+     * TODO: maybe _cfParam should be passed as memory?
      */
-    function startFight(bytes32 _fightId, ChainlinkFuncsGist memory _cfParam)
+    function startFight(bytes32 _fightId, ChainlinkFuncsGist calldata _cfParam)
         external
         onlyFightMatchmaker
-        userHasEnoughLink
+        checkChainlinkFuncsParams(_cfParam)
         returns (bytes32 requestId)
     {
         FunctionsRequest.Request memory req;
         req.initializeRequestForInlineJavaScript(_cfParam.source);
+        req.addSecretsReference(_cfParam.encryptedSecretsUrls);
+        if (_cfParam.args.length > 0) req.setArgs(_cfParam.args); // Args are NFT prompts.
 
-        if (_cfParam.encryptedSecretsUrls.length > 0) {
-            req.addSecretsReference(_cfParam.encryptedSecretsUrls);
-        } else if (_cfParam.donHostedSecretsVersion > 0) {
-            req.addDONHostedSecrets(_cfParam.donHostedSecretsSlotID, _cfParam.donHostedSecretsVersion);
-        }
-        if (_cfParam.args.length > 0) req.setArgs(_cfParam.args);
-        if (_cfParam.bytesArgs.length > 0) req.setBytesArgs(_cfParam.bytesArgs);
+        bytes32 lastRequestId = _sendRequest(req.encodeCBOR(), i_funcsSubsId, GAS_LIMIT_FIGHT_GENERATION, i_DON_ID);
 
-        bytes32 lastRequestId =
-            _sendRequest(req.encodeCBOR(), _cfParam.subscriptionId, _cfParam.gasLimit, _cfParam.donID);
-
-        // TODO: Maybe fight participants are required in cf params.
         s_requestsIdToFightId[lastRequestId] = _fightId;
         s_reqIsValid[lastRequestId] = true;
+        s_requestsIdToUser[lastRequestId] = msg.sender;
         return lastRequestId;
     }
 
@@ -162,6 +185,7 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
         if (err.length == 0) {
             // Success, call VRF to generate winner
             uint256 newReqId = requestRandomWinner();
+            delete s_requestsIdToUser[requestId];
             _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
 
             // From this event front-end will parse the stories generated.
@@ -202,11 +226,14 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
         emit FightExecutor__VrfWinnerIs(fightId, winnerBit, block.timestamp);
     }
 
-    // Create methods to fund a susbsciption to VRF. Every time you request a fight you must fund the subscription.
-
     //******************** */
     // PRIVATE FUNCTIONS
     //******************** */
+
+    /**
+     * @dev If user doesn't have enough funds then reverts.
+     */
+    function _checkSubsFundsOf(address _user) private {}
 
     /**
      * @dev Updates the s_requestsIdToFightId mappnig.
@@ -222,15 +249,5 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
             // This else might not be needed. Added as precaution.
             delete s_requestsIdToFightId[_newReq];
         }
-    }
-
-    function _getFightIdFromFight() private returns (bytes32 fightId) {}
-
-    //******************** */
-    // VIEW/PURE FUNCTIONS
-    //******************** */
-
-    function getFunctionsFile() public pure returns (bytes memory) {
-        return s_apiCallDenoFile;
     }
 }

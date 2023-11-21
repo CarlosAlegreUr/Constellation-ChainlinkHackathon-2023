@@ -18,10 +18,10 @@ pragma solidity ^0.8.20;
 struct ChainlinkFuncsGist {
     string source;
     bytes encryptedSecretsUrls;
-    uint8 donHostedSecretsSlotID;
-    uint64 donHostedSecretsVersion;
-    string[] args;
-    bytes[] bytesArgs;
+    uint8 donHostedSecretsSlotID; // NOT USING
+    uint64 donHostedSecretsVersion; // NOT USING
+    string[] args; // TODO: USING IN SIMPLE VERSION WITH PROMPTS STORED ON-CHAIN
+    bytes[] bytesArgs; // NOT USING
     uint64 subscriptionId;
     uint32 gasLimit;
     bytes32 donID;
@@ -51,6 +51,17 @@ address constant AVL_FUJI_LINK = 0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846;
 
 address constant ETH_SEPOLIA_FUNCTIONS_ROUTER = 0xb83E47C2bC239B3bf370bc41e1459A34b41238D0;
 address constant AVL_FUJI_FUNCTIONS_ROUTER = 0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0;
+
+// fun-ethereum-sepolia-1 - in functions NPM package
+bytes32 constant ETH_SEPOLIA_DON_ID = 0x66756e2d657468657265756d2d7365706f6c69612d3100000000000000000000;
+// fun-avalanche-fuji-1 - in functions NPM package
+bytes32 constant AVL_FUJI_DON_ID = 0x66756e2d6176616c616e6368652d66756a692d31000000000000000000000000;
+
+// Propper gas limits should be tested and set, 35.000 is just a random first try.
+uint32 constant GAS_LIMIT_FIGHT_GENERATION = 35_000;
+uint32 constant GAS_LIMIT_NFT_GENERATION = 35_000;
+
+// source.js - Files executed by CLFunctions at the end of this file.
 
 //******************** */
 // Chainlink VRF
@@ -89,3 +100,11 @@ uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT = 55_000;
 // @dev A value used in setFightState() calls to signal the function doesn't have to use
 // the winner parameter.
 uint256 constant NOT_DECIDING_WINNER_VALUE = 2;
+
+//**************************** */
+// CHAINLINK FUNCTIONS SCRIPTS
+//**************************** */
+
+// TODO: add files
+bytes32 constant GENERATE_FIGHT_SCRIPT = keccak256(abi.encode(""));
+bytes32 constant GENERATE_NFT_SCRIPT = keccak256(abi.encode(""));
