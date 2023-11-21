@@ -3,10 +3,10 @@ pragma solidity ^0.8.20;
 
 import {ICcipNftBridge} from "../interfaces/ICcipNftBridge.sol";
 
-import {IRouterClient} from "@chainlink/ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {OwnerIsCreator} from "@chainlink/ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-import {Client} from "@chainlink/ccip/src/v0.8/ccip/libraries/Client.sol";
-import {CCIPReceiver} from "@chainlink/ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
+import {IRouterClient} from "@chainlink-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
+import {OwnerIsCreator} from "@chainlink-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
+import {Client} from "@chainlink-ccip/src/v0.8/ccip/libraries/Client.sol";
+import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
 contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
     // CCIP nft tracking

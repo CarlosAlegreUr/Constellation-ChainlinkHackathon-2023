@@ -8,14 +8,15 @@ import "@openzeppelin/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/access/manager/AccessManaged.sol";
 import {FunctionsClient} from "@chainlink/functions/dev/v1_0_0/FunctionsClient.sol";
 import {FunctionsRequest} from "@chainlink/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
-import {IRouterClient} from "@chainlink/ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {OwnerIsCreator} from "@chainlink/ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-import {Client} from "@chainlink/ccip/src/v0.8/ccip/libraries/Client.sol";
-import {CCIPReceiver} from "@chainlink/ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
+import {IRouterClient} from "@chainlink-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
+import {OwnerIsCreator} from "@chainlink-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
+import {Client} from "@chainlink-ccip/src/v0.8/ccip/libraries/Client.sol";
+import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
 // Mint process
 // Encript prompt, secrets is the prompt, hash from blockchain, script checks validity and then calls chatGPT-API
 // Drawbacks, evey person you battle against can get information about your prompt and can copy it.
+// TODO: MAKE SURE THE USER CANT DO ANYTHING WITH THE NFT WHILE HE IS IN BATTLE
 contract PromptFightersNFT is ERC721, ERC721Enumerable, CCIPReceiver, ICcipNftBridge, FunctionsClient {
     using FunctionsRequest for FunctionsRequest.Request;
 

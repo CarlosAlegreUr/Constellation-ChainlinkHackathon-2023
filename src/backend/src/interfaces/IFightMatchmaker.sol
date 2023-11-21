@@ -81,16 +81,16 @@ interface IFightMatchmaker {
     }
 
     /**
-     * @dev Available => Fight can be started
+     * @dev AVAILBALE => Fight can be started
      *
-     * @dev Requested => A fight is waiting for someone else, player who requested it can't start more fights
+     * @dev REQUESTED => A fight is waiting for someone else, player who requested it can't start more fights
      *
-     * @dev Ongoing => A fight is being processed.
+     * @dev ONGOING => A fight is being processed.
      */
     enum FightState {
-        Available,
-        Requested,
-        Ongoing
+        AVAILABLE,
+        REQUESTED,
+        ONGOING
     }
 
     /**
@@ -102,6 +102,7 @@ interface IFightMatchmaker {
         uint256 nftTwo;
         uint256 minBet;
         uint256 acceptanceDeadline;
+        uint256 startedAt;
         FightState state;
     }
 
@@ -179,13 +180,16 @@ interface IFightMatchmaker {
      * otherwise revert.
      *
      * If final state is AVAILABLE sets nfts to can move in NFT collection or barracks.
-     * 
+     *
      * If any of the NFT was in automation mode, check if its funds allow him to keep being automated,
      * if not then take it out from the automated NFTs list.
      *
      * @param fightId Id of the fight to set its state to newState.
+     * @param winner it is etiher 0 or 1, if any other value then ignore. 0 indicates requester won, 1 indicates acceptor won.
+     * This param is only used when calling from FightExecutor and state changes from ONGOING to
+     * AVAILABLE but the edge-case Chainlink services stop working is not given.
      */
-    function setFightState(bytes32 fightId, FightState newState) external;
+    function setFightState(bytes32 fightId, FightState newState, uint256 winner) external;
 
     //********************************* */
     // Automated Matchmaking
@@ -211,5 +215,5 @@ interface IFightMatchmaker {
 
     function getUserCurrentFightId(address user) external returns (bytes32);
 
-    function getFightDetails(bytes32 fightId) external returns (Fight calldata);
+    function getFightDetails(bytes32 fightId) external returns (Fight memory);
 }
