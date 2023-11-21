@@ -74,11 +74,18 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
         i_DON_ID = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_DON_ID : AVL_FUJI_DON_ID;
 
         // TODO: manage users subs with LINK token.
-        i_vrfSubsId = i_VRF_COORDINATOR.createSubscription();
-        i_VRF_COORDINATOR.addConsumer(i_vrfSubsId, address(this));
+        // THIS SHOULD BE IN SUBS MANAGER CONTRACT AND EXECUTOR CHECKS THIS STUFF
+        // WITH IT SO A i_SUBS_MANAGER state variable is required in case of
+        // eventually not using inheritance.
+        // i_vrfSubsId = i_VRF_COORDINATOR.createSubscription();
+        // i_VRF_COORDINATOR.addConsumer(i_vrfSubsId, address(this));
 
-        i_funcsSubsId = IFunctionsSubscriptions(_router).createSubscription();
-        IFunctionsSubscriptions(_router).addConsumer(i_funcsSubsId, address(this));
+        // i_funcsSubsId = IFunctionsSubscriptions(_router).createSubscription();
+        // IFunctionsSubscriptions(_router).addConsumer(i_funcsSubsId, address(this));
+
+        // TODO: delete this update it properly
+        i_vrfSubsId = 0;
+        i_funcsSubsId = 0;
     }
 
     //******************** */
@@ -92,11 +99,6 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
     modifier onlyFightMatchmaker() {
         require(msg.sender == address(i_FIGHT_MATCHMAKER_CONTRACT), "Only FightExecutor can call this.");
         _;
-    }
-
-    enum ComingFrom {
-        VRF,
-        FUNCS
     }
 
     /**
@@ -229,11 +231,6 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
     //******************** */
     // PRIVATE FUNCTIONS
     //******************** */
-
-    /**
-     * @dev If user doesn't have enough funds then reverts.
-     */
-    function _checkSubsFundsOf(address _user) private {}
 
     /**
      * @dev Updates the s_requestsIdToFightId mappnig.
