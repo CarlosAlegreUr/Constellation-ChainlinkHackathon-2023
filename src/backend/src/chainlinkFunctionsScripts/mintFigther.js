@@ -1,7 +1,8 @@
-const gptPrompt = ```Take a deep breath and do 2 things:
+console.log("date is: ", Date.now());
 
-1.- Deem the desciption VALID or INVALID-
-2.- Generate an image.
+const gptPrompt = `Take a deep breath and do 1 thing:
+
+1.- Deem the description VALID or INVALID
 
 ------
 
@@ -10,17 +11,13 @@ DETAILS ON HOW TO DO THE IMAGE:
 Be super artistic and create a REALISTIC image of a character that:
 
 - Name: A_NAME
-a- Race: WRITE_ANYTHING_YOU_CAN_IMAGINE
-a- Weapon: WRITE_ANYTHING_YOU_CAN_IMAGINE
-b- Special skill: WRITE_ANYTHING_YOU_CAN_IMAGINE
+- Race: WRITE_ANYTHING_YOU_CAN_IMAGINE
+- Weapon: WRITE_ANYTHING_YOU_CAN_IMAGINE
+- Special skill: WRITE_ANYTHING_YOU_CAN_IMAGINE
 - Fear: WRITE_ANYTHING_YOU_CAN_IMAGINE
 
-DONT ADD TEXT ON the image, just the character.
-Only include in the image the traits marked with "a-".
-The traits starting with "b-" only include them if they can be interestingly visualized.
+You will always return the word VALID or INVALID, not other words, this is meant to be used for a script, and the script cannot support other text, only the words INVALID or INVALID, don't explain why you chose a certain option, just say if the character is valid or not with the following FILTERS:
 
-
-These are the filters FILTERS:
 
 - If the character is too powerful return INVALID. Too powerful means that the character has in the description
 things like infinite power or, it always defeats enemies etc Things that can't make the prompt fight interesting to 
@@ -34,7 +31,24 @@ als return INVALID.
 
 - If the character is too crazy for being relaistic dont worry and deem the prompt VALID.
 
-```;
+
+This is the prompt deam it VALID or INVALID:
+
+- Name: ${args[0]}
+- Race: ${args[1]}
+- Weapon: ${args[2]}
+- Special skill: ${args[3]}
+- Fear: ${args[4]}
+
+`;
+
+function delay(milliseconds) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds);
+  });
+}
 
 const postData = {
   model: "gpt-3.5-turbo",
@@ -58,5 +72,7 @@ if (openAIResponse.error) {
 
 const result = openAIResponse.data.choices[0].message.content;
 
+// Now you can use the openAIResponse variable here or perform any other actions
 console.log(result);
+
 return Functions.encodeString(result);
