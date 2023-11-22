@@ -71,7 +71,9 @@ contract PromptFightersNFT is
         ERC721("PromptFightersNFT", "PFT")
         FunctionsClient(_functionsRouter)
         CCIPReceiver(_ccipRouter)
-    {}
+    {
+        require(_ccipRouter == ETH_SEPOLIA_CCIP_ROUTER, "Incorrect router.");
+    }
 
     modifier sendNftCrossChainActions(uint64 destinationChainSelector, address receiver, string calldata nftId) {
         uint256 _nftId = _stringToUint(nftId);

@@ -23,6 +23,7 @@ contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
 
     constructor(address _router, address _receiverContract) CCIPReceiver(_router) {
         i_RECIEVER_CONTRACT = _receiverContract;
+        require(_router == AVL_FUJI_CCIP_ROUTER, "Incorrect router.");
     }
 
     modifier sendNftCrossChainActions(uint64 destinationChainSelector, address receiver, string calldata nftId) {
@@ -101,7 +102,7 @@ contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
         string memory nftId = abi.decode(_message.data, (string)); // abi-decoding of the sent text
         uint256 _nftId = _stringToUint(nftId);
         // TODO check if is msg.sender or the contract used to send message¿?
-        address _sender = abi.decode(_message.sender, (address)); // abi-decoding of the orginal msg.sender 
+        address _sender = abi.decode(_message.sender, (address)); // abi-decoding of the orginal msg.sender
 
         s_isOnChain[_nftId] = true;
         s_canMove[_nftId] = true;
