@@ -1,6 +1,6 @@
 // crear a partir de esto 'un template' que se completará js
 
-const gptPrompt = ```
+const gptPrompt = `
 Here are 2 characters:
 
 - CHARACTER 1:
@@ -26,7 +26,7 @@ The stories musts be at most 6 lines of length.
 Between the stories as a way to sparate them you will put this string: "---",
 Your response will be use for a script and this is the only way that can be used by the script to separate the two stories.
 
-```;
+`;
 
 const postData = {
   model: "gpt-3.5-turbo",
