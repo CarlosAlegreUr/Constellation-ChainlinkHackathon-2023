@@ -213,4 +213,6 @@ Standy by time for betting before fight starts
 
 ### Batch fights option so people wait but its cheaper
 
+### DALL.3 generates images for nfts and fights
+
 </details>

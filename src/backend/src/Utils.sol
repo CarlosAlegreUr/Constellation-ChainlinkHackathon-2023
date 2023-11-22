@@ -93,6 +93,10 @@ uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT = 55_000;
 // address constant ETH_SEPOLIA_FUNCTIONS_ROUTER = address(0);
 // address constant AVALANCHE_FUNCTIONSL_FUJI = address(0);
 
+uint64 constant ETH_SEPOLIA_SELECTOR = 16015286601757825753;
+uint64 constant AVL_FUJI_SELECTOR = 14767482510784806043;
+
+
 //******************** */
 // SHARED CONSTANTS
 //******************** */

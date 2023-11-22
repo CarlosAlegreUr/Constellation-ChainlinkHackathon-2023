@@ -50,8 +50,9 @@ contract PromptFightersNFT is
 
     // On-chain traits
     mapping(uint256 => string) s_nftIdToPrompt;
-    mapping(uint256 => bool) private s_winsCount;
-    mapping(uint256 => bool) private s_losesCount;
+    // @notice Commented out to simplify POC
+    // mapping(uint256 => bool) private s_winsCount;
+    // mapping(uint256 => bool) private s_losesCount;
 
     // Chainlink Functions filter
     mapping(bytes32 => address) s_reqIdToUser;
@@ -60,22 +61,85 @@ contract PromptFightersNFT is
     mapping(uint256 => bool) private s_canMove;
     mapping(uint256 => bool) private s_isOnChain;
 
+    // CCIP recever address initialization
+    bool s_isInitializedLock;
+    address RECEIVER_CONTRACT;
+    // This must be a contract owned by deployer and immediately called before contract is used.
+    address constant INTIALIZER_ADDRESS = address(777);
+
     constructor(address _functionsRouter, address _ccipRouter)
         ERC721("PromptFightersNFT", "PFT")
         FunctionsClient(_functionsRouter)
         CCIPReceiver(_ccipRouter)
     {}
 
+    modifier sendNftCrossChainActions(uint64 destinationChainSelector, address receiver, string calldata nftId) {
+        uint256 _nftId = _stringToUint(nftId);
+        require(ownerOf(_nftId) == msg.sender, "You are not the owner.");
+
+        require(destinationChainSelector == AVL_FUJI_SELECTOR, "We only support Fuji testnet NFT transfers.");
+        require(receiver == RECEIVER_CONTRACT, "Thats not the receiver contract.");
+
+        require(s_canMove[_nftId], "Nft is bussy can't move.");
+
+        require(s_isOnChain[_nftId], "Nft is not currently in this chain.");
+
+        _;
+
+        s_isOnChain[_nftId] = false;
+        s_canMove[_nftId] = false;
+    }
+
+    modifier contractIsInitialized() {
+        require(s_isInitializedLock, "Contract is not initialized.");
+        _;
+    }
+
     //******************** */
     // EXTERNAL FUNCTIONS
     //******************** */
 
     // CCIP
-    // Senders
-    function sendNft(uint256 nftId) external {}
 
-    function isNftOnChain(uint256 nftId) external returns (bool) {
-        return s_isOnChain[nftId];
+    /// @notice Sends data to receiver on the destination chain.
+    /// @notice Pay for fees in native gas.
+    /// @dev Assumes your contract has sufficient native gas tokens.
+    /// @param _destinationChainSelector The identifier (aka selector) for the destination blockchain.
+    /// @param _receiver The address of the recipient on the destination blockchain.
+    /// @param _nftId The text to be sent.
+    /// @return messageId The ID of the CCIP message that was sent.
+    function sendNft(uint64 _destinationChainSelector, address _receiver, string calldata _nftId)
+        external
+        payable
+        contractIsInitialized
+        sendNftCrossChainActions(_destinationChainSelector, _receiver, _nftId)
+        returns (bytes32 messageId)
+    {
+        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
+        Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(_receiver, _nftId, address(0));
+
+        // Initialize a router client instance to interact with cross-chain router
+        IRouterClient router = IRouterClient(this.getRouter());
+
+        // Get the fee required to send the CCIP message
+        uint256 fees = router.getFee(_destinationChainSelector, evm2AnyMessage);
+        require(fees <= msg.value, "Not enought ETH sent.");
+
+        // Send the CCIP message through the router and store the returned CCIP message ID
+        messageId = router.ccipSend{value: fees}(_destinationChainSelector, evm2AnyMessage);
+
+        // Emit an event with message details
+        emit ICCIPNftBridge__NftSent(msg.sender, AVL_FUJI_SELECTOR, _nftId, block.timestamp);
+
+        // Return the CCIP message ID
+        return messageId;
+    }
+
+    function initializeReceiver(address _receiver) external {
+        require(!s_isInitializedLock, "Contract already intialized.");
+        require(msg.sender == INTIALIZER_ADDRESS, "You can't initialize the contract.");
+        RECEIVER_CONTRACT = _receiver;
+        s_isInitializedLock = true;
     }
 
     //******************** */
@@ -86,12 +150,12 @@ contract PromptFightersNFT is
      * @dev Before minting the promt, it must pass an AI filter so as to the
      * NFTs are interesting to play with and don't violate any copyright or ethical
      * rules OpenAI has.
-     * 
+     *
      * @notice Before minting you must approve this contract to use 0.5 LINK to pass the filter.
      * In the future the amounts should be calculated and tested to asses fair prices covering
      * Chainlink Functions and OpenAI's API.
      */
-    function safeMint(address _to, string calldata _nftDescriptionPrompt) public {
+    function safeMint(address _to, string calldata _nftDescriptionPrompt) public contractIsInitialized {
         require(msg.sender == _to, "You can't mint to others.");
 
         // Call LINK contract transferFrom
@@ -109,11 +173,9 @@ contract PromptFightersNFT is
     // INTERNAL FUNCTIONS
     //******************** */
 
-    // TODO: do we have time to implement the image?
-    // IPFS gateway or whatever service we use for storing the image.
-    // The NFT traits will be: hash of prompt, DALL-3 image
+    // TODO: In POC we dont generate the image.
     function _baseURI() internal pure override returns (string memory) {
-        return "https://ipfs.io";
+        return "https://www.youtube.com/watch?v=b89CnP0Iq30";
     }
 
     // Chainlink functions for NFT generation
@@ -127,16 +189,49 @@ contract PromptFightersNFT is
             s_canMove[tokenId] = true;
             _safeMint(s_reqIdToUser[requestId], tokenId);
 
-            // Decode from response prompt and image location
-            // s_nftIdToPrompt[tokenId] = PROMPT;
+            // Decode prompt from response TODO I'm not sure if this is the right way
+            string memory prompt = abi.decode(response, (string));
+            s_nftIdToPrompt[tokenId] = prompt;
         }
         delete s_reqIdToUser[requestId];
     }
 
     // Set by Chainlink CCIP
     // Set nft on chain
-    function _ccipReceive(Client.Any2EVMMessage memory message) internal virtual override {
+    function _ccipReceive(Client.Any2EVMMessage memory _message) internal /*virtual*/ override {
         // decode nftid from message and mark it as onChain
+        // s_lastReceivedMessageId = _message.messageId; // fetch the messageId
+        require(_message.sourceChainSelector == AVL_FUJI_SELECTOR, "We only accept messages from Fuji.");
+
+        string memory nftId = abi.decode(_message.data, (string)); // abi-decoding of the sent text
+        uint256 _nftId = _stringToUint(nftId);
+        s_isOnChain[_nftId] = true;
+        s_canMove[_nftId] = true;
+    }
+
+    /// @notice Construct a CCIP message.
+    /// @dev This function will create an EVM2AnyMessage struct with all the necessary information for sending a text.
+    /// @param _receiver The address of the receiver.
+    /// @param _text The string data to be sent.
+    /// @param _feeTokenAddress The address of the token used for fees. Set address(0) for native gas.
+    /// @return Client.EVM2AnyMessage Returns an EVM2AnyMessage struct which contains information for sending a CCIP message.
+    function _buildCCIPMessage(address _receiver, string calldata _text, address _feeTokenAddress)
+        internal
+        pure
+        returns (Client.EVM2AnyMessage memory)
+    {
+        // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
+        return Client.EVM2AnyMessage({
+            receiver: abi.encode(_receiver), // ABI-encoded receiver address
+            data: abi.encode(_text), // ABI-encoded string
+            tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
+            extraArgs: Client._argsToBytes(
+                // Additional arguments, setting gas limit and non-strict sequencing mode
+                Client.EVMExtraArgsV1({gasLimit: 200_000, strict: false})
+                ),
+            // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
+            feeToken: _feeTokenAddress
+        });
     }
 
     //******************** */
@@ -159,11 +254,35 @@ contract PromptFightersNFT is
         return lastRequestId;
     }
 
+    // Made by chatGPT hope it works :d
+    function _stringToUint(string memory _s) public pure returns (uint256) {
+        bytes memory b = bytes(_s);
+        uint256 result = 0;
+        for (uint256 i = 0; i < b.length; i++) {
+            if (b[i] >= 0x30 && b[i] <= 0x39) {
+                result = result * 10 + (uint256(uint8(b[i])) - 48);
+            } else {
+                // Character is not a number, revert
+                revert("Invalid input string");
+            }
+        }
+        return result;
+    }
+
     //************************ */
     // VIEW / PURE FUNCTIONS
     //************************ */
-    function getPrompt(uint256 _nftId) external returns (string memory) {
+
+    function getPrompt(uint256 _nftId) external view returns (string memory) {
         return s_nftIdToPrompt[_nftId];
+    }
+
+    function isNftOnChain(uint256 nftId) external view returns (bool) {
+        return s_isOnChain[nftId];
+    }
+
+    function getOwnerOf(uint256 _nftId) public view returns (address) {
+        return ownerOf(_nftId);
     }
 
     //**************************** */
@@ -175,7 +294,7 @@ contract PromptFightersNFT is
     function supportsInterface(bytes4 interfaceId)
         public
         pure // TODO: it was view before check if this is correct
-        virtual
+        /*virtual*/
         override(ERC721, ERC721Enumerable, CCIPReceiver)
         returns (bool)
     {}
