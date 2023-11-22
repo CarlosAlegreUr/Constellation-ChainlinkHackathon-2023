@@ -1,8 +1,8 @@
 ## State of the art 🎨🖌️
 
-The project has **_not been audited neither properly tested yet_**.
+The project has **_not been audited neither comprehensive testing code has been written yet_**.
 
-So far it's just a functional demo for the overall idea.
+So far **_it's just a functional ProofOfConcept (POC)_** for the overall idea.
 
 ---
 
@@ -10,4 +10,6 @@ So far it's just a functional demo for the overall idea.
 
 - Check `smart contracts` on chain [here](./backend)
 
-- Check `front-end` code [here](./frontend)
+- Check `front-end` code [here](./prompt-fighters/)
+
+- Check `architecture` details [here](../docs/)
