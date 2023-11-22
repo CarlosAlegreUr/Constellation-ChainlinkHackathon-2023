@@ -1,11 +1,9 @@
 ## Naming convention 📝
 
-### This rule applies for `all` [contracts](./src/) `but CCIP bridges`.
-
 If a smart contract starts with:
 
-- `avl`-Name: means that contract will only be deployed in `Avalanche`.
+- _`avl`-Name_ : means that contract will only be deployed in `Avalanche`.
 
-- `eth`-Name: means that contract will only be deployed in `Ethereum`.
+- _`eth`-Name_ : means that contract will only be deployed in `Ethereum`.
 
-- `Name`: menas that contract will be deployed in `both chains`.
+- _`Name`_ : means that contract will be deployed in `both chains`.
