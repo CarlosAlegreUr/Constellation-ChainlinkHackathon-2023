@@ -31,10 +31,10 @@ Well say no more, we present... **_`PROMPT FIGHTERS`_** ❗
 
 #### **_`Mechanics Implemented`_**
 
-- Personalized NFTs: describe your NFT as you want over a template.
-- NFT creation AI filter: so there are not too powerful or copyright infringement prompts.
-- Fight and bet against other NFTs.
-- Automated Fighting: send some funds and enjoy the fight automation.
+- **Personalized NFTs** : describe your NFT as you want over a template.
+- **NFT creation AI filtered** : so there are no too powerful or copyright infringement prompts.
+- **Fight and bet against other NFTs**.
+- **Automated Fighting** : send some funds and enjoy the fight automation.
 
 </details>
 
