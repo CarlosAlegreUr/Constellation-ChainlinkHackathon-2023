@@ -5,6 +5,7 @@ import {IFightExecutor} from "../interfaces/IFightExecutor.sol";
 import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
 import "../Utils.sol";
 
+import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
 import {FunctionsClient} from "@chainlink/functions/dev/v1_0_0/FunctionsClient.sol";
 import {FunctionsRequest} from "@chainlink/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
 import {IFunctionsSubscriptions} from "@chainlink/functions/dev/v1_0_0/interfaces/IFunctionsSubscriptions.sol";
@@ -44,7 +45,7 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
 
     // External contracs interacted with
     IFightMatchmaker private immutable i_FIGHT_MATCHMAKER_CONTRACT;
-    address private immutable i_LINK_TOKEN;
+    LinkTokenInterface private immutable i_LINK_TOKEN;
     VRFCoordinatorV2Interface private immutable i_VRF_COORDINATOR;
 
     // Chainlink Functions related
@@ -68,7 +69,9 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
         VRFConsumerBaseV2(_vrfCoordinator)
     {
         i_FIGHT_MATCHMAKER_CONTRACT = _fightMatchmakerAddress;
-        i_LINK_TOKEN = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_LINK : AVL_FUJI_LINK;
+        i_LINK_TOKEN = block.chainid == ETH_SEPOLIA_CHAIN_ID
+            ? LinkTokenInterface(ETH_SEPOLIA_LINK)
+            : LinkTokenInterface(AVL_FUJI_LINK);
         i_VRF_COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         // Indeed if deployed in any other blockchain than SEPOLIA or FUJI it won't work.
         i_DON_ID = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_DON_ID : AVL_FUJI_DON_ID;
@@ -77,15 +80,11 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
         // THIS SHOULD BE IN SUBS MANAGER CONTRACT AND EXECUTOR CHECKS THIS STUFF
         // WITH IT SO A i_SUBS_MANAGER state variable is required in case of
         // eventually not using inheritance.
-        // i_vrfSubsId = i_VRF_COORDINATOR.createSubscription();
-        // i_VRF_COORDINATOR.addConsumer(i_vrfSubsId, address(this));
+        i_vrfSubsId = i_VRF_COORDINATOR.createSubscription();
+        i_VRF_COORDINATOR.addConsumer(i_vrfSubsId, address(this));
 
-        // i_funcsSubsId = IFunctionsSubscriptions(_router).createSubscription();
-        // IFunctionsSubscriptions(_router).addConsumer(i_funcsSubsId, address(this));
-
-        // TODO: delete this update it properly
-        i_vrfSubsId = 0;
-        i_funcsSubsId = 0;
+        i_funcsSubsId = IFunctionsSubscriptions(_router).createSubscription();
+        IFunctionsSubscriptions(_router).addConsumer(i_funcsSubsId, address(this));
     }
 
     //******************** */

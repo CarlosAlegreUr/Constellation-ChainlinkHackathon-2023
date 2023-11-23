@@ -78,9 +78,9 @@ contract ContractName {
     //******************** */
     // e.g., function privateFunction() private { ... }
 
-    //******************** */
+    //************************ */
     // VIEW / PURE FUNCTIONS
-    //******************** */
+    //************************ */
     // e.g., function getCount() public view returns (uint256) { ... }
 }
 ```
