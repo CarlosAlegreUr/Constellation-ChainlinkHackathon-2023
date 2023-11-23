@@ -48,7 +48,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
     bytes32 private immutable i_DON_ID;
     mapping(bytes32 => address) s_reqIdToUser;
 
-    // CCIP nft tracking
+    // CCIP nft tracking (TODO: these could be simplified as an enum in ccip nft bridge interface)
     // canMove is false if the NFT is fighting
     mapping(uint256 => bool) private s_canMove;
     mapping(uint256 => bool) private s_isOnChain;
