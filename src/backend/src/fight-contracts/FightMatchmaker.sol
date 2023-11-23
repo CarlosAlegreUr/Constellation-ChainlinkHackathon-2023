@@ -15,11 +15,6 @@ import {FightExecutor} from "./FightExecutor.sol";
 // necessary while coding. If so, mark them with a comment saying NEW.
 //**************************************** */
 
-// TODO: If contract size allows it it will inherit ChainlinkSubsManager and FightExecutor
-// and, before calling any service will check for user having funded the subscription.
-// In that case a more appropiated name for the contract might be 
-// FightsManager is IChainlinkSubsManager, IFightMatchmaker, FightExecutor {}
-
 /**
  * @title FightMatchmaker
  * @author PromptFighters dev team: Carlos

@@ -9,13 +9,15 @@ pragma solidity ^0.8.20;
 interface IChainlinkSubsManager {
     /**
      * @dev msg.sender sends LINK to the contract.
+     * and the LINK is evenly distributed among all Chainlink Services subscriptions.
      */
     function fundMySubscription(uint256 amount) external;
 
     /**
-     * @dev Sends the  amount LINK back to the user's address.
+     * @dev Sends the amount LINK back to the user's address.
+     * @notice Not implemented in PoC
      */
-    function unfundMySubscription(uint256 amount) external;
+    // function unfundMySubscription(uint256 amount) external;
 
     /**
      * @dev Returns how much LINK user has deposited in the contract.
