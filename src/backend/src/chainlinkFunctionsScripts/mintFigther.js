@@ -72,7 +72,10 @@ if (openAIResponse.error) {
 
 const result = openAIResponse.data.choices[0].message.content;
 
-// Now you can use the openAIResponse variable here or perform any other actions
-console.log(result);
+if (result != "VALID") {
+  return Functions.encodeString("");
+} else {
+  const str = `${args[0]}-${args[1]}-${args[2]}-${args[3]}-${args[4]}`;
 
-return Functions.encodeString(result);
+  return Functions.encodeString(str);
+}
