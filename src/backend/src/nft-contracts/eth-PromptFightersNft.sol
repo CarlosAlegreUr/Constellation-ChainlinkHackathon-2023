@@ -181,6 +181,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
      * @dev Docs at IPromptFightersCollection.sol
      */
     function safeMint(address _to, string calldata _nftDescriptionPrompt) public contractIsInitialized {
+        require(bytes(_nftDescriptionPrompt).length <= 256, "Prompt too large.");
         require(msg.sender == _to, "You can't mint to others.");
 
         // Call LINK contract transferFrom
