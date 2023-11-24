@@ -44,7 +44,7 @@
 
 <details> <summary> automate-battle-form 🤖🥊 </summary>
 
-<img src="../../repo-images/ux-images/automate-battle-form.png"/>
+<img src="../../repo-images/ux-images/automate-battle-form2.png"/>
 
 </details>
 
