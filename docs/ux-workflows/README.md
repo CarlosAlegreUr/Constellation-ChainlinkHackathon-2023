@@ -12,7 +12,7 @@
 
 2️⃣ User connects wallet and sees all these components and features.
 
-<details> <summary> main-page-wallet-connected 💸💻 </summary>
+<details> <summary> main-page-wallet-connected 💸💻👛🦊 </summary>
 
 <img src="../../repo-images/ux-images/main-page.png"/>
 
@@ -20,7 +20,37 @@
 
 ---
 
-3️⃣ User enters a fight and this page shows.
+3️⃣ User clicks on button mint your NFT.
+
+<details> <summary> form-mint-your-NFT ✏️ 📃 </summary>
+
+<img src="../../repo-images/ux-images/form-mint-your-nft.png"/>
+
+</details>
+
+---
+
+4️⃣ User clicks on button battle form.
+
+<details> <summary> section-battle-forms ✏️ 📃🥊 </summary>
+
+<img src="../../repo-images/ux-images/section-battle-forms.png"/>
+
+</details>
+
+---
+
+5️⃣ User clicks on button automate battle form.
+
+<details> <summary> automate-battle-form 🤖🥊 </summary>
+
+<img src="../../repo-images/ux-images/automate-battle-form.png"/>
+
+</details>
+
+---
+
+6️⃣ User enters a fight and this page shows.
 
 <details> <summary> fight-page 👊💻 </summary>
 
