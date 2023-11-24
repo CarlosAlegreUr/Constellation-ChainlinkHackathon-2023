@@ -2,9 +2,9 @@
 
 1️⃣ User enters the website and sees this.
 
-<details> <summary> main-page 🐒💻 </summary>
+<details> <summary> landing-page 🐒💻 </summary>
 
-<img src="../../repo-images/ux-images/main-welcome-page.png"/>
+<img src="../../repo-images/ux-images/landing-page.png"/>
 
 </details>
 
@@ -14,7 +14,7 @@
 
 <details> <summary> main-page-wallet-connected 💸💻 </summary>
 
-<img src="../../repo-images/ux-images/main-page-objects.png"/>
+<img src="../../repo-images/ux-images/main-page.png"/>
 
 </details>
 
