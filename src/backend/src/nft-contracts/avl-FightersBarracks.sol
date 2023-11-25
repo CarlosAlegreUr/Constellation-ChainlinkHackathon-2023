@@ -20,7 +20,7 @@ import "../Utils.sol";
 contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
     // CCIP nft tracking
     // canMove is false if the NFT is fighting
-    mapping(uint256 => bool) private s_canMove;
+    mapping(uint256 => bool) private s_canMove; // TODO: isFighting
     mapping(uint256 => bool) private s_isOnChain;
 
     // CCIP ownership tracking
@@ -121,6 +121,8 @@ contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
     function getOwnerOf(uint256 nftIdInt) public view returns (address) {
         return s_nftIdToOwner[nftIdInt];
     }
+
+    // getPrompt()
 
     //******************** */
     // INTERNAL FUNCTIONS

@@ -10,7 +10,17 @@ forge install (name of other packages)
 
 npm install @chainlink/contracts-ccip --save
 
+---
+
+## Tests 🤖
+
+Run test instructions in here [./test](./test/).
+
+---
+
 ## Naming convention 📝
+
+<details> <summary> Naming convention 📝 </summary>
 
 If a smart contract starts with:
 
@@ -20,9 +30,13 @@ If a smart contract starts with:
 
 - `Name`: menas that contract will be deployed in `both chains`.
 
+</details>
+
 ---
 
 ## Contracts' Structure 📜
+
+<details> <summary> Contracts' Structure 📜 </summary>
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -84,5 +98,7 @@ contract ContractName {
     // e.g., function getCount() public view returns (uint256) { ... }
 }
 ```
+
+</details>
 
 ---

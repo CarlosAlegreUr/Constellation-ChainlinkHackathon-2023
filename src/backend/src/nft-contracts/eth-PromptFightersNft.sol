@@ -43,14 +43,14 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
 
     // Chainlink Functions Management
     LinkTokenInterface private immutable i_LINK_TOKEN;
-    string private constant VALIDATION_SCRIPT = "";
+    string private constant VALIDATION_SCRIPT = "NOT EMPTY";
     uint64 private immutable i_funcsSubsId;
     bytes32 private immutable i_DON_ID;
     mapping(bytes32 => address) s_reqIdToUser;
 
     // CCIP nft tracking (TODO: these could be simplified as an enum in ccip nft bridge interface)
     // canMove is false if the NFT is fighting
-    mapping(uint256 => bool) private s_canMove;
+    mapping(uint256 => bool) private s_isFighting;
     mapping(uint256 => bool) private s_isOnChain;
 
     // CCIP reciever address initialization
@@ -61,7 +61,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
     // TODO: This must be a contract owned by deployer and immediately called before contract is used.
     address constant INTIALIZER_ADDRESS = address(777);
 
-    constructor(address _functionsRouter, address _ccipRouter)
+    constructor(address _functionsRouter, address _ccipRouter /* address linkMock*/ )
         ERC721("PromptFightersNFT", "PFT")
         FunctionsClient(_functionsRouter)
         CCIPReceiver(_ccipRouter)
@@ -72,6 +72,9 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
             ? LinkTokenInterface(ETH_SEPOLIA_LINK)
             : LinkTokenInterface(AVL_FUJI_LINK);
         i_DON_ID = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_DON_ID : AVL_FUJI_DON_ID;
+
+        //@dev Only when testing
+        // i_LINK_TOKEN = LinkTokenInterface(linkMock);
 
         i_funcsSubsId = IFunctionsSubscriptions(_functionsRouter).createSubscription();
         IFunctionsSubscriptions(_functionsRouter).addConsumer(i_funcsSubsId, address(this));
@@ -92,11 +95,11 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         require(destinationChainSelector == AVL_FUJI_SELECTOR, "We only support Fuji testnet NFT transfers.");
         require(receiver == RECEIVER_CONTRACT, "Thats not the receiver contract.");
 
-        require(s_canMove[_nftId], "Nft is bussy can't move.");
+        require(!s_isFighting[_nftId], "Nft is bussy can't move.");
         require(s_isOnChain[_nftId], "Nft is not currently in this chain.");
 
-        s_isOnChain[_nftId] = false;
-        s_canMove[_nftId] = false;
+        delete s_isOnChain[_nftId];
+        delete s_isFighting[_nftId];
         _;
     }
 
@@ -117,7 +120,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
      * tracking accross chains and avoid sending bets bugs.
      */
     modifier nftCanBeTraded(uint256 nftId) {
-        require(s_canMove[nftId], "You cant transfer a fighting NFT.");
+        require(!s_isFighting[nftId], "You cant transfer a fighting NFT.");
         require(s_isOnChain[nftId], "You cant transfer an NFT that is not on this chain.");
         _;
     }
@@ -237,7 +240,6 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
 
             // Special traits on-chain
             s_isOnChain[tokenId] = true;
-            s_canMove[tokenId] = true;
             _safeMint(s_reqIdToUser[requestId], tokenId);
 
             // Decode prompt from response TODO I'm not sure if this is the right way
@@ -258,7 +260,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         string memory nftId = abi.decode(_message.data, (string)); // abi-decoding of the sent text
         uint256 nftIdInt = _stringToUint(nftId);
         s_isOnChain[nftIdInt] = true;
-        s_canMove[nftIdInt] = true;
+        delete s_isFighting[nftIdInt]; // Set to false
         emit ICCIPNftBridge__NftReceived(ownerOf(nftIdInt), ETH_SEPOLIA_CHAIN_ID, nftIdInt, block.timestamp);
     }
 
