@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {IBetsVault} from "./interfaces/IBetsVault.sol";
 import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
+import {Initializable} from "./Initializable.sol";
 import {NOT_DECIDING_WINNER_VALUE} from "./Utils.sol";
 
 /**
@@ -20,7 +21,7 @@ import {NOT_DECIDING_WINNER_VALUE} from "./Utils.sol";
  * @notice This contract assumes all inputs and states recieved and checked
  * are correctly handled by the `FightMatchmaker` contract.
  */
-contract BetsVault is IBetsVault {
+contract BetsVault is IBetsVault, Initializable {
     //******************************* */
     // CONTRACT'S STATE && CONSTANTS
     //******************************* */
@@ -30,9 +31,13 @@ contract BetsVault is IBetsVault {
     uint256 constant APOCALIPSIS_SAFETY_NET = 1 days;
 
     // Contracts interacted with
-    IFightMatchmaker private immutable i_FIGHT_MATCHMAKER;
+    IFightMatchmaker private i_FIGHT_MATCHMAKER;
 
     mapping(bytes32 => BetsState) s_fightIdToBetsState;
+
+    function initializeMatchmaker(IFightMatchmaker _fightMatchmaker) external initializeActions {
+        i_FIGHT_MATCHMAKER = _fightMatchmaker;
+    }
 
     //******************** */
     // MODIFIERS
@@ -41,13 +46,6 @@ contract BetsVault is IBetsVault {
     modifier onlyFightMatchmaker() {
         require(msg.sender == address(i_FIGHT_MATCHMAKER), "Only FightMatchmacker is allowed.");
         _;
-    }
-
-    //******************** */
-    // CONSTRUCTOR
-    //******************** */
-    constructor(IFightMatchmaker _fightMatchmaker) {
-        i_FIGHT_MATCHMAKER = _fightMatchmaker;
     }
 
     //******************** */
@@ -84,7 +82,7 @@ contract BetsVault is IBetsVault {
         emit BetsVault__BetsSentToWinner(winner, _fightId, amount, block.timestamp);
     }
 
-    function unlockAndRetrieveBet(bytes32 _fightId) external {
+    function unlockAndRetrieveBet(bytes32 _fightId) external contractIsInitialized {
         BetsState memory betsState = s_fightIdToBetsState[_fightId];
         require(msg.sender == betsState.requester || msg.sender == betsState.acceptor, "You must be in the fight.");
         IFightMatchmaker.Fight memory fightDetails = i_FIGHT_MATCHMAKER.getFightDetails(_fightId);

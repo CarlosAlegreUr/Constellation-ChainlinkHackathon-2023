@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
 // Scenarios
@@ -26,8 +26,7 @@ contract PromptFightersNftTest is ChainlinkMocksDeployed {
 
     function setUp() public override {
         super.setUp();
-        promptFightersNFT =
-            new PromptFightersNFT(address(funcsSubsMock), ETH_SEPOLIA_CCIP_ROUTER, address(linkTokenMock));
+        promptFightersNFT = new PromptFightersNFT(address(funcsSubsMock), ETH_SEPOLIA_CCIP_ROUTER);
     }
 
     function test_NothingBeforeInitialize() public {
@@ -37,17 +36,4 @@ contract PromptFightersNftTest is ChainlinkMocksDeployed {
         vm.expectRevert("Contract is not initialized.");
         promptFightersNFT.sendNft(AVL_FUJI_SELECTOR, RECEIVER_ADDRESS, "1");
     }
-
-    function test_MintIdsCorrect() public initialized {
-        // vm.prank(INTIALIZER_ADDRESS);
-        // promptFightersNFT.safeMint(INTIALIZER_ADDRESS, VALID_PROMT);
-    }
-
-    function test_PromptsSavedCorrectly() public initialized {}
-
-    function test_CorrectURI() public initialized {}
-
-    function test_MovingNftCCIP() public initialized {}
-
-    function test_CantMoveNorTradeIfFighting() public initialized {}
 }

@@ -24,4 +24,14 @@ interface IPromptFightersCollection {
     function safeMint(address to, string calldata nftDescriptionPrompt) external;
 
     function getPrompt(uint256 nftId) external returns (string memory);
+
+    /**
+     * @dev You can only call 1 time thi function.
+     *
+     * Used to add the receiver address of the contract in
+     * the Avalanche chain. If not set the contract functions will be blocked.
+     *
+     * Only deployer of the contract can call this.
+     */
+    function initializeReceiver(address receiver) external;
 }

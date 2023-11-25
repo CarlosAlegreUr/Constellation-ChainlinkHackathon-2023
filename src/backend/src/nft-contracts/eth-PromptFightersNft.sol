@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {ICcipNftBridge} from "../interfaces/ICcipNftBridge.sol";
 import {IPromptFightersCollection} from "../interfaces/IPromptFightersCollection.sol";
+import {Initializable} from "../Initializable.sol";
 
 import "../Utils.sol";
 
@@ -29,7 +30,14 @@ import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPRecei
  * and this contract also implements CCIP to use your nfts to fight on other chains.
  * In this case only Fuji Avalanche testnet is allowed.
  */
-contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, ICcipNftBridge, FunctionsClient {
+contract PromptFightersNFT is
+    IPromptFightersCollection,
+    ERC721,
+    CCIPReceiver,
+    ICcipNftBridge,
+    FunctionsClient,
+    Initializable
+{
     using FunctionsRequest for FunctionsRequest.Request;
 
     // Initialized at 1 as nftId is used as the empty value in some systems' logic.
@@ -56,12 +64,9 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
     // CCIP reciever address initialization
     // to connect the briged contracts one must be deployed first and the other one
     // later, for safer deployment we add this state variables.
-    bool s_isInitializedLock; // Contract cant be used until its initialized a.k.a. CCIP is intialized.
-    address RECEIVER_CONTRACT;
-    // TODO: This must be a contract owned by deployer and immediately called before contract is used.
-    address constant INTIALIZER_ADDRESS = address(777);
+    address CCIP_RECEIVER_CONTRACT;
 
-    constructor(address _functionsRouter, address _ccipRouter /* address linkMock*/ )
+    constructor(address _functionsRouter, address _ccipRouter)
         ERC721("PromptFightersNFT", "PFT")
         FunctionsClient(_functionsRouter)
         CCIPReceiver(_ccipRouter)
@@ -72,9 +77,6 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
             ? LinkTokenInterface(ETH_SEPOLIA_LINK)
             : LinkTokenInterface(AVL_FUJI_LINK);
         i_DON_ID = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_DON_ID : AVL_FUJI_DON_ID;
-
-        //@dev Only when testing
-        // i_LINK_TOKEN = LinkTokenInterface(linkMock);
 
         i_funcsSubsId = IFunctionsSubscriptions(_functionsRouter).createSubscription();
         IFunctionsSubscriptions(_functionsRouter).addConsumer(i_funcsSubsId, address(this));
@@ -93,24 +95,13 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         require(ownerOf(_nftId) == msg.sender, "You are not the owner.");
 
         require(destinationChainSelector == AVL_FUJI_SELECTOR, "We only support Fuji testnet NFT transfers.");
-        require(receiver == RECEIVER_CONTRACT, "Thats not the receiver contract.");
+        require(receiver == CCIP_RECEIVER_CONTRACT, "Thats not the receiver contract.");
 
         require(!s_isFighting[_nftId], "Nft is bussy can't move.");
         require(s_isOnChain[_nftId], "Nft is not currently in this chain.");
 
         delete s_isOnChain[_nftId];
         delete s_isFighting[_nftId];
-        _;
-    }
-
-    /**
-     * @dev No-one can use this contract until a receiver address for the CCIP has
-     * been set by INTIALIZER_ADDRESS.
-     *
-     * Once is set RECEIVER_CONTRACT can't be changed.
-     */
-    modifier contractIsInitialized() {
-        require(s_isInitializedLock, "Contract is not initialized.");
         _;
     }
 
@@ -169,11 +160,8 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
      * and one for confirming it and then indeed lock the setter forever. But this is
      * a simple PoC.
      */
-    function initializeReceiver(address _receiver) external {
-        require(!s_isInitializedLock, "Contract already intialized.");
-        require(msg.sender == INTIALIZER_ADDRESS, "You can't initialize the contract.");
-        RECEIVER_CONTRACT = _receiver;
-        s_isInitializedLock = true;
+    function initializeReceiver(address _receiver) external initializeActions {
+        CCIP_RECEIVER_CONTRACT = _receiver;
     }
 
     //******************** */

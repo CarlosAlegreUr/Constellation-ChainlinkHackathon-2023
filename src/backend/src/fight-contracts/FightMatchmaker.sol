@@ -5,6 +5,7 @@ import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
 import {IFightExecutor} from "../interfaces/IFightExecutor.sol";
 import {IBetsVault} from "../interfaces/IBetsVault.sol";
 import {FightExecutor} from "./FightExecutor.sol";
+import {Initializable} from "../Initializable.sol";
 
 //**************************************** */
 //            FOR DEVS!
@@ -36,15 +37,15 @@ import {FightExecutor} from "./FightExecutor.sol";
  *
  * @notice Assumes each player is engaged in only one fight at a time.
  */
-contract FightMatchmaker is IFightMatchmaker {
+contract FightMatchmaker is IFightMatchmaker, Initializable {
     //******************** */
     // CONTRACT'S STATE
     //******************** */
 
     // [ External contracts interacted with ]
 
-    IFightExecutor private immutable i_FIGHT_EXECUTOR_CONTRACT;
-    IBetsVault private immutable i_BETS_VAULT;
+    IFightExecutor private i_FIGHT_EXECUTOR_CONTRACT;
+    IBetsVault private i_BETS_VAULT;
 
     // [ Matchmaking - state ]
 
@@ -69,7 +70,13 @@ contract FightMatchmaker is IFightMatchmaker {
     // Whenver someone request a fight acceptable by anyone then its added to this array.
     FightState[AUTOAMTED_NFTS_ALLOWED] private s_fightsQueue;
 
-    constructor(IFightExecutor _fightExecutorAddress, IBetsVault _betsVaultAddress) {
+    // constructor() {
+    // }
+
+    function initializeContracts(IFightExecutor _fightExecutorAddress, IBetsVault _betsVaultAddress)
+        external
+        initializeActions
+    {
         i_FIGHT_EXECUTOR_CONTRACT = _fightExecutorAddress;
         i_BETS_VAULT = _betsVaultAddress;
     }
@@ -78,9 +85,9 @@ contract FightMatchmaker is IFightMatchmaker {
     // EXTERNAL FUNCTIONS
     //******************** */
 
-    function requestFight(FightRequest calldata fightRequest) external {}
+    function requestFight(FightRequest calldata fightRequest) external contractIsInitialized {}
 
-    function acceptFight(bytes32 fightId, uint256 nftId) external {}
+    function acceptFight(bytes32 fightId, uint256 nftId) external contractIsInitialized {}
 
     function setFightState(bytes32 fightId, FightState newState, uint256 winner) external {}
 
@@ -102,7 +109,7 @@ contract FightMatchmaker is IFightMatchmaker {
 
     function getIsNftAutomated(uint256 nftId) public returns (bool) {}
 
-    function setNftAutomated(uint256 nftId, bool isAutomated) public returns (bool) {}
+    function setNftAutomated(uint256 nftId, bool isAutomated) public contractIsInitialized returns (bool) {}
 
     //******************** */
     // INTERNAL FUNCTIONS
