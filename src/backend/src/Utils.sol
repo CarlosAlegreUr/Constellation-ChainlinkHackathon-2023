@@ -89,9 +89,11 @@ uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT = 55_000;
 // Chainlink CCIP
 //******************** */
 
-// address constant ETH_FUNCTIONS_ROUTER = address(0);
-// address constant ETH_SEPOLIA_FUNCTIONS_ROUTER = address(0);
-// address constant AVALANCHE_FUNCTIONSL_FUJI = address(0);
+address constant ETH_SEPOLIA_CCIP_ROUTER = 0xD0daae2231E9CB96b94C8512223533293C3693Bf;
+address constant AVL_FUJI_CCIP_ROUTER = 0x554472a2720E5E7D5D3C817529aBA05EEd5F82D8;
+
+uint64 constant ETH_SEPOLIA_SELECTOR = 16015286601757825753;
+uint64 constant AVL_FUJI_SELECTOR = 14767482510784806043;
 
 //******************** */
 // SHARED CONSTANTS

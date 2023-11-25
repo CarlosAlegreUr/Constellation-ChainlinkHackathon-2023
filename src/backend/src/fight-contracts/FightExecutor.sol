@@ -5,6 +5,9 @@ import {IFightExecutor} from "../interfaces/IFightExecutor.sol";
 import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
 import "../Utils.sol";
 
+import {ChainlinkSubsManager} from "../ChainlinkSubsManager.sol";
+
+import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
 import {FunctionsClient} from "@chainlink/functions/dev/v1_0_0/FunctionsClient.sol";
 import {FunctionsRequest} from "@chainlink/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
 import {IFunctionsSubscriptions} from "@chainlink/functions/dev/v1_0_0/interfaces/IFunctionsSubscriptions.sol";
@@ -20,10 +23,6 @@ import "@chainlink/vrf/VRFConsumerBaseV2.sol";
 // necessary while coding.
 //**************************************** */
 
-// TODO: If contract sizes are to large, add here ChainlinkSubsManager interaction mechanisms.
-// otherwise all funding checks will be done by matchmacker contract before calling the logic in
-// this one.
-
 /**
  * @title FightExecutor
  * @author PromptFighters team: Carlos
@@ -35,7 +34,7 @@ import "@chainlink/vrf/VRFConsumerBaseV2.sol";
  * Future plans are to use speific NFT traits to redistribute probability based on
  * fighter descriptions and how they relate to each other.
  */
-contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
+contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient, VRFConsumerBaseV2 {
     using FunctionsRequest for FunctionsRequest.Request;
 
     //******************************* */
@@ -44,18 +43,17 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
 
     // External contracs interacted with
     IFightMatchmaker private immutable i_FIGHT_MATCHMAKER_CONTRACT;
-    address private immutable i_LINK_TOKEN;
     VRFCoordinatorV2Interface private immutable i_VRF_COORDINATOR;
 
     // Chainlink Functions related
-    uint64 immutable i_funcsSubsId;
+    // uint64 immutable i_funcsSubsId;
     bytes32 immutable i_DON_ID;
 
     // Chainlink VRF related
     uint32 constant WINNER_BIT_SIZE = 1;
     uint256 constant WINNER_IS_REQUESTER = 0;
     uint256 constant WINNER_IS_ACCEPTOR = 1;
-    uint64 immutable i_vrfSubsId;
+    // uint64 immutable i_vrfSubsId;
 
     // Tracking fightIds to requests
     // First the ID will be a funcReqId and then a vftReqId
@@ -64,28 +62,14 @@ contract FightExecutor is IFightExecutor, FunctionsClient, VRFConsumerBaseV2 {
     mapping(bytes32 => address) s_requestsIdToUser;
 
     constructor(IFightMatchmaker _fightMatchmakerAddress, address _router, address _vrfCoordinator)
+        ChainlinkSubsManager(_router, _vrfCoordinator)
         FunctionsClient(_router)
         VRFConsumerBaseV2(_vrfCoordinator)
     {
         i_FIGHT_MATCHMAKER_CONTRACT = _fightMatchmakerAddress;
-        i_LINK_TOKEN = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_LINK : AVL_FUJI_LINK;
         i_VRF_COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         // Indeed if deployed in any other blockchain than SEPOLIA or FUJI it won't work.
         i_DON_ID = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_DON_ID : AVL_FUJI_DON_ID;
-
-        // TODO: manage users subs with LINK token.
-        // THIS SHOULD BE IN SUBS MANAGER CONTRACT AND EXECUTOR CHECKS THIS STUFF
-        // WITH IT SO A i_SUBS_MANAGER state variable is required in case of
-        // eventually not using inheritance.
-        // i_vrfSubsId = i_VRF_COORDINATOR.createSubscription();
-        // i_VRF_COORDINATOR.addConsumer(i_vrfSubsId, address(this));
-
-        // i_funcsSubsId = IFunctionsSubscriptions(_router).createSubscription();
-        // IFunctionsSubscriptions(_router).addConsumer(i_funcsSubsId, address(this));
-
-        // TODO: delete this update it properly
-        i_vrfSubsId = 0;
-        i_funcsSubsId = 0;
     }
 
     //******************** */

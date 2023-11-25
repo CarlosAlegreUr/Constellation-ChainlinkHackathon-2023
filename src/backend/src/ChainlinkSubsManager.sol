@@ -2,6 +2,12 @@
 pragma solidity ^0.8.20;
 
 import {IChainlinkSubsManager} from "./interfaces/IChainlinkSubsManager.sol";
+import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
+
+import {IFunctionsSubscriptions} from "@chainlink/functions/dev/v1_0_0/interfaces/IFunctionsSubscriptions.sol";
+import "@chainlink/interfaces/VRFCoordinatorV2Interface.sol";
+
+import "./Utils.sol";
 
 //**************************************** */
 //            FOR DEVS!
@@ -15,47 +21,82 @@ import {IChainlinkSubsManager} from "./interfaces/IChainlinkSubsManager.sol";
 /**
  * @title ChainlinkSubsManager
  * @author PromptFighters team: Carlos
- * @dev This contract... TODO
+ * @dev This contract manages the subscriptions funds on contracts that
+ * use different Chainlink Services which require subscriptions.
+ *
+ * @notice This is a simplified subscriptions funds management. Each user
+ * must have a minimum of 10 LINK sent to the contract in order to use its services and
+ * guarantee that the contract will always have enough LINK to execute the services.
+ *
+ * For each services called the user spends 0.5 LINK. If the funds provided go below 10 LINK
+ * the user must fund the subscriptions again.
+ *
+ * @notice As this is a simple PoC, in the real life code proper testing should be made to create
+ * fitting prices for different chainlink services and pronably even remove the idea of a minimum
+ * required balance and a "pay as you use" schema.
  */
 contract ChainlinkSubsManager is IChainlinkSubsManager {
-    uint256 constant MIN_LINK_IN_SUBS = 20 ether;
-    address immutable i_LINK_TOKEN;
+    //******************** */
+    // CONTRACT'S STATE
+    //******************** */
 
-    // A balance of a user must be > X LINK in order to keep using our service.
-    // Proper amount of LINK should be determined by testing.
+    uint256 constant MIN_LINK_IN_SUBS = 10 ether;
+    LinkTokenInterface private immutable i_LINK_TOKEN;
+
     mapping(address => uint256) s_userToSubsBalance;
-    mapping(address => bool) s_userCanPlay;
 
-    constructor(address _link) {
-        i_LINK_TOKEN = _link;
+    uint64 immutable i_funcsSubsId;
+
+    // Chainlink VRF related
+    uint64 immutable i_vrfSubsId;
+
+    address immutable i_funcsSubsAccess;
+    address immutable i_vrfSubsAccess;
+
+    constructor(address _funcsRouter, address _vrfCoordinator) {
+        i_LINK_TOKEN = block.chainid == ETH_SEPOLIA_CHAIN_ID
+            ? LinkTokenInterface(ETH_SEPOLIA_LINK)
+            : LinkTokenInterface(AVL_FUJI_LINK);
+
+        i_vrfSubsId = VRFCoordinatorV2Interface(_vrfCoordinator).createSubscription();
+        VRFCoordinatorV2Interface(_vrfCoordinator).addConsumer(i_vrfSubsId, address(this));
+
+        i_funcsSubsId = IFunctionsSubscriptions(_funcsRouter).createSubscription();
+        IFunctionsSubscriptions(_funcsRouter).addConsumer(i_funcsSubsId, address(this));
+
+        i_funcsSubsAccess = _funcsRouter;
+        i_vrfSubsAccess = _vrfCoordinator;
     }
+
+    //******************** */
+    // EXTERNAL FUNCTIONS
+    //******************** */
 
     function fundMySubscription(uint256 amount) external {
-        // Call link token address
-
         s_userToSubsBalance[msg.sender] += amount;
-        // bool success = i_LINK_TOKEN.transferFrom(msg.sender, address(this), amount);
-        // require(success, "Faild to transfer LINK.");
+        bool success = i_LINK_TOKEN.transferFrom(msg.sender, address(this), amount);
+        require(success, "Faild to transfer LINK.");
+
+        i_LINK_TOKEN.transferAndCall(i_funcsSubsAccess, amount / 2, abi.encode(i_funcsSubsId));
+        i_LINK_TOKEN.transferAndCall(i_vrfSubsAccess, amount / 2, abi.encode(i_vrfSubsAccess));
     }
 
-    function unfundMySubscription(uint256 amount) external {
-        s_userToSubsBalance[msg.sender] -= amount;
-        // bool success = i_LINK_TOKEN.transfer(address(this), msg.sender, amount);
-    }
+    // @notice Not implemented for PoC
+    // function unfundMySubscription(uint256 amount) external {
+    //     s_userToSubsBalance[msg.sender] -= amount;
+    //     bool success = i_LINK_TOKEN.transfer(msg.sender, amount);
+    //     require(success, "Faild to transfer LINK.");
+    // }
 
-    function getUserSubsBalance(address _user) external view returns (uint256) {
-        return s_userToSubsBalance[_user];
-    }
-
-    // For simplicity every time user uses a chainlink service 1 LINK is charged.
-    // In real production the price would be tested and adjusted to the actual
-    // price of using chainlink functions plus a small fee to pay for a ChatGPT
-    // API call.
     function userConsumesFunds() external {
         s_userToSubsBalance[msg.sender] -= 0.5 ether;
     }
 
     function canPlay(address _user) external view returns (bool) {
         return s_userToSubsBalance[_user] >= MIN_LINK_IN_SUBS ? true : false;
+    }
+
+    function getUserSubsBalance(address _user) external view returns (uint256) {
+        return s_userToSubsBalance[_user];
     }
 }
