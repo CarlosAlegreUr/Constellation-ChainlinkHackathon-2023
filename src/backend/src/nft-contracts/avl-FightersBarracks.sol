@@ -122,7 +122,7 @@ contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
         return s_nftIdToOwner[nftIdInt];
     }
 
-    // getPrompt()
+    // TODO: also send prompts to other chains so can us prompt in fight, add a getPrompt()
 
     //******************** */
     // INTERNAL FUNCTIONS

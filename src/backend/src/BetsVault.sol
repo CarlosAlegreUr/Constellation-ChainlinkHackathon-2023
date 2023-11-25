@@ -53,10 +53,10 @@ contract BetsVault is IBetsVault, Initializable {
     //******************** */
 
     // TODO: to check reentrancy risks when executor and matchmaker are coded
-    function lockBet(bytes32 _fightId, address _player) external payable onlyFightMatchmaker {
+    function lockBet(bytes32 _fightId, address _player) external payable contractIsInitialized onlyFightMatchmaker {
         BetsState memory currentBetsState = s_fightIdToBetsState[_fightId];
 
-        // If requester is not ser it is because it being called from requestFight().
+        // If requester is not set it is because it being called from requestFight().
         bool callingFromRequest = (currentBetsState.requester == address(0));
         if (callingFromRequest) {
             currentBetsState.requester = _player;
@@ -73,7 +73,12 @@ contract BetsVault is IBetsVault, Initializable {
     }
 
     // TODO: to check reentrancy risks when executor and matchmaker are coded
-    function distributeBetsPrize(bytes32 _fightId, address _winner) external payable onlyFightMatchmaker {
+    function distributeBetsPrize(bytes32 _fightId, address _winner)
+        external
+        payable
+        contractIsInitialized
+        onlyFightMatchmaker
+    {
         BetsState memory betsState = s_fightIdToBetsState[_fightId];
         address winner = (_winner == betsState.requester) ? betsState.requester : betsState.acceptor;
         uint256 amount = betsState.acceptorBet + betsState.requesterBet;

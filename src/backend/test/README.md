@@ -8,7 +8,8 @@ Chainlink DON services.
 To run them:
 
 ```bash
-forge test
+cd ./src/backend
+forge forge test --contracts test/unit-test/
 ```
 
 # Integration-test 🧑

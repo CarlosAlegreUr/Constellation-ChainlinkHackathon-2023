@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Scenarios
-import {ChainlinkMocksDeployed} from "../scenarios/ChainlinkMocksDeployed.t.sol";
+import {ChainlinkMocksDeployed} from "./scenarios/ChainlinkMocksDeployed.t.sol";
 
 import {IFightMatchmaker} from "../../src/interfaces/IFightMatchmaker.sol";
 
@@ -11,18 +11,16 @@ import {PromptFightersNFT} from "../../src/nft-contracts/eth-PromptFightersNft.s
 
 // Useful values
 import "../../src/Utils.sol";
-import "../Utils.t.sol";
+import {UtilsValues} from "../Utils.t.sol";
 
 import {Test, console2} from "forge-std/Test.sol";
 
-contract PromptFightersNftTest is ChainlinkMocksDeployed {
+contract PromptFightersNftTest is ChainlinkMocksDeployed, UtilsValues {
     PromptFightersNFT public promptFightersNFT;
-    address public RECEIVER_ADDRESS = makeAddr("receiver-avl");
-    address constant INTIALIZER_ADDRESS = address(777);
 
     modifier initialized() {
-        vm.prank(INTIALIZER_ADDRESS);
-        promptFightersNFT.initializeReceiver(RECEIVER_ADDRESS);
+        vm.prank(MOCK_INTIALIZER_ADDRESS);
+        promptFightersNFT.initializeReceiver(MOCK_RECEIVER_ADDRESS);
         _;
     }
 
@@ -34,9 +32,9 @@ contract PromptFightersNftTest is ChainlinkMocksDeployed {
 
     function test_NothingBeforeInitialize() public {
         vm.expectRevert("Contract is not initialized.");
-        promptFightersNFT.safeMint(INTIALIZER_ADDRESS, VALID_PROMT);
+        promptFightersNFT.safeMint(MOCK_INTIALIZER_ADDRESS, VALID_PROMPT);
 
         vm.expectRevert("Contract is not initialized.");
-        promptFightersNFT.sendNft(AVL_FUJI_SELECTOR, RECEIVER_ADDRESS, "1");
+        promptFightersNFT.sendNft(AVL_FUJI_SELECTOR, MOCK_RECEIVER_ADDRESS, "1");
     }
 }
