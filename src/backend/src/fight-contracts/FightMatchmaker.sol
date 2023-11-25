@@ -89,7 +89,7 @@ contract FightMatchmaker is IFightMatchmaker, Initializable {
 
     function acceptFight(bytes32 fightId, uint256 nftId) external contractIsInitialized {}
 
-    function setFightState(bytes32 fightId, FightState newState, uint256 winner) external {}
+    function setFightState(bytes32 fightId, FightState newState, uint256 winner) external contractIsInitialized {}
 
     //******************** */
     // PUBLIC FUNCTIONS

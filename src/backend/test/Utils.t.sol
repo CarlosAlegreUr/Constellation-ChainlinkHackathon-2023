@@ -8,6 +8,8 @@ contract UtilsValues is Test {
     address public constant MOCK_INTIALIZER_ADDRESS = address(777);
     address public MOCK_RECEIVER_ADDRESS = makeAddr("receiver-avl");
     address public MOCK_MATCHMAKER_ADDRESS = makeAddr("mock-matchmaker");
+    address public MOCK_EXECUTOR_ADDRESS = makeAddr("mock-executor");
+
 
     address public PLAYER_ONE = makeAddr("player1");
     address public PLAYER_TWO = makeAddr("player2");
