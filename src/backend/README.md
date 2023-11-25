@@ -1,4 +1,6 @@
-## Dependencies ⚙️
+## Install Dependencies ⚙️
+
+<details> <summary> Install Dependencies ⚙️ </summary>
 
 Forge install open zepelin contrats, chainlink contracts, forge-std.
 
@@ -10,7 +12,31 @@ forge install (name of other packages)
 
 npm install @chainlink/contracts-ccip --save
 
+</details>
+
+---
+
+## Deploy backend and run front-end 🧑‍💻
+
+<details> <summary> Deploy backend and run front-end 🧑‍💻 </summary>
+
+```bash
+bla bla...
+```
+
+</details>
+
+---
+
+## Run Tests 🤖
+
+Run test instructions in here [./test](./test/).
+
+---
+
 ## Naming convention 📝
+
+<details> <summary> Naming convention 📝 </summary>
 
 If a smart contract starts with:
 
@@ -20,9 +46,13 @@ If a smart contract starts with:
 
 - `Name`: menas that contract will be deployed in `both chains`.
 
+</details>
+
 ---
 
 ## Contracts' Structure 📜
+
+<details> <summary> Contracts' Structure 📜 </summary>
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -84,5 +114,7 @@ contract ContractName {
     // e.g., function getCount() public view returns (uint256) { ... }
 }
 ```
+
+</details>
 
 ---

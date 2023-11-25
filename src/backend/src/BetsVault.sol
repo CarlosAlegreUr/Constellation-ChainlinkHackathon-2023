@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {IBetsVault} from "./interfaces/IBetsVault.sol";
 import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
+import {Initializable} from "./Initializable.sol";
 import {NOT_DECIDING_WINNER_VALUE} from "./Utils.sol";
 
 /**
@@ -20,7 +21,7 @@ import {NOT_DECIDING_WINNER_VALUE} from "./Utils.sol";
  * @notice This contract assumes all inputs and states recieved and checked
  * are correctly handled by the `FightMatchmaker` contract.
  */
-contract BetsVault is IBetsVault {
+contract BetsVault is IBetsVault, Initializable {
     //******************************* */
     // CONTRACT'S STATE && CONSTANTS
     //******************************* */
@@ -30,9 +31,13 @@ contract BetsVault is IBetsVault {
     uint256 constant APOCALIPSIS_SAFETY_NET = 1 days;
 
     // Contracts interacted with
-    IFightMatchmaker private immutable i_FIGHT_MATCHMAKER;
+    IFightMatchmaker private i_FIGHT_MATCHMAKER;
 
     mapping(bytes32 => BetsState) s_fightIdToBetsState;
+
+    function initializeMatchmaker(IFightMatchmaker _fightMatchmaker) external initializeActions {
+        i_FIGHT_MATCHMAKER = _fightMatchmaker;
+    }
 
     //******************** */
     // MODIFIERS
@@ -44,21 +49,14 @@ contract BetsVault is IBetsVault {
     }
 
     //******************** */
-    // CONSTRUCTOR
-    //******************** */
-    constructor(IFightMatchmaker _fightMatchmaker) {
-        i_FIGHT_MATCHMAKER = _fightMatchmaker;
-    }
-
-    //******************** */
     // EXTERNAL FUNCTIONS
     //******************** */
 
     // TODO: to check reentrancy risks when executor and matchmaker are coded
-    function lockBet(bytes32 _fightId, address _player) external payable onlyFightMatchmaker {
+    function lockBet(bytes32 _fightId, address _player) external payable contractIsInitialized onlyFightMatchmaker {
         BetsState memory currentBetsState = s_fightIdToBetsState[_fightId];
 
-        // If requester is not ser it is because it being called from requestFight().
+        // If requester is not set it is because it being called from requestFight().
         bool callingFromRequest = (currentBetsState.requester == address(0));
         if (callingFromRequest) {
             currentBetsState.requester = _player;
@@ -75,7 +73,12 @@ contract BetsVault is IBetsVault {
     }
 
     // TODO: to check reentrancy risks when executor and matchmaker are coded
-    function distributeBetsPrize(bytes32 _fightId, address _winner) external payable onlyFightMatchmaker {
+    function distributeBetsPrize(bytes32 _fightId, address _winner)
+        external
+        payable
+        contractIsInitialized
+        onlyFightMatchmaker
+    {
         BetsState memory betsState = s_fightIdToBetsState[_fightId];
         address winner = (_winner == betsState.requester) ? betsState.requester : betsState.acceptor;
         uint256 amount = betsState.acceptorBet + betsState.requesterBet;
@@ -84,7 +87,7 @@ contract BetsVault is IBetsVault {
         emit BetsVault__BetsSentToWinner(winner, _fightId, amount, block.timestamp);
     }
 
-    function unlockAndRetrieveBet(bytes32 _fightId) external {
+    function unlockAndRetrieveBet(bytes32 _fightId) external contractIsInitialized {
         BetsState memory betsState = s_fightIdToBetsState[_fightId];
         require(msg.sender == betsState.requester || msg.sender == betsState.acceptor, "You must be in the fight.");
         IFightMatchmaker.Fight memory fightDetails = i_FIGHT_MATCHMAKER.getFightDetails(_fightId);

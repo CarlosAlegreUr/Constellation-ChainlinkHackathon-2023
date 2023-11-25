@@ -3,6 +3,8 @@ pragma solidity ^0.8.20;
 
 import {ICcipNftBridge} from "../interfaces/ICcipNftBridge.sol";
 import {IPromptFightersCollection} from "../interfaces/IPromptFightersCollection.sol";
+import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
+import {Initializable} from "../Initializable.sol";
 
 import "../Utils.sol";
 
@@ -29,7 +31,14 @@ import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPRecei
  * and this contract also implements CCIP to use your nfts to fight on other chains.
  * In this case only Fuji Avalanche testnet is allowed.
  */
-contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, ICcipNftBridge, FunctionsClient {
+contract PromptFightersNFT is
+    IPromptFightersCollection,
+    ERC721,
+    CCIPReceiver,
+    ICcipNftBridge,
+    FunctionsClient,
+    Initializable
+{
     using FunctionsRequest for FunctionsRequest.Request;
 
     // Initialized at 1 as nftId is used as the empty value in some systems' logic.
@@ -41,27 +50,27 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
     // mapping(uint256 => bool) private s_winsCount;
     // mapping(uint256 => bool) private s_losesCount;
 
+    // Contracts that call this contract
+    IFightMatchmaker immutable i_FIGHT_MATCHMAKER;
+
     // Chainlink Functions Management
     LinkTokenInterface private immutable i_LINK_TOKEN;
-    string private constant VALIDATION_SCRIPT = "";
+    string private constant VALIDATION_SCRIPT = "NOT EMPTY";
     uint64 private immutable i_funcsSubsId;
     bytes32 private immutable i_DON_ID;
     mapping(bytes32 => address) s_reqIdToUser;
 
     // CCIP nft tracking (TODO: these could be simplified as an enum in ccip nft bridge interface)
     // canMove is false if the NFT is fighting
-    mapping(uint256 => bool) private s_canMove;
+    mapping(uint256 => bool) private s_isFighting;
     mapping(uint256 => bool) private s_isOnChain;
 
     // CCIP reciever address initialization
     // to connect the briged contracts one must be deployed first and the other one
     // later, for safer deployment we add this state variables.
-    bool s_isInitializedLock; // Contract cant be used until its initialized a.k.a. CCIP is intialized.
-    address RECEIVER_CONTRACT;
-    // TODO: This must be a contract owned by deployer and immediately called before contract is used.
-    address constant INTIALIZER_ADDRESS = address(777);
+    address CCIP_RECEIVER_CONTRACT;
 
-    constructor(address _functionsRouter, address _ccipRouter)
+    constructor(address _functionsRouter, address _ccipRouter, IFightMatchmaker _fightMatchmaker)
         ERC721("PromptFightersNFT", "PFT")
         FunctionsClient(_functionsRouter)
         CCIPReceiver(_ccipRouter)
@@ -75,6 +84,22 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
 
         i_funcsSubsId = IFunctionsSubscriptions(_functionsRouter).createSubscription();
         IFunctionsSubscriptions(_functionsRouter).addConsumer(i_funcsSubsId, address(this));
+
+        i_FIGHT_MATCHMAKER = _fightMatchmaker;
+    }
+
+    /**
+     * @dev 1 time use function. Initializes the CCIP receiver contract addresses
+     * and blocks this same function use forever and unlocks all the functionalities
+     * of the contract.
+     *
+     * @notice Can only be called by INTIALIZER_ADDRESS.
+     * @notice A 2 step setting process would be safer, one for proposing the address
+     * and one for confirming it and then indeed lock the setter forever. But this is
+     * a simple PoC.
+     */
+    function initializeReceiver(address _receiver) external initializeActions {
+        CCIP_RECEIVER_CONTRACT = _receiver;
     }
 
     /**
@@ -90,24 +115,13 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         require(ownerOf(_nftId) == msg.sender, "You are not the owner.");
 
         require(destinationChainSelector == AVL_FUJI_SELECTOR, "We only support Fuji testnet NFT transfers.");
-        require(receiver == RECEIVER_CONTRACT, "Thats not the receiver contract.");
+        require(receiver == CCIP_RECEIVER_CONTRACT, "Thats not the receiver contract.");
 
-        require(s_canMove[_nftId], "Nft is bussy can't move.");
+        require(!s_isFighting[_nftId], "Nft is bussy can't move.");
         require(s_isOnChain[_nftId], "Nft is not currently in this chain.");
 
-        s_isOnChain[_nftId] = false;
-        s_canMove[_nftId] = false;
-        _;
-    }
-
-    /**
-     * @dev No-one can use this contract until a receiver address for the CCIP has
-     * been set by INTIALIZER_ADDRESS.
-     *
-     * Once is set RECEIVER_CONTRACT can't be changed.
-     */
-    modifier contractIsInitialized() {
-        require(s_isInitializedLock, "Contract is not initialized.");
+        delete s_isOnChain[_nftId];
+        delete s_isFighting[_nftId];
         _;
     }
 
@@ -117,8 +131,16 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
      * tracking accross chains and avoid sending bets bugs.
      */
     modifier nftCanBeTraded(uint256 nftId) {
-        require(s_canMove[nftId], "You cant transfer a fighting NFT.");
+        require(!s_isFighting[nftId], "You cant transfer a fighting NFT.");
         require(s_isOnChain[nftId], "You cant transfer an NFT that is not on this chain.");
+        _;
+    }
+
+    /**
+     * @dev Only FightMatchmaker contract can call.
+     */
+    modifier onlyMatchmaker() {
+        require(msg.sender == address(i_FIGHT_MATCHMAKER), "Only FightMatchmaker can call this function");
         _;
     }
 
@@ -156,21 +178,8 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         return messageId;
     }
 
-    /**
-     * @dev 1 time use function. Initializes the CCIP receiver contract addresses
-     * and blocks this same function use forever and unlocks all the functionalities
-     * of the contract.
-     *
-     * @notice Can only be called by INTIALIZER_ADDRESS.
-     * @notice A 2 step setting process would be safer, one for proposing the address
-     * and one for confirming it and then indeed lock the setter forever. But this is
-     * a simple PoC.
-     */
-    function initializeReceiver(address _receiver) external {
-        require(!s_isInitializedLock, "Contract already intialized.");
-        require(msg.sender == INTIALIZER_ADDRESS, "You can't initialize the contract.");
-        RECEIVER_CONTRACT = _receiver;
-        s_isInitializedLock = true;
+    function setIsNftFighting(uint256 nftId, bool isFightihng) external onlyMatchmaker {
+        s_isFighting[nftId] = isFightihng;
     }
 
     //******************** */
@@ -237,7 +246,6 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
 
             // Special traits on-chain
             s_isOnChain[tokenId] = true;
-            s_canMove[tokenId] = true;
             _safeMint(s_reqIdToUser[requestId], tokenId);
 
             // Decode prompt from response TODO I'm not sure if this is the right way
@@ -258,7 +266,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         string memory nftId = abi.decode(_message.data, (string)); // abi-decoding of the sent text
         uint256 nftIdInt = _stringToUint(nftId);
         s_isOnChain[nftIdInt] = true;
-        s_canMove[nftIdInt] = true;
+        delete s_isFighting[nftIdInt]; // Set to false
         emit ICCIPNftBridge__NftReceived(ownerOf(nftIdInt), ETH_SEPOLIA_CHAIN_ID, nftIdInt, block.timestamp);
     }
 
