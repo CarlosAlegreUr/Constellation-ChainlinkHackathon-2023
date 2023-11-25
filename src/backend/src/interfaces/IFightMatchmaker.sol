@@ -25,6 +25,7 @@ interface IFightMatchmaker {
         address indexed challengee,
         uint256 nftIdChallenger,
         uint256 indexed nftIdChallengee,
+        uint256 bet,
         uint256 timestamp
     );
 
@@ -34,7 +35,7 @@ interface IFightMatchmaker {
         uint256 nftIdChallenger,
         uint256 nftIdChallengee,
         uint256 betChallenger,
-        uint256 betChallenguee,
+        uint256 betChallengee,
         uint256 indexed timestamp
     );
 
@@ -54,6 +55,21 @@ interface IFightMatchmaker {
         uint256 indexed nftId, uint256 indexed startTimestamp, uint256 indexed endTimestamp, uint256 earnings
     );
 
+    /**
+     * @dev Event emitted when userToFightId set
+     */
+    event FightMatchmaker__UserToFightIdSet(address indexed user, bytes32 indexed fightId);
+
+    /**
+     * @dev Event emitted when user is no longer fighting
+     */
+    event FightMatchmaker__UserNoLongerFighting(address indexed user);
+
+    /**
+     * @dev Event emitted when fightToFightId set
+     */
+    event FightMatchmaker__FightIdToFightSet(bytes32 indexed fightId, Fight indexed fight); // ESTO ES ASÍ??
+
     //************************ */
     // Errors
     //************************ */
@@ -64,6 +80,32 @@ interface IFightMatchmaker {
     error FightMatchMaker__FightRequestToFailed(
         address challenger, address challengee, uint256 nftIdChallenger, uint256 nftIdChallengee, uint256 timestamp
     );
+
+    error FightMatchMaker__FightAcceptFailed(
+        address challengee, uint256 nftId, bytes32 fightId, uint256 bet, uint256 timestamp
+    );
+
+    error FightMatchMaker__FightStartFailed(
+        address challenger, address challengee, uint256 nftIdChallenger, uint256 nftIdChallengee, uint256 timestamp
+    );
+
+    error FightMatchMaker__NftNotOwnedByChallengee(address challengee, uint256 nftIdChallengee);
+
+    error FightMatchMaker__NftNotOwnedByAccepter(address challengee, uint256 nftIdChallengee);
+
+    error FightMatchMaker__FightNotAvailable(address challenger, bytes32 fightId);
+
+    error FightMatchMaker__FightNotRequested(bytes32 fightId);
+
+    error FightMatchMaker__NotEnoughEthSentToAcceptFight(bytes32 fightId);
+
+    error FightMatchMaker__NftSentDoesntMatchChallengeeNft(uint256 sentNftId, uint256 challengeeNftId);
+
+    error FightMatchMaker__AcceptingUserIsNotChallengee(address accepter, address challengee);
+
+    error FightMatchMaker__DistributeBetsPrizeFailed(bytes32 fightId, address winner);
+
+    error FightMatchMaker__SettingNftsNotFightingFailed(uint256 nftOneId, uint256 nftTwoId);
 
     //************************ */
     // Data Structures
@@ -109,6 +151,8 @@ interface IFightMatchmaker {
      * required for logic but not emitted in logs.
      */
     struct Fight {
+        address challenger;
+        address challengee;
         uint256 nftOne;
         uint256 nftTwo;
         uint256 minBet;
@@ -155,7 +199,7 @@ interface IFightMatchmaker {
      *
      * @param fightRequest The fight request struct
      */
-    function requestFight(FightRequest calldata fightRequest) external;
+    function requestFight(FightRequest calldata fightRequest) external payable;
 
     /**
      * @dev This function gathers all the information necessary to call the
@@ -176,7 +220,7 @@ interface IFightMatchmaker {
      * Only thing would need to change is that startFight() function of FightExecutor will
      * have to be passed this argument too.
      */
-    function acceptFight(bytes32 fightId, uint256 nftId) external;
+    function acceptFight(bytes32 fightId, uint256 nftId) external payable;
 
     /**
      * @dev Function callable by requestFight(), or the `FightExecutor` contract
@@ -203,7 +247,7 @@ interface IFightMatchmaker {
      *
      * @param fightId Id of the fight to set its state to newState.
      */
-    function setFightState(bytes32 fightId, FightState newState, WinningAction winner) external;
+    function settleFight(bytes32 fightId, WinningAction winner) external;
 
     //********************************* */
     // Automated Matchmaking
@@ -219,6 +263,16 @@ interface IFightMatchmaker {
      */
     function setNftAutomated(uint256 nftId, bool isAutomated) external returns (bool);
 
+    /**
+     * sets fightIdtoFight mapping
+     */
+    // function _setFight(bytes32 _fightId, Fight memory _fight) external;
+
+    /**
+     * sets userToFightId mapping
+     */
+    // function _setUserFightId(address _user, bytes32 _fightId) external;
+
     //************* */
     // Getters
     //************* */
@@ -229,5 +283,5 @@ interface IFightMatchmaker {
 
     function getUserCurrentFightId(address user) external returns (bytes32);
 
-    function getFightDetails(bytes32 fightId) external returns (Fight calldata);
+    function getFight(bytes32 fightId) external returns (Fight calldata);
 }

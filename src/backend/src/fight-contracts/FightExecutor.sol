@@ -81,7 +81,7 @@ contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient,
      * If not then revert.
      */
     modifier onlyFightMatchmaker() {
-        require(msg.sender == address(i_FIGHT_MATCHMAKER_CONTRACT), "Only FightExecutor can call this.");
+        require(msg.sender == address(i_FIGHT_MATCHMAKER_CONTRACT), "Only FightMatchmaker can call this.");
         _;
     }
 
@@ -207,7 +207,7 @@ contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient,
         uint256 bit = _randomWords[0] % 2;
         uint256 winnerBit = bit == 0 ? WINNER_IS_REQUESTER : WINNER_IS_ACCEPTOR;
 
-        i_FIGHT_MATCHMAKER_CONTRACT.setFightState(fightId, IFightMatchmaker.FightState.AVAILABLE, winnerBit);
+        i_FIGHT_MATCHMAKER_CONTRACT.settleFight(fightId, IFightMatchmaker.WinningAction(winnerBit));
 
         emit FightExecutor__VrfWinnerIs(fightId, winnerBit, block.timestamp);
     }

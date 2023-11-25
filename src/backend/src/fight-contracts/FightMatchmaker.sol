@@ -4,6 +4,7 @@ pragma solidity ^0.8.20;
 import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
 import {IFightExecutor} from "../interfaces/IFightExecutor.sol";
 import {IBetsVault} from "../interfaces/IBetsVault.sol";
+import {PromptFightersNFT} from "../nft-contracts/eth-PromptFightersNft.sol";
 import {ChainlinkFuncsGist} from "../Utils.sol";
 
 //**************************************** */
@@ -45,6 +46,7 @@ contract FightMatchmaker is IFightMatchmaker {
 
     IFightExecutor private immutable i_FIGHT_EXECUTOR_CONTRACT;
     IBetsVault private immutable i_BETS_VAULT;
+    PromptFightersNFT private immutable i_PROMPT_FIGHTERS_NFT;
 
     // [ Matchmaking - state ]
 
@@ -66,77 +68,195 @@ contract FightMatchmaker is IFightMatchmaker {
     // every uint8 is an index and it maps to an nft id.
     // @TODO:Change to a normal array if I'm wrong cause I'm not sure.
     mapping(uint8 => uint256) private s_nftsAutomated;
-    // Whenver someone requests a fight acceptable by anyone then it's added to this array.
+    // Whenever someone requests a fight acceptable by anyone then it's added to this array.
     FightState[AUTOAMTED_NFTS_ALLOWED] private s_fightsQueue;
 
-    constructor(IFightExecutor _fightExecutorAddress, IBetsVault _betsVaultAddress) {
+    //******************** */
+    // MODIFIERS
+    //******************** */
+
+    /**
+     * @dev Checks if msg.sender is `FightExecutor` contract or `BetsVault` contract.
+     * If not then revert.
+     */
+    modifier onlyFightExecutorOrBetsVault() {
+        require(
+            msg.sender == address(i_FIGHT_EXECUTOR_CONTRACT) || msg.sender == address(i_BETS_VAULT),
+            "Only FightExecutor or BetsVault can call this."
+        );
+        _;
+    }
+
+    constructor(
+        IFightExecutor _fightExecutorAddress,
+        IBetsVault _betsVaultAddress,
+        PromptFightersNFT _promptFightersNftAddress
+    ) {
         i_FIGHT_EXECUTOR_CONTRACT = _fightExecutorAddress;
         i_BETS_VAULT = _betsVaultAddress;
+        i_PROMPT_FIGHTERS_NFT = _promptFightersNftAddress;
     }
 
     //******************** */
     // EXTERNAL FUNCTIONS
     //******************** */
 
-    function requestFight(FightRequest calldata _fightRequest) external {
-
-        // Si nos pasan el nftId del retado hay que buscar la dirección a la que pertenece, comparar con la dirección challengee 
-        // SET FIGHT
-
+    function requestFight(FightRequest calldata _fightRequest) external payable {
         address[2] memory participants = [msg.sender, _fightRequest.challengeeAddress];
         uint256[2] memory nftIds = [_fightRequest.challengerNftId, _fightRequest.challengeeNftId];
-        bytes32 fightId = getFightId(participants[0], nftIds[0], participants[1], nftIds[1]);
-        _setFightState(FightState.REQUESTED); // should emit event?
-        _setUserFightId(fightId);
-        
-        if(participants[1] == address(0)){
-            emit FightMatchmaker__FightRequested(participants[0], nftIds[0], fightId, _fightRequest.minBet, block.timestamp);
-        } else {
-            s_fightsQueue.push(FightState.REQUESTED);
-            emit FightMatchmaker__FightRequestedTo(participants[0], participants[1], nftIds[0], nftIds[1], block.timestamp);
+
+        if (nftIds[1] != 0) {
+            if (participants[1] != i_PROMPT_FIGHTERS_NFT.getOwnerOf(nftIds[1])) {
+                revert FightMatchMaker__NftNotOwnedByChallengee(participants[1], nftIds[1]);
+            }
         }
 
-            
-            // if(participants[1] == address(0)){
-            //     revert FightMatchMaker__FightRequestFailed(participants[0], nftIds[0], fightId, _fightRequest.minBet, block.timestamp);
-            // } else {
-            //     revert FightMatchMaker__FightRequestToFailed(participants[0], participants[1], nftIds[0], nftIds[1], block.timestamp);
-            // }          
+        bytes32 fightId = getFightId(participants[0], nftIds[0], participants[1], nftIds[1]);
 
+        if (getUserCurrentFight(msg.sender).state != FightState.AVAILABLE) {
+            revert FightMatchMaker__FightNotAvailable(msg.sender, fightId);
+        }
+
+        Fight memory fight = Fight(
+            participants[0],
+            participants[1],
+            nftIds[0],
+            nftIds[1],
+            _fightRequest.minBet,
+            _fightRequest.acceptanceDeadline,
+            block.timestamp,
+            FightState.REQUESTED
+        );
+
+        try i_BETS_VAULT.lockBet{value: msg.value}(fightId, msg.sender) {
+            if (getUserCurrentFightId(msg.sender) == fightId) {
+                //If fight requested existed already, update state
+                _updateFightState(fightId, FightState.REQUESTED);
+            } else {
+                _setUserFightId(msg.sender, fightId); // setting msg.sender -> fightId means requester has made a request
+                _setFight(fightId, fight);
+            }
+
+            if (participants[1] == address(0)) {
+                // s_fightsQueue.push(FightState.REQUESTED); // ESTO NO LO PERMITE SOLIDITY, PERO ADEMÁS NO SÉ MUY BIEN PARA QUÉ SIRVE ESE ARRAY
+                emit FightMatchmaker__FightRequested(
+                    participants[0], nftIds[0], fightId, _fightRequest.minBet, block.timestamp
+                );
+            } else {
+                emit FightMatchmaker__FightRequestedTo(
+                    participants[0], participants[1], nftIds[0], nftIds[1], _fightRequest.minBet, block.timestamp
+                );
+            }
+        } catch {
+            if (participants[1] == address(0)) {
+                revert FightMatchMaker__FightRequestFailed(
+                    participants[0], nftIds[0], fightId, _fightRequest.minBet, block.timestamp
+                );
+            } else {
+                revert FightMatchMaker__FightRequestToFailed(
+                    participants[0], participants[1], nftIds[0], nftIds[1], block.timestamp
+                );
+            }
+        }
     }
 
-    function acceptFight(bytes32 _fightId, uint256 _nftId) external {
-        // Hay que comprobar que el sender puede acpeptar esta pelea
-        // getOwnerOf!!
-        // comprobar minBet antes de aceptar!
-        if(msg.sender == getFightDetails(_fightId))
-        _setFightState(FightState.ONGOING);
-        emit FightMatchmaker__FightAccepted(participants[0], participants[1], nftIds[0], nftIds[1], , , block.timestamp);
-        
-        try  i_FIGHT_EXECUTOR_CONTRACT.startFight(_fightId, ) returns (bytes32 requestId) {
-            _setFightState(FightState.AVAILABLE);
-            emit FightMatchmaker__FightStateChange(fightId, FightState.REQUESTED, FightState.ONGOING, msg.sender);
-
-
-        } catch  {  
+    function acceptFight(bytes32 _fightId, uint256 _nftId) external payable {
+        if (msg.sender != i_PROMPT_FIGHTERS_NFT.getOwnerOf(_nftId)) {
+            revert FightMatchMaker__NftNotOwnedByAccepter(msg.sender, _nftId);
         }
+
+        Fight memory fight = getFight(_fightId);
+
+        if (fight.state != FightState.REQUESTED) {
+            revert FightMatchMaker__FightNotRequested(_fightId);
+        }
+
+        if (msg.value < fight.minBet) {
+            revert FightMatchMaker__NotEnoughEthSentToAcceptFight(_fightId);
+        }
+
+        if (fight.challengee != address(0) && fight.challengee != msg.sender) {
+            // If challengee was specified at request and sender is not challengee
+            revert FightMatchMaker__AcceptingUserIsNotChallengee(msg.sender, fight.challengee);
+        }
+
+        if (fight.nftTwo != 0 && fight.nftTwo != _nftId) {
+            // If NFT to battle against was specified at request and accepter didn't send that NFT
+            revert FightMatchMaker__NftSentDoesntMatchChallengeeNft(_nftId, fight.nftTwo);
+        }
+
+        try i_BETS_VAULT.lockBet{value: msg.value}(_fightId, msg.sender) {
+            IBetsVault.BetsState memory betState = i_BETS_VAULT.getBetsState(_fightId);
+            emit FightMatchmaker__FightAccepted(
+                fight.challenger,
+                fight.challengee,
+                fight.nftOne,
+                fight.nftTwo,
+                betState.requesterBet,
+                msg.value,
+                block.timestamp
+            );
+        } catch {
+            revert FightMatchMaker__FightAcceptFailed(msg.sender, _nftId, _fightId, msg.value, block.timestamp);
+        }
+
+        ChainlinkFuncsGist memory gist = ChainlinkFuncsGist(,,,,,,,,); // AQUÍ QUÉ PONGO???
+
+        try i_FIGHT_EXECUTOR_CONTRACT.startFight(_fightId, gist) returns (bytes32 requestId) {
+            _updateFightState(_fightId, FightState.ONGOING);
+            _setUserFightId(msg.sender, _fightId); // setting msg.sender -> fightId means accepter is fighting
+            emit FightMatchmaker__FightStateChange(_fightId, FightState.REQUESTED, FightState.ONGOING, msg.sender);
+        } catch {
+            revert FightMatchMaker__FightStartFailed(); // QUÉ PARÁMETROS PONGO??
+        }
+    }
+
+    function settleFight(bytes32 _fightId, WinningAction _winner) external onlyFightExecutorOrBetsVault {
+        Fight memory fight = getFight(_fightId);
+
+        if (_winner != WinningAction.IGNORE_WINNING_ACTION) {
+            address winnerAddress = _winner == WinningAction.REQUESTER_WIN ? fight.challenger : fight.challengee;
+            try i_BETS_VAULT.distributeBetsPrize(_fightId, winnerAddress) {}
+            catch {
+                revert FightMatchMaker__DistributeBetsPrizeFailed(_fightId, winnerAddress);
+            }
+        }
+
+        try i_PROMPT_FIGHTERS_NFT.setNftsNotFighting(fight.nftOne, fight.nftTwo) {}
+        catch {
+            revert FightMatchMaker__SettingNftsNotFightingFailed(fight.nftOne, fight.nftTwo);
+        }
+
+        _setUserFightId(fight.challenger, 0); // Mark challenger as not fighting
+        _setUserFightId(fight.challengee, 0); // Mark challengee as not fighting
+        _updateFightState(_fightId, FightState.AVAILABLE);
+        emit FightMatchmaker__FightStateChange(_fightId, FightState.ONGOING, FightState.AVAILABLE, msg.sender);
     }
 
     function _setUserFightId(address _user, bytes32 _fightId) internal {
-        s_userToFightId[_user].fightId = _fightId;
+        s_userToFightId[_user] = _fightId;
+        if (_fightId != 0) emit FightMatchmaker__UserToFightIdSet(_user, _fightId);
+        else emit FightMatchmaker__UserNoLongerFighting(_user);
     }
 
-    function _setFightState(bytes32 _fightId, FightState _newState) internal { 
-    // MODULARIZAR
-    // settle fight cuando se llama desde fight executor -> distribute prizes si hay ganador
-    // unlock fight cuando se llama desde bets
-    // marcar NFT como que no están peleando, se marca en el contrato de la colección (s_canMove - cambiará a isFigthing)
-    
-        s_fightIdToFight[_fightId].state = _newState;
+    function _setFight(bytes32 _fightId, Fight memory _fight) internal {
+        // MODULARIZAR
+        // settle fight cuando se llama desde fight executor -> distribute prizes si hay ganador
+        // unlock fight cuando se llama desde bets
+        // marcar NFT como que no están peleando, se marca en el contrato de la colección (s_canMove - cambiará a isFigthing)
+
+        s_fightIdToFight[_fightId] = _fight;
+        emit FightMatchmaker__FightIdToFightSet(_fightId, _fight);
     }
 
-    function setNftAutomated(uint256 _nftId, bool _isAutomated) external {
+    function _updateFightState(bytes32 _fightId, FightState _fightState) internal {
+        s_fightIdToFight[_fightId].state = _fightState;
+        emit FightMatchmaker__FightIdToFightSet(_fightId, s_fightIdToFight[_fightId]);
+    }
+
+    function setNftAutomated(uint256 _nftId, bool _isAutomated) external returns(bool) {
         s_isNftAutomated[_nftId] = _isAutomated;
+        return _isAutomated;
     }
 
     ///////////////
@@ -151,16 +271,19 @@ contract FightMatchmaker is IFightMatchmaker {
         return keccak256(abi.encode(_challenger, _challengerNftId, _challengee, _challengeeNftId));
     }
 
-    function getFightDetails(bytes32 _fightId) public returns (Fight memory) {
+    function getFight(bytes32 _fightId) public returns (Fight memory) {
         return s_fightIdToFight[_fightId];
     }
+
     function getUserCurrentFightId(address _user) public returns (bytes32) {
         return s_userToFightId[_user];
+    }
+
+    function getUserCurrentFight(address _user) public returns (Fight memory) {
+        return s_fightIdToFight[s_userToFightId[_user]];
     }
 
     function getIsNftAutomated(uint256 _nftId) public returns (bool) {
         return s_isNftAutomated[_nftId];
     }
-
-
 }

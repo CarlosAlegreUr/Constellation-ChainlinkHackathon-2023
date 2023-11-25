@@ -49,8 +49,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
     mapping(bytes32 => address) s_reqIdToUser;
 
     // CCIP nft tracking (TODO: these could be simplified as an enum in ccip nft bridge interface)
-    // canMove is false if the NFT is fighting
-    mapping(uint256 => bool) private s_canMove;
+    mapping(uint256 => bool) private s_nftIsFighting;
     mapping(uint256 => bool) private s_isOnChain;
 
     // CCIP reciever address initialization
@@ -83,7 +82,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
      *  - Correct receiver contract.
      *  - Owner of NFT is the one moving it.
      *
-     * Also updates canMove and isOnChain states for that NFT.
+     * Also updates s_nftIsFighting and isOnChain states for that NFT.
      */
     modifier sendNftCrossChainActions(uint64 destinationChainSelector, address receiver, string calldata nftId) {
         uint256 _nftId = _stringToUint(nftId);
@@ -92,11 +91,11 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         require(destinationChainSelector == AVL_FUJI_SELECTOR, "We only support Fuji testnet NFT transfers.");
         require(receiver == RECEIVER_CONTRACT, "Thats not the receiver contract.");
 
-        require(s_canMove[_nftId], "Nft is bussy can't move.");
+        require(!s_nftIsFighting[_nftId], "Nft is bussy can't move.");
         require(s_isOnChain[_nftId], "Nft is not currently in this chain.");
 
         s_isOnChain[_nftId] = false;
-        s_canMove[_nftId] = false;
+        s_nftIsFighting[_nftId] = true;
         _;
     }
 
@@ -117,7 +116,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
      * tracking accross chains and avoid sending bets bugs.
      */
     modifier nftCanBeTraded(uint256 nftId) {
-        require(s_canMove[nftId], "You cant transfer a fighting NFT.");
+        require(!s_nftIsFighting[nftId], "You cant transfer a fighting NFT.");
         require(s_isOnChain[nftId], "You cant transfer an NFT that is not on this chain.");
         _;
     }
@@ -171,6 +170,11 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         require(msg.sender == INTIALIZER_ADDRESS, "You can't initialize the contract.");
         RECEIVER_CONTRACT = _receiver;
         s_isInitializedLock = true;
+    }
+
+    function setNftsNotFighting(uint256 _nftOneId, uint256 _nftTwoId) external {
+        s_nftIsFighting[_nftOneId] = false;
+        s_nftIsFighting[_nftTwoId] = false;
     }
 
     //******************** */
@@ -237,7 +241,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
 
             // Special traits on-chain
             s_isOnChain[tokenId] = true;
-            s_canMove[tokenId] = true;
+            s_nftIsFighting[tokenId] = false;
             _safeMint(s_reqIdToUser[requestId], tokenId);
 
             // Decode prompt from response TODO I'm not sure if this is the right way
@@ -258,7 +262,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         string memory nftId = abi.decode(_message.data, (string)); // abi-decoding of the sent text
         uint256 nftIdInt = _stringToUint(nftId);
         s_isOnChain[nftIdInt] = true;
-        s_canMove[nftIdInt] = true;
+        s_nftIsFighting[nftIdInt] = false;
         emit ICCIPNftBridge__NftReceived(ownerOf(nftIdInt), ETH_SEPOLIA_CHAIN_ID, nftIdInt, block.timestamp);
     }
 
@@ -332,7 +336,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CCIPReceiver, I
         return ownerOf(_nftId);
     }
 
-    // TODO: ceck if needed more getters
+    // TODO: check if needed more getters
 
     //**************************** */
     // INHERITANCE TREE AMBIGUITIES
