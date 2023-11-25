@@ -15,7 +15,7 @@ interface IFightMatchmaker {
      * @dev Event emitted just when challenging any address.
      */
     event FightMatchmaker__FightRequested(
-        bytes32 indexed fightId, uint256 indexed nftId, uint256 indexed bet, address challenger, uint256 timestamp
+        address challenger, uint256 indexed nftId, bytes32 indexed fightId, uint256 indexed bet, uint256 timestamp
     );
     /**
      * @dev Event emitted when challenging only specific address or nfts.
@@ -31,11 +31,11 @@ interface IFightMatchmaker {
     event FightMatchmaker__FightAccepted(
         address indexed challenger,
         address indexed challengee,
-        uint256 indexed timestamp,
         uint256 nftIdChallenger,
         uint256 nftIdChallengee,
-        uint256 betChallenguer,
-        uint256 betChallenguee
+        uint256 betChallenger,
+        uint256 betChallenguee,
+        uint256 indexed timestamp
     );
 
     event FightMatchmaker__FightStateChange(
@@ -45,13 +45,24 @@ interface IFightMatchmaker {
     /**
      * @dev Event emitted when and NFT starts the automated mode.
      */
-    event FightMatchmaker__NftAutoamteStart(uint256 indexed nftId, uint256 startTimestamp);
+    event FightMatchmaker__NftAutomateStart(uint256 indexed nftId, uint256 startTimestamp);
 
     /**
      * @dev Event emitted when and NFT exits the automated mode.
      */
     event FightMatchmaker__NftAutomateStop(
         uint256 indexed nftId, uint256 indexed startTimestamp, uint256 indexed endTimestamp, uint256 earnings
+    );
+
+    //************************ */
+    // Errors
+    //************************ */
+    error FightMatchMaker__FightRequestFailed(
+        address challenger, uint256 nftId, bytes32 fightId, uint256 bet, uint256 timestamp
+    );
+
+    error FightMatchMaker__FightRequestToFailed(
+        address challenger, address challengee, uint256 nftIdChallenger, uint256 nftIdChallengee, uint256 timestamp
     );
 
     //************************ */
@@ -73,19 +84,19 @@ interface IFightMatchmaker {
      * as the null NFT ID value.
      */
     struct FightRequest {
-        uint256 nftIdUsing;
+        uint256 challengerNftId;
         uint256 minBet;
         uint256 acceptanceDeadline;
-        address challengee;
+        address challengeeAddress;
         uint256 challengeeNftId;
     }
 
     /**
-     * @dev AVAILBALE => Fight can be started
+     * @dev Available => Fight can be started
      *
-     * @dev REQUESTED => A fight is waiting for someone else, player who requested it can't start more fights
+     * @dev Requested => A fight is waiting for someone else, player who requested it can't start more fights
      *
-     * @dev ONGOING => A fight is being processed.
+     * @dev Ongoing => A fight is being processed.
      */
     enum FightState {
         AVAILABLE,
@@ -104,6 +115,12 @@ interface IFightMatchmaker {
         uint256 acceptanceDeadline;
         uint256 startedAt;
         FightState state;
+    }
+
+    enum WinningAction {
+        REQUESTER_WIN,
+        ACCEPTOR_WIN,
+        IGNORE_WINNING_ACTION
     }
 
     //************************ */
@@ -185,11 +202,8 @@ interface IFightMatchmaker {
      * if not then take it out from the automated NFTs list.
      *
      * @param fightId Id of the fight to set its state to newState.
-     * @param winner it is etiher 0 or 1, if any other value then ignore. 0 indicates requester won, 1 indicates acceptor won.
-     * This param is only used when calling from FightExecutor and state changes from ONGOING to
-     * AVAILABLE but the edge-case Chainlink services stop working is not given.
      */
-    function setFightState(bytes32 fightId, FightState newState, uint256 winner) external;
+    function setFightState(bytes32 fightId, FightState newState, WinningAction winner) external;
 
     //********************************* */
     // Automated Matchmaking
@@ -209,11 +223,11 @@ interface IFightMatchmaker {
     // Getters
     //************* */
 
-    function getFigthId(address challenger, uint256 challengerNftId, address challengee, uint256 challengeeNftId)
+    function getFightId(address challenger, uint256 challengerNftId, address challengee, uint256 challengeeNftId)
         external
         returns (bytes32);
 
     function getUserCurrentFightId(address user) external returns (bytes32);
 
-    function getFightDetails(bytes32 fightId) external returns (Fight memory);
+    function getFightDetails(bytes32 fightId) external returns (Fight calldata);
 }
