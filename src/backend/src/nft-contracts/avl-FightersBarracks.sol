@@ -20,7 +20,7 @@ import "../Utils.sol";
 contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
     // CCIP nft tracking
     // canMove is false if the NFT is fighting
-    mapping(uint256 => bool) private s_canMove; // TODO: isFighting
+    mapping(uint256 => bool) private s_isFighting;
     mapping(uint256 => bool) private s_isOnChain;
 
     // CCIP ownership tracking
@@ -53,13 +53,13 @@ contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
         require(destinationChainSelector == ETH_SEPOLIA_SELECTOR, "We only support Sepolia testnet NFT transfers.");
         require(receiver == i_RECIEVER_CONTRACT, "Thats not the receiver contract.");
 
-        require(s_canMove[nftIdInt], "Nft is bussy can't move.");
+        require(!s_isFighting[nftIdInt], "Nft is bussy can't move.");
         require(s_isOnChain[nftIdInt], "Nft is not currently in this chain.");
 
         _;
 
         delete s_isOnChain[nftIdInt];
-        delete s_canMove[nftIdInt];
+        delete s_isFighting[nftIdInt];
         // Maybe this delete is not needed, kept just in case.
         delete s_nftIdToOwner[nftIdInt];
     }
@@ -110,8 +110,8 @@ contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
         return s_isOnChain[nftId];
     }
 
-    function setNftCanMove(uint256 nftId, bool canMove) external onlyMatchmaker {
-        s_canMove[nftId] = canMove;
+    function setIsNftFighting(uint256 nftId, bool isFightihng) external onlyMatchmaker {
+        s_isFighting[nftId] = isFightihng;
     }
 
     //******************** */
@@ -142,7 +142,7 @@ contract FightersBarracks is CCIPReceiver, ICcipNftBridge {
         address sender = abi.decode(_message.sender, (address)); // abi-decoding of the orginal msg.sender
 
         s_isOnChain[nftIdInt] = true;
-        s_canMove[nftIdInt] = true;
+        delete s_isFighting[nftIdInt]; // set to false
         s_nftIdToOwner[nftIdInt] = sender;
         emit ICCIPNftBridge__NftReceived(getOwnerOf(nftIdInt), AVL_FUJI_CHAIN_ID, nftIdInt, block.timestamp);
     }

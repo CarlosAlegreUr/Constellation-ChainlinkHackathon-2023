@@ -4,6 +4,8 @@ pragma solidity ^0.8.13;
 // Scenarios
 import {ChainlinkMocksDeployed} from "../scenarios/ChainlinkMocksDeployed.t.sol";
 
+import {IFightMatchmaker} from "../../src/interfaces/IFightMatchmaker.sol";
+
 // Contract Tested
 import {PromptFightersNFT} from "../../src/nft-contracts/eth-PromptFightersNft.sol";
 
@@ -26,7 +28,8 @@ contract PromptFightersNftTest is ChainlinkMocksDeployed {
 
     function setUp() public override {
         super.setUp();
-        promptFightersNFT = new PromptFightersNFT(address(funcsSubsMock), ETH_SEPOLIA_CCIP_ROUTER);
+        promptFightersNFT =
+            new PromptFightersNFT(address(funcsSubsMock), ETH_SEPOLIA_CCIP_ROUTER,  IFightMatchmaker(address(0)));
     }
 
     function test_NothingBeforeInitialize() public {

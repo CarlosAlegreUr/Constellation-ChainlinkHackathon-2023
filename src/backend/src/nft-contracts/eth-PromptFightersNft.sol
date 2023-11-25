@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import {ICcipNftBridge} from "../interfaces/ICcipNftBridge.sol";
 import {IPromptFightersCollection} from "../interfaces/IPromptFightersCollection.sol";
+import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
 import {Initializable} from "../Initializable.sol";
 
 import "../Utils.sol";
@@ -49,6 +50,9 @@ contract PromptFightersNFT is
     // mapping(uint256 => bool) private s_winsCount;
     // mapping(uint256 => bool) private s_losesCount;
 
+    // Contracts that call this contract
+    IFightMatchmaker immutable i_FIGHT_MATCHMAKER;
+
     // Chainlink Functions Management
     LinkTokenInterface private immutable i_LINK_TOKEN;
     string private constant VALIDATION_SCRIPT = "NOT EMPTY";
@@ -66,7 +70,7 @@ contract PromptFightersNFT is
     // later, for safer deployment we add this state variables.
     address CCIP_RECEIVER_CONTRACT;
 
-    constructor(address _functionsRouter, address _ccipRouter)
+    constructor(address _functionsRouter, address _ccipRouter, IFightMatchmaker _fightMatchmaker)
         ERC721("PromptFightersNFT", "PFT")
         FunctionsClient(_functionsRouter)
         CCIPReceiver(_ccipRouter)
@@ -80,6 +84,22 @@ contract PromptFightersNFT is
 
         i_funcsSubsId = IFunctionsSubscriptions(_functionsRouter).createSubscription();
         IFunctionsSubscriptions(_functionsRouter).addConsumer(i_funcsSubsId, address(this));
+
+        i_FIGHT_MATCHMAKER = _fightMatchmaker;
+    }
+
+    /**
+     * @dev 1 time use function. Initializes the CCIP receiver contract addresses
+     * and blocks this same function use forever and unlocks all the functionalities
+     * of the contract.
+     *
+     * @notice Can only be called by INTIALIZER_ADDRESS.
+     * @notice A 2 step setting process would be safer, one for proposing the address
+     * and one for confirming it and then indeed lock the setter forever. But this is
+     * a simple PoC.
+     */
+    function initializeReceiver(address _receiver) external initializeActions {
+        CCIP_RECEIVER_CONTRACT = _receiver;
     }
 
     /**
@@ -113,6 +133,14 @@ contract PromptFightersNFT is
     modifier nftCanBeTraded(uint256 nftId) {
         require(!s_isFighting[nftId], "You cant transfer a fighting NFT.");
         require(s_isOnChain[nftId], "You cant transfer an NFT that is not on this chain.");
+        _;
+    }
+
+    /**
+     * @dev Only FightMatchmaker contract can call.
+     */
+    modifier onlyMatchmaker() {
+        require(msg.sender == address(i_FIGHT_MATCHMAKER), "Only FightMatchmaker can call this function");
         _;
     }
 
@@ -150,18 +178,8 @@ contract PromptFightersNFT is
         return messageId;
     }
 
-    /**
-     * @dev 1 time use function. Initializes the CCIP receiver contract addresses
-     * and blocks this same function use forever and unlocks all the functionalities
-     * of the contract.
-     *
-     * @notice Can only be called by INTIALIZER_ADDRESS.
-     * @notice A 2 step setting process would be safer, one for proposing the address
-     * and one for confirming it and then indeed lock the setter forever. But this is
-     * a simple PoC.
-     */
-    function initializeReceiver(address _receiver) external initializeActions {
-        CCIP_RECEIVER_CONTRACT = _receiver;
+    function setIsNftFighting(uint256 nftId, bool isFightihng) external onlyMatchmaker {
+        s_isFighting[nftId] = isFightihng;
     }
 
     //******************** */
