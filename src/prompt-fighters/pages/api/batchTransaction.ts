@@ -3,7 +3,31 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import fetch from "node-fetch";
 
+const MINIMUM_NUMBER_TRANSACTIONS = 15
+const ADDRESS_CONTRACT = ''
+
 let counterTransact: number = 0
+
+// the transactions will be stored here 
+let _transactions /*: transaction[] */;
+
+async function sendBatchOfTransaction() {
+  // send batch of transactions that are in memory
+  
+
+  // if success {
+  //    resset value of transactions to empty
+  // } else {
+  //    don't reset inform error
+  // }
+
+}
+
+function constructTransaction(addrressTo: string, stories: string[]) {
+  // construct the transactions
+  
+  // return transaction
+}
 
 // Function to make the HTTP call to OpenAI
 async function fetchOpenAIResponse(id: string, content: string): Promise<any> {
@@ -54,7 +78,18 @@ separate the two stories.
       body: JSON.stringify(postData),
     });
 
-    return response.json();
+    const openAIResponse = response.json();
+    let result = openAIResponse.choices[0].message.content;
+
+    result = result.split("---")
+
+    // trim the spaces for unnecesary bytes
+    for (let i = 0; i < result.length ;i++) {
+      result[i] = result[i].trim()
+    }
+
+    return [id, result]
+
   } catch (error) {
     console.error("Error fetching from OpenAI:", error);
     throw new Error("Error fetching from OpenAI");
@@ -99,10 +134,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     counterTransact += 1;
     console.log("numer of transaction standing by: ", counterTransact)
+  
+    // This returnes the two stories
+    const openAIResponse = await fetchOpenAIResponse(id, content);
 
-    if (counterTransact === 10) {
+    // transactions += constructTransaction(ADDRESS_CONTRACT, openAIResponse)
+
+    
+    if (counterTransact === MINIMUM_NUMBER_TRANSACTIONS) {
+  
+      // sendBatchOfTransaction(transactions)
+
       console.log("batch transactions and send to blockchain");
       console.log("reset counter");
+
 
       counterTransact = 0;
 
