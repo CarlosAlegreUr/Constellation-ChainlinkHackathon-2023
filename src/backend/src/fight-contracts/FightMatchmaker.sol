@@ -95,7 +95,7 @@ contract FightMatchmaker is IFightMatchmaker, Initializable {
     /* PUBLIC FUNCTIONS  */
     /*********************/
 
-    // TODO: add tmiestamp, there could be coalitions if the same people combat with each other
+    // TODO: add timestamp, there could be coalitions if the same people combat with each other
     function getFigthId(address _challenger, uint256 _challengerNftId, address _challengee, uint256 _challengeeNftId)
         public
         pure

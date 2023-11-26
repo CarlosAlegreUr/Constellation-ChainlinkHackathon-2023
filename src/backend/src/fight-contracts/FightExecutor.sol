@@ -135,6 +135,9 @@ contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient,
         return lastRequestId;
     }
 
+    // TODO: Need to implement function that will be called from our server to set the two stories for both battles
+    // after MAYBE call Chainlink VRF to select winner?
+
     //******************** */
     // INTERNAL FUNCTIONS
     //******************** */
