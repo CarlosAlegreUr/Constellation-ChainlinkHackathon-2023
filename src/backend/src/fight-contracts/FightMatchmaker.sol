@@ -38,9 +38,9 @@ import {Initializable} from "../Initializable.sol";
  * @notice Assumes each player is engaged in only one fight at a time.
  */
 contract FightMatchmaker is IFightMatchmaker, Initializable {
-    //******************** */
-    // CONTRACT'S STATE
-    //******************** */
+    /**********************/
+    /*  CONTRACT'S STATE  */
+    /**********************/
 
     // [ External contracts interacted with ]
 
@@ -81,9 +81,9 @@ contract FightMatchmaker is IFightMatchmaker, Initializable {
         i_BETS_VAULT = _betsVaultAddress;
     }
 
-    //******************** */
-    // EXTERNAL FUNCTIONS
-    //******************** */
+    /**********************/
+    /* EXTERNAL FUNCTIONS */
+    /**********************/
 
     function requestFight(FightRequest calldata fightRequest) external contractIsInitialized {}
 
@@ -91,9 +91,9 @@ contract FightMatchmaker is IFightMatchmaker, Initializable {
 
     function setFightState(bytes32 fightId, FightState newState, uint256 winner) external contractIsInitialized {}
 
-    //******************** */
-    // PUBLIC FUNCTIONS
-    //******************** */
+    /*********************/
+    /* PUBLIC FUNCTIONS  */
+    /*********************/
 
     // TODO: add tmiestamp, there could be coalitions if the same people combat with each other
     function getFigthId(address _challenger, uint256 _challengerNftId, address _challengee, uint256 _challengeeNftId)
@@ -112,8 +112,8 @@ contract FightMatchmaker is IFightMatchmaker, Initializable {
 
     function setNftAutomated(uint256 nftId, bool isAutomated) public contractIsInitialized returns (bool) {}
 
-    //******************** */
-    // INTERNAL FUNCTIONS
-    //******************** */
+    /**********************/
+    /* INTERNAL FUNCTIONS */
+    /**********************/
     function _setFightState(bytes32 _fightId, FightState _newState) internal {}
 }
