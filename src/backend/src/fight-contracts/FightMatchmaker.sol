@@ -7,14 +7,14 @@ import {IBetsVault} from "../interfaces/IBetsVault.sol";
 import {FightExecutor} from "./FightExecutor.sol";
 import {Initializable} from "../Initializable.sol";
 
-//**************************************** */
-//            FOR DEVS!
-// This contract might need more state
-// variables or functions.
-//
-// Feel free to add them if you deem them
-// necessary while coding. If so, mark them with a comment saying NEW.
-//**************************************** */
+/**            
+*            FOR DEVS!
+*  This contract might need more state
+*  variables or functions.
+*
+*  Feel free to add them if you deem them
+*  necessary while coding. If so, mark them with a comment saying NEW.
+*/
 
 /**
  * @title FightMatchmaker
