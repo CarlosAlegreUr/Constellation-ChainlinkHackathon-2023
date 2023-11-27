@@ -14,6 +14,7 @@ import "forge-std/console.sol";
 
 contract DeployFightsContracts is Script {
     address public funcs_router;
+    uint64 public funcs_subsId;
     address public vrf_router;
 
     FightMatchmaker public fightMatchmaker;
@@ -21,9 +22,9 @@ contract DeployFightsContracts is Script {
     function setUp() public virtual {}
 
     function run() public virtual {
-        vm.broadcast();
+        vm.startBroadcast();
         // Deploy Executor
-        FightExecutor fightExecutor = new FightExecutor(funcs_router, vrf_router);
+        FightExecutor fightExecutor = new FightExecutor(funcs_router, funcs_subsId, vrf_router);
         console.log("FightExecutor deployed at:");
         console.log(address(fightExecutor));
 

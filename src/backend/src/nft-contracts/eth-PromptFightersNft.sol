@@ -18,6 +18,8 @@ import {OwnerIsCreator} from "@chainlink-ccip/src/v0.8/shared/access/OwnerIsCrea
 import {Client} from "@chainlink-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
+import "forge-std/console.sol";
+
 /**
  * @title PromptFightersNFT
  * @author PromtFighters team: Carlos
@@ -55,7 +57,6 @@ contract PromptFightersNFT is
 
     // Chainlink Functions Management
     LinkTokenInterface private immutable i_LINK_TOKEN;
-    string private constant VALIDATION_SCRIPT = "NOT EMPTY";
     uint64 private immutable i_funcsSubsId;
     bytes32 private immutable i_DON_ID;
     mapping(bytes32 => address) s_reqIdToUser;
@@ -70,7 +71,7 @@ contract PromptFightersNFT is
     // later, for safer deployment we add this state variables.
     address CCIP_RECEIVER_CONTRACT;
 
-    constructor(address _functionsRouter, address _ccipRouter, IFightMatchmaker _fightMatchmaker)
+    constructor(address _functionsRouter, uint64 _funcSubsId, address _ccipRouter, IFightMatchmaker _fightMatchmaker)
         ERC721("PromptFightersNFT", "PFT")
         FunctionsClient(_functionsRouter)
         CCIPReceiver(_ccipRouter)
@@ -82,8 +83,12 @@ contract PromptFightersNFT is
             : LinkTokenInterface(AVL_FUJI_LINK);
         i_DON_ID = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_DON_ID : AVL_FUJI_DON_ID;
 
-        i_funcsSubsId = IFunctionsSubscriptions(_functionsRouter).createSubscription();
-        IFunctionsSubscriptions(_functionsRouter).addConsumer(i_funcsSubsId, address(this));
+        i_funcsSubsId = _funcSubsId;
+
+        // @dev Doesn't work, needs to accept TermsOfService first, so far this is only
+        // possible trhough Chainlink's API.
+        // IFunctionsSubscriptions(_functionsRouter).createSubscription();
+        // IFunctionsSubscriptions(_functionsRouter).addConsumer(i_funcsSubsId, address(this));
 
         i_FIGHT_MATCHMAKER = _fightMatchmaker;
     }
@@ -301,7 +306,7 @@ contract PromptFightersNFT is
         arg[0] = _nftPrompt;
 
         FunctionsRequest.Request memory req;
-        req.initializeRequestForInlineJavaScript(VALIDATION_SCRIPT);
+        req.initializeRequestForInlineJavaScript(NFT_GENERATION_SCRIPT);
         req.setArgs(arg); // Args are NFT prompts.
 
         bytes32 lastRequestId = _sendRequest(req.encodeCBOR(), i_funcsSubsId, GAS_LIMIT_NFT_GENERATION, i_DON_ID);

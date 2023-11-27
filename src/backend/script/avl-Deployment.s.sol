@@ -17,6 +17,7 @@ contract BarracksAvlDeploy is DeployFightsContracts {
     function setUp() public override {
         super.run();
         funcs_router = AVL_FUJI_FUNCTIONS_ROUTER;
+        // add subs thing
         vrf_router = AVL_FUJI_VRF_COORDINATOR;
         // TODO: Automation Contracts for Matchmaker add
 

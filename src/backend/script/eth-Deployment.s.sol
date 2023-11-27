@@ -11,20 +11,20 @@ import "forge-std/console.sol";
 
 contract PromptFightersDeploy is DeployFightsContracts {
     function setUp() public override {
-        super.run();
         funcs_router = ETH_SEPOLIA_FUNCTIONS_ROUTER;
+        funcs_subsId = ETH_SEPOLIA_FUNCS_SUBS_ID;
         vrf_router = ETH_SEPOLIA_VRF_COORDINATOR;
         // TODO: Automation Contracts for Matchmaker add
 
         // Deploys all contracts that are shared accross chans.
-        DeployFightsContracts.run();
+        super.run();
     }
 
     function run() public override {
-        vm.broadcast();
+        vm.startBroadcast();
         // Deploy collection
         PromptFightersNFT promptFighters =
-            new PromptFightersNFT(ETH_SEPOLIA_FUNCTIONS_ROUTER, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker);
+            new PromptFightersNFT(ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker);
         console.log("PromptFighters deployed at:");
         console.log(address(promptFighters));
         vm.stopBroadcast();

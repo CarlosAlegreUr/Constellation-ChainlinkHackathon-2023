@@ -2,6 +2,8 @@
 pragma solidity ^0.8.13;
 
 import {PromptFightersNFT} from "../src/nft-contracts/eth-PromptFightersNft.sol";
+import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
+
 import "../src/Utils.sol";
 
 import {Script, console2} from "forge-std/Script.sol";
@@ -11,13 +13,18 @@ import "forge-std/console.sol";
  * @dev Executes mintng and NFT process in Ethereum.
  */
 contract MintNft is Script {
-    PromptFightersNFT public COLLECTION_CONTRACT;
+    PromptFightersNFT public collectionContract;
+    LinkTokenInterface public i_LINK_TOKEN = LinkTokenInterface(ETH_SEPOLIA_LINK);
 
-    function setUp() public virtual {}
+    function setUp() public virtual {
+        collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
+    }
 
     function run() public virtual {
-        vm.broadcast();
-
+        vm.startBroadcast();
+        collectionContract.initializeReceiver(address(7));
+        i_LINK_TOKEN.approve(DEPLOYED_SEPOLIA_COLLECTION, 3 ether);
+        collectionContract.safeMint(DEPLOYER, NFT_VALID_PROMPT);
         vm.stopBroadcast();
     }
 }

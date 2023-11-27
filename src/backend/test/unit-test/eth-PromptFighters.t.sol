@@ -27,7 +27,7 @@ contract PromptFightersNftTest is ChainlinkMocksDeployed, UtilsValues {
     function setUp() public override {
         super.setUp();
         promptFightersNFT =
-            new PromptFightersNFT(address(funcsSubsMock), ETH_SEPOLIA_CCIP_ROUTER,  IFightMatchmaker(address(0)));
+        new PromptFightersNFT(address(funcsSubsMock), MOCK_FUNCS_SUBS_ID, ETH_SEPOLIA_CCIP_ROUTER,  IFightMatchmaker(address(0)));
     }
 
     function test_NothingBeforeInitialize() public {
