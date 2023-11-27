@@ -6,6 +6,7 @@ import {IFightExecutor} from "../interfaces/IFightExecutor.sol";
 import {IBetsVault} from "../interfaces/IBetsVault.sol";
 import {PromptFightersNFT} from "../nft-contracts/eth-PromptFightersNft.sol";
 import {ChainlinkFuncsGist} from "../Utils.sol";
+import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
 
 //**************************************** */
 //            FOR DEVS!
@@ -37,7 +38,61 @@ import {ChainlinkFuncsGist} from "../Utils.sol";
  *
  * @notice Assumes each player is engaged in only one fight at a time.
  */
-contract FightMatchmaker is IFightMatchmaker {
+
+///////////////////////
+// AUTOMATION CONFIG //
+///////////////////////
+
+struct RegistrationParams {
+    string name;
+    bytes encryptedEmail;
+    address upkeepContract;
+    uint32 gasLimit;
+    address adminAddress;
+    uint8 triggerType;
+    bytes checkData;
+    bytes triggerConfig;
+    bytes offchainConfig;
+    uint96 amount;
+}
+
+// ESTO YO ENTIENDO QUE DEBERÍA UTILIZARSE EN registerUpkeep AL REGISTRAR
+// NUESTRO CONTRATO EN LA AUTOMATIZACIÓN,
+// PERO TODAVÍA NO HE DESCUBIERTO CÓMO SE HACE
+
+struct LogTriggerConfig {
+    address contractAddress;
+    uint8 filterSelector;
+    bytes32 topic0;
+    bytes32 topic1;
+    bytes32 topic2;
+    bytes32 topic3;
+}
+
+struct Log {
+    uint256 index; // Index of the log in the block
+    uint256 timestamp; // Timestamp of the block containing the log
+    bytes32 txHash; // Hash of the transaction containing the log
+    uint256 blockNumber; // Number of the block containing the log
+    bytes32 blockHash; // Hash of the block containing the log
+    address source; // Address of the contract that emitted the log
+    bytes32[] topics; // Indexed topics of the log
+    bytes data; // Data of the log
+}
+
+interface AutomationRegistrarInterface {
+    function registerUpkeep(RegistrationParams calldata requestParams) external returns (uint256);
+}
+
+interface ILogAutomation {
+    function checkLog(Log calldata log, bytes memory checkData)
+        external
+        returns (bool upkeepNeeded, bytes memory performData);
+
+    function performUpkeep(bytes calldata performData) external;
+}
+
+contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
     //******************** */
     // CONTRACT'S STATE
     //******************** */
@@ -72,6 +127,43 @@ contract FightMatchmaker is IFightMatchmaker {
     bytes32[AUTOMATED_NFTS_ALLOWED] private s_fightIdsQueue;
     uint8 s_nextIndexFightQueue;
 
+    ///////////////////////
+    // AUTOMATION /////////
+    ///////////////////////
+
+    LinkTokenInterface public immutable i_link;
+    AutomationRegistrarInterface public immutable i_registrar;
+
+    function checkLog(Log calldata log, bytes memory)
+        external
+        pure
+        returns (bool upkeepNeeded, bytes memory performData)
+    {
+        // ENTIENDO QUE ESTO NO HARÁ FALTA, PORQUE HABREMOS DESCUBIERTO CÓMO INDICAR QUE FightMatchmaker__FightRequested ES
+        // EL EVENTO QUE DESENCADENE LA AUTOMATIZACIÓN, PERO DE MOMENTO LO DEJO ASÍ
+        if (log.topics[0] == keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)")) {
+            upkeepNeeded = true;
+        }
+        uint256 nftId = uint256(log.topics[1]);
+        bytes32 fightId = log.topics[2];
+        performData = abi.encode(nftId, fightId);
+    }
+
+    function performUpkeep(bytes calldata performData) external override {
+        (uint256 nftId, bytes32 fightId) = abi.decode(performData, (uint256, bytes32));
+        acceptFight(fightId, nftId);
+        // ESTO HAY QUE VER CÓMO LO HACEMOS, NO TENGO CLARO SI EL CONTRATO MATCHMAKER TIENE ALGUNOS NFT PROPIOS O QUÉ
+        // POR OTRA PARTE, SI HACE FALTA EMITIR TODA ESA INFORMACIÓN EN EL EVENTO YO CREO QUE VA A ESTAR COMPLICADO
+        // emit FightMatchmaker__FightAcceptedByUpkeep(
+        // challenger,
+        // nftIdChallenger,
+        // nftIdChallengee,
+        // betChallenger,
+        // betChallengee,
+        // block.timestamp
+        // );
+    }
+
     //******************** */
     // MODIFIERS
     //******************** */
@@ -91,11 +183,27 @@ contract FightMatchmaker is IFightMatchmaker {
     constructor(
         IFightExecutor _fightExecutorAddress,
         IBetsVault _betsVaultAddress,
-        PromptFightersNFT _promptFightersNftAddress
+        PromptFightersNFT _promptFightersNftAddress,
+        LinkTokenInterface link,
+        AutomationRegistrarInterface registrar
     ) {
         i_FIGHT_EXECUTOR_CONTRACT = _fightExecutorAddress;
         i_BETS_VAULT = _betsVaultAddress;
         i_PROMPT_FIGHTERS_NFT = _promptFightersNftAddress;
+        i_link = link;
+        i_registrar = registrar;
+    }
+
+    function registerAndPredictID(RegistrationParams memory params) public {
+        // LINK must be approved for transfer - this can be done every time or once
+        // with an infinite approval
+        i_link.approve(address(i_registrar), params.amount);
+        uint256 upkeepID = i_registrar.registerUpkeep(params);
+        if (upkeepID != 0) {
+            // DEV - Use the upkeepID however you see fit
+        } else {
+            revert("auto-approve disabled");
+        }
     }
 
     //*********************/
@@ -171,7 +279,7 @@ contract FightMatchmaker is IFightMatchmaker {
         }
     }
 
-    function acceptFight(bytes32 _fightId, uint256 _nftId) external payable {
+    function acceptFight(bytes32 _fightId, uint256 _nftId) public payable {
         if (msg.sender != i_PROMPT_FIGHTERS_NFT.getOwnerOf(_nftId)) {
             revert FightMatchMaker__NftNotOwnedByAccepter(msg.sender, _nftId);
         }

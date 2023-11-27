@@ -39,6 +39,15 @@ interface IFightMatchmaker {
         uint256 indexed timestamp
     );
 
+    event FightMatchmaker__FightAcceptedByUpkeep(
+        address indexed challenger,
+        uint256 nftIdChallenger,
+        uint256 nftIdChallengee,
+        uint256 betChallenger,
+        uint256 betChallengee,
+        uint256 indexed timestamp
+    );
+
     event FightMatchmaker__FightStateChange(
         bytes32 indexed fightId, FightState indexed oldState, FightState indexed newState, address calledFrom
     );
