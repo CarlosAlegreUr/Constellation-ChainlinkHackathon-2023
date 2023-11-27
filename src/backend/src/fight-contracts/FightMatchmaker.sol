@@ -59,7 +59,7 @@ contract FightMatchmaker is IFightMatchmaker {
 
     // [ Automated matchmaking - state ]
 
-    uint8 constant AUTOAMTED_NFTS_ALLOWED = 5;
+    uint8 constant AUTOMATED_NFTS_ALLOWED = 5;
     mapping(uint256 => bool) private s_isNftAutomated;
     // For now, every fight you do in automated mode will have the same amount of bet.
     mapping(uint256 => uint256) private s_atmNftToAtmBet;
@@ -69,7 +69,8 @@ contract FightMatchmaker is IFightMatchmaker {
     // @TODO:Change to a normal array if I'm wrong cause I'm not sure.
     mapping(uint8 => uint256) private s_nftsAutomated;
     // Whenever someone requests a fight acceptable by anyone then it's added to this array.
-    FightState[AUTOAMTED_NFTS_ALLOWED] private s_fightsQueue;
+    bytes32[AUTOMATED_NFTS_ALLOWED] private s_fightIdsQueue;
+    uint8 s_nextIndexFightQueue;
 
     //******************** */
     // MODIFIERS
@@ -97,18 +98,26 @@ contract FightMatchmaker is IFightMatchmaker {
         i_PROMPT_FIGHTERS_NFT = _promptFightersNftAddress;
     }
 
-    //******************** */
+    //*********************/
     // EXTERNAL FUNCTIONS
-    //******************** */
+    //*********************/
 
     function requestFight(FightRequest calldata _fightRequest) external payable {
         address[2] memory participants = [msg.sender, _fightRequest.challengeeAddress];
         uint256[2] memory nftIds = [_fightRequest.challengerNftId, _fightRequest.challengeeNftId];
 
-        if (nftIds[1] != 0) {
-            if (participants[1] != i_PROMPT_FIGHTERS_NFT.getOwnerOf(nftIds[1])) {
-                revert FightMatchMaker__NftNotOwnedByChallengee(participants[1], nftIds[1]);
+        for (uint8 i = 0; i < nftIds.length; i++) {
+            if (!i_PROMPT_FIGHTERS_NFT.isNftOnChain(nftIds[i])) {
+                revert FightMatchMaker__NftNotOnThisChain(nftIds[i], block.chainid);
             }
+        }
+
+        if (msg.sender != i_PROMPT_FIGHTERS_NFT.getOwnerOf(nftIds[0])) {
+            revert FightMatchMaker__NftNotOwnedByChallenger(msg.sender, nftIds[0]);
+        }
+
+        if (nftIds[1] != 0 && participants[1] != i_PROMPT_FIGHTERS_NFT.getOwnerOf(nftIds[1])) {
+            revert FightMatchMaker__NftNotOwnedByChallengee(participants[1], nftIds[1]);
         }
 
         bytes32 fightId = getFightId(participants[0], nftIds[0], participants[1], nftIds[1]);
@@ -118,8 +127,8 @@ contract FightMatchmaker is IFightMatchmaker {
         }
 
         Fight memory fight = Fight(
-            participants[0],
-            participants[1],
+            // participants[0],
+            // participants[1],
             nftIds[0],
             nftIds[1],
             _fightRequest.minBet,
@@ -129,16 +138,18 @@ contract FightMatchmaker is IFightMatchmaker {
         );
 
         try i_BETS_VAULT.lockBet{value: msg.value}(fightId, msg.sender) {
-            if (getUserCurrentFightId(msg.sender) == fightId) {
-                //If fight requested existed already, update state
-                _updateFightState(fightId, FightState.REQUESTED);
-            } else {
-                _setUserFightId(msg.sender, fightId); // setting msg.sender -> fightId means requester has made a request
-                _setFight(fightId, fight);
-            }
+            // if (getUserCurrentFightId(msg.sender) == fightId) {
+            //     //If fight requested existed already, update state
+            //     _updateFightState(fightId, FightState.REQUESTED);
+            // } else {
+            _setUserFightId(msg.sender, fightId); // setting msg.sender -> fightId means requester has made a request
+            _setFight(fightId, fight);
+            // }
 
             if (participants[1] == address(0)) {
-                // s_fightsQueue.push(FightState.REQUESTED); // ESTO NO LO PERMITE SOLIDITY, PERO ADEMÁS NO SÉ MUY BIEN PARA QUÉ SIRVE ESE ARRAY
+                if (s_nextIndexFightQueue == 5) s_nextIndexFightQueue = 0;
+                s_fightIdsQueue[s_nextIndexFightQueue] = fightId;
+                s_nextIndexFightQueue++;
                 emit FightMatchmaker__FightRequested(
                     participants[0], nftIds[0], fightId, _fightRequest.minBet, block.timestamp
                 );
@@ -166,6 +177,8 @@ contract FightMatchmaker is IFightMatchmaker {
         }
 
         Fight memory fight = getFight(_fightId);
+        address[2] memory participants =
+            [i_PROMPT_FIGHTERS_NFT.getOwnerOf(fight.nftOne), i_PROMPT_FIGHTERS_NFT.getOwnerOf(fight.nftTwo)];
 
         if (fight.state != FightState.REQUESTED) {
             revert FightMatchMaker__FightNotRequested(_fightId);
@@ -175,9 +188,9 @@ contract FightMatchmaker is IFightMatchmaker {
             revert FightMatchMaker__NotEnoughEthSentToAcceptFight(_fightId);
         }
 
-        if (fight.challengee != address(0) && fight.challengee != msg.sender) {
+        if (participants[1] != address(0) && participants[1] != msg.sender) {
             // If challengee was specified at request and sender is not challengee
-            revert FightMatchMaker__AcceptingUserIsNotChallengee(msg.sender, fight.challengee);
+            revert FightMatchMaker__AcceptingUserIsNotChallengee(msg.sender, participants[1]);
         }
 
         if (fight.nftTwo != 0 && fight.nftTwo != _nftId) {
@@ -188,8 +201,8 @@ contract FightMatchmaker is IFightMatchmaker {
         try i_BETS_VAULT.lockBet{value: msg.value}(_fightId, msg.sender) {
             IBetsVault.BetsState memory betState = i_BETS_VAULT.getBetsState(_fightId);
             emit FightMatchmaker__FightAccepted(
-                fight.challenger,
-                fight.challengee,
+                participants[0],
+                participants[1],
                 fight.nftOne,
                 fight.nftTwo,
                 betState.requesterBet,
@@ -200,22 +213,22 @@ contract FightMatchmaker is IFightMatchmaker {
             revert FightMatchMaker__FightAcceptFailed(msg.sender, _nftId, _fightId, msg.value, block.timestamp);
         }
 
-        ChainlinkFuncsGist memory gist = ChainlinkFuncsGist(,,,,,,,,); // AQUÍ QUÉ PONGO???
-
-        try i_FIGHT_EXECUTOR_CONTRACT.startFight(_fightId, gist) returns (bytes32 requestId) {
+        try i_FIGHT_EXECUTOR_CONTRACT.startFight(_fightId) returns (bytes32) {
             _updateFightState(_fightId, FightState.ONGOING);
             _setUserFightId(msg.sender, _fightId); // setting msg.sender -> fightId means accepter is fighting
             emit FightMatchmaker__FightStateChange(_fightId, FightState.REQUESTED, FightState.ONGOING, msg.sender);
         } catch {
-            revert FightMatchMaker__FightStartFailed(); // QUÉ PARÁMETROS PONGO??
+            revert FightMatchMaker__FightStartFailed(_fightId);
         }
     }
 
-    function settleFight(bytes32 _fightId, WinningAction _winner) external onlyFightExecutorOrBetsVault {
+    function settleFight(bytes32 _fightId, WinningAction _winner) public onlyFightExecutorOrBetsVault {
         Fight memory fight = getFight(_fightId);
+        address[2] memory participants =
+            [i_PROMPT_FIGHTERS_NFT.getOwnerOf(fight.nftOne), i_PROMPT_FIGHTERS_NFT.getOwnerOf(fight.nftTwo)];
 
         if (_winner != WinningAction.IGNORE_WINNING_ACTION) {
-            address winnerAddress = _winner == WinningAction.REQUESTER_WIN ? fight.challenger : fight.challengee;
+            address winnerAddress = _winner == WinningAction.REQUESTER_WIN ? participants[0] : participants[1];
             try i_BETS_VAULT.distributeBetsPrize(_fightId, winnerAddress) {}
             catch {
                 revert FightMatchMaker__DistributeBetsPrizeFailed(_fightId, winnerAddress);
@@ -227,11 +240,28 @@ contract FightMatchmaker is IFightMatchmaker {
             revert FightMatchMaker__SettingNftsNotFightingFailed(fight.nftOne, fight.nftTwo);
         }
 
-        _setUserFightId(fight.challenger, 0); // Mark challenger as not fighting
-        _setUserFightId(fight.challengee, 0); // Mark challengee as not fighting
+        _setUserFightId(participants[0], 0); // Mark challenger as not fighting
+        _setUserFightId(participants[1], 0); // Mark challengee as not fighting
         _updateFightState(_fightId, FightState.AVAILABLE);
-        emit FightMatchmaker__FightStateChange(_fightId, FightState.ONGOING, FightState.AVAILABLE, msg.sender);
+        emit FightMatchmaker__FightStateChange(_fightId, fight.state, FightState.AVAILABLE, msg.sender);
     }
+
+    // function cancelFight(bytes32 _fightId) external {
+    //     FightState fightState = getFight(_fightId).state;
+    //     if (fightState != FightState.REQUESTED) {
+    //         revert FightMatchMaker__CannotCancelFight(_fightId, fightState);
+    //     }
+    //     settleFight(_fightId, WinningAction.IGNORE_WINNING_ACTION);
+    // }
+
+    function setNftAutomated(uint256 _nftId, bool _isAutomated) external returns (bool) {
+        s_isNftAutomated[_nftId] = _isAutomated;
+        return _isAutomated;
+    }
+
+    //******************** */
+    // INTERNAL FUNCTIONS
+    //******************** */
 
     function _setUserFightId(address _user, bytes32 _fightId) internal {
         s_userToFightId[_user] = _fightId;
@@ -240,23 +270,17 @@ contract FightMatchmaker is IFightMatchmaker {
     }
 
     function _setFight(bytes32 _fightId, Fight memory _fight) internal {
-        // MODULARIZAR
-        // settle fight cuando se llama desde fight executor -> distribute prizes si hay ganador
-        // unlock fight cuando se llama desde bets
-        // marcar NFT como que no están peleando, se marca en el contrato de la colección (s_canMove - cambiará a isFigthing)
-
         s_fightIdToFight[_fightId] = _fight;
         emit FightMatchmaker__FightIdToFightSet(_fightId, _fight);
     }
 
     function _updateFightState(bytes32 _fightId, FightState _fightState) internal {
-        s_fightIdToFight[_fightId].state = _fightState;
+        if (_fightState == FightState.AVAILABLE) {
+            delete s_fightIdToFight[_fightId];
+        } else {
+            s_fightIdToFight[_fightId].state = _fightState;
+        }
         emit FightMatchmaker__FightIdToFightSet(_fightId, s_fightIdToFight[_fightId]);
-    }
-
-    function setNftAutomated(uint256 _nftId, bool _isAutomated) external returns(bool) {
-        s_isNftAutomated[_nftId] = _isAutomated;
-        return _isAutomated;
     }
 
     ///////////////
@@ -271,19 +295,19 @@ contract FightMatchmaker is IFightMatchmaker {
         return keccak256(abi.encode(_challenger, _challengerNftId, _challengee, _challengeeNftId));
     }
 
-    function getFight(bytes32 _fightId) public returns (Fight memory) {
+    function getFight(bytes32 _fightId) public view returns (Fight memory) {
         return s_fightIdToFight[_fightId];
     }
 
-    function getUserCurrentFightId(address _user) public returns (bytes32) {
+    function getUserCurrentFightId(address _user) public view returns (bytes32) {
         return s_userToFightId[_user];
     }
 
-    function getUserCurrentFight(address _user) public returns (Fight memory) {
+    function getUserCurrentFight(address _user) public view returns (Fight memory) {
         return s_fightIdToFight[s_userToFightId[_user]];
     }
 
-    function getIsNftAutomated(uint256 _nftId) public returns (bool) {
+    function getIsNftAutomated(uint256 _nftId) public view returns (bool) {
         return s_isNftAutomated[_nftId];
     }
 }

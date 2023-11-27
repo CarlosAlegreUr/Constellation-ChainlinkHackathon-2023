@@ -85,13 +85,15 @@ interface IFightMatchmaker {
         address challengee, uint256 nftId, bytes32 fightId, uint256 bet, uint256 timestamp
     );
 
-    error FightMatchMaker__FightStartFailed(
-        address challenger, address challengee, uint256 nftIdChallenger, uint256 nftIdChallengee, uint256 timestamp
-    );
+    error FightMatchMaker__FightStartFailed(bytes32 fightId);
+
+    error FightMatchMaker__NftNotOwnedByChallenger(address challenger, uint256 nftIdChallengee);
 
     error FightMatchMaker__NftNotOwnedByChallengee(address challengee, uint256 nftIdChallengee);
 
     error FightMatchMaker__NftNotOwnedByAccepter(address challengee, uint256 nftIdChallengee);
+
+    error FightMatchMaker__NftNotOnThisChain(uint256 nftId, uint256 chainId);
 
     error FightMatchMaker__FightNotAvailable(address challenger, bytes32 fightId);
 
@@ -106,6 +108,8 @@ interface IFightMatchmaker {
     error FightMatchMaker__DistributeBetsPrizeFailed(bytes32 fightId, address winner);
 
     error FightMatchMaker__SettingNftsNotFightingFailed(uint256 nftOneId, uint256 nftTwoId);
+
+    error FightMatchMaker__CannotCancelFight(bytes32 _fightId, FightState fightState);
 
     //************************ */
     // Data Structures
@@ -151,8 +155,8 @@ interface IFightMatchmaker {
      * required for logic but not emitted in logs.
      */
     struct Fight {
-        address challenger;
-        address challengee;
+        // address challenger;
+        // address challengee;
         uint256 nftOne;
         uint256 nftTwo;
         uint256 minBet;

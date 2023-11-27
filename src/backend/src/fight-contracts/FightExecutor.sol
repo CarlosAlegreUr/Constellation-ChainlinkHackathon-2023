@@ -112,23 +112,25 @@ contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient,
      *
      * TODO: maybe _cfParam should be passed as memory?
      */
-    function startFight(bytes32 _fightId, ChainlinkFuncsGist calldata _cfParam)
+    function startFight(bytes32 _fightId)
         external
         onlyFightMatchmaker
-        checkChainlinkFuncsParams(_cfParam)
-        returns (bytes32 requestId)
+        returns (
+            // checkChainlinkFuncsParams(_cfParam)
+            bytes32 requestId
+        )
     {
-        FunctionsRequest.Request memory req;
-        req.initializeRequestForInlineJavaScript(_cfParam.source);
-        req.addSecretsReference(_cfParam.encryptedSecretsUrls);
-        if (_cfParam.args.length > 0) req.setArgs(_cfParam.args); // Args are NFT prompts.
+        // FunctionsRequest.Request memory req;
+        // req.initializeRequestForInlineJavaScript(_cfParam.source);
+        // req.addSecretsReference(_cfParam.encryptedSecretsUrls);
+        // if (_cfParam.args.length > 0) req.setArgs(_cfParam.args); // Args are NFT prompts.
 
-        bytes32 lastRequestId = _sendRequest(req.encodeCBOR(), i_funcsSubsId, GAS_LIMIT_FIGHT_GENERATION, i_DON_ID);
+        // bytes32 lastRequestId = _sendRequest(req.encodeCBOR(), i_funcsSubsId, GAS_LIMIT_FIGHT_GENERATION, i_DON_ID);
 
-        s_requestsIdToFightId[lastRequestId] = _fightId;
-        s_reqIsValid[lastRequestId] = true;
-        s_requestsIdToUser[lastRequestId] = msg.sender;
-        return lastRequestId;
+        // s_requestsIdToFightId[lastRequestId] = _fightId;
+        // s_reqIsValid[lastRequestId] = true;
+        // s_requestsIdToUser[lastRequestId] = msg.sender;
+        // return lastRequestId;
     }
 
     // requestRandomWords()

@@ -24,7 +24,6 @@ interface IFightExecutor {
      * @dev This function must always be called by `FightMatchmaker` and then it starts
      * the fight process via Chainlink Functions.
      *
-     * @param cfParam params required to call Chainlin Functios
      */
-    function startFight(bytes32 fightId, ChainlinkFuncsGist memory cfParam) external returns (bytes32 requestId);
+    function startFight(bytes32 fightId) external returns (bytes32 requestId);
 }
