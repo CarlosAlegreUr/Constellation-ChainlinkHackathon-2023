@@ -41,12 +41,16 @@ contract PromptFightersDeploy is DeployFightsContracts {
             console.log("We are in FUJI");
             // Deploys all contracts that are shared accross chans.
             super.run();
-            // Deploy barracks and initialize collection in main chain
+            // Deploy barracks
             FightersBarracks barracks =
                 new FightersBarracks(AVL_FUJI_CCIP_ROUTER, DEPLOYED_SEPOLIA_COLLECTION, fightMatchmaker);
             console.log("COPY THE FOLLOWING ADDRESS IN THE Utils.sol:");
             console.log("Avl barracks deployed at:");
             console.log(address(barracks));
+
+            // Initialize barracks
+            console.log("Initializing CCIP on barrracks...");
+            barracks.initializeReceiver(DEPLOYED_SEPOLIA_COLLECTION);
         }
         vm.stopBroadcast();
     }

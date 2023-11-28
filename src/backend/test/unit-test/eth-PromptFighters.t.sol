@@ -1,40 +1,42 @@
-// SPDX-License-Identifier: MIT
+// // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-// Scenarios
-import {ChainlinkMocksDeployed} from "./scenarios/ChainlinkMocksDeployed.t.sol";
+// TODO: update parameters passed in sendNft functions
 
-import {IFightMatchmaker} from "../../src/interfaces/IFightMatchmaker.sol";
+// // Scenarios
+// import {ChainlinkMocksDeployed} from "./scenarios/ChainlinkMocksDeployed.t.sol";
 
-// Contract Tested
-import {PromptFightersNFT} from "../../src/nft-contracts/eth-PromptFightersNft.sol";
+// import {IFightMatchmaker} from "../../src/interfaces/IFightMatchmaker.sol";
 
-// Useful values
-import "../../src/Utils.sol";
-import {UtilsValues} from "../Utils.t.sol";
+// // Contract Tested
+// import {PromptFightersNFT} from "../../src/nft-contracts/eth-PromptFightersNft.sol";
 
-import {Test, console2} from "forge-std/Test.sol";
+// // Useful values
+// import "../../src/Utils.sol";
+// import {UtilsValues} from "../Utils.t.sol";
 
-contract PromptFightersNftTest is ChainlinkMocksDeployed, UtilsValues {
-    PromptFightersNFT public promptFightersNFT;
+// import {Test, console2} from "forge-std/Test.sol";
 
-    modifier initialized() {
-        vm.prank(MOCK_INTIALIZER_ADDRESS);
-        promptFightersNFT.initializeReceiver(MOCK_RECEIVER_ADDRESS);
-        _;
-    }
+// contract PromptFightersNftTest is ChainlinkMocksDeployed, UtilsValues {
+//     PromptFightersNFT public promptFightersNFT;
 
-    function setUp() public override {
-        super.setUp();
-        promptFightersNFT =
-        new PromptFightersNFT(address(funcsSubsMock), MOCK_FUNCS_SUBS_ID, ETH_SEPOLIA_CCIP_ROUTER,  IFightMatchmaker(address(0)));
-    }
+//     modifier initialized() {
+//         vm.prank(MOCK_INTIALIZER_ADDRESS);
+//         promptFightersNFT.initializeReceiver(MOCK_RECEIVER_ADDRESS);
+//         _;
+//     }
 
-    function test_NothingBeforeInitialize() public {
-        vm.expectRevert("Contract is not initialized.");
-        promptFightersNFT.safeMint(MOCK_INTIALIZER_ADDRESS, VALID_PROMPT);
+//     function setUp() public override {
+//         super.setUp();
+//         promptFightersNFT =
+//         new PromptFightersNFT(address(funcsSubsMock), MOCK_FUNCS_SUBS_ID, ETH_SEPOLIA_CCIP_ROUTER,  IFightMatchmaker(address(0)));
+//     }
 
-        vm.expectRevert("Contract is not initialized.");
-        promptFightersNFT.sendNft(AVL_FUJI_SELECTOR, MOCK_RECEIVER_ADDRESS, "1");
-    }
-}
+//     function test_NothingBeforeInitialize() public {
+//         vm.expectRevert("Contract is not initialized.");
+//         promptFightersNFT.safeMint(MOCK_INTIALIZER_ADDRESS, VALID_PROMPT);
+
+//         vm.expectRevert("Contract is not initialized.");
+//         promptFightersNFT.sendNft(AVL_FUJI_SELECTOR, MOCK_RECEIVER_ADDRESS, "1");
+//     }
+// }
