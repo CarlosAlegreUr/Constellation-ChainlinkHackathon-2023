@@ -123,7 +123,7 @@ contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient,
         returns (bytes32 requestId)
     {
         FunctionsRequest.Request memory req;
-        req.initializeRequestForInlineJavaScript(_cfParam.source);
+        req.initializeRequestForInlineJavaScript(FIGHT_GENERATION_SCRIPT);
         req.addSecretsReference(_cfParam.encryptedSecretsUrls);
         if (_cfParam.args.length > 0) req.setArgs(_cfParam.args); // Args are NFT prompts.
 

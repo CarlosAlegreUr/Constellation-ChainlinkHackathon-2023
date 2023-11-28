@@ -1,39 +1,3 @@
-## Install Dependencies ⚙️
-
-<details> <summary> Install Dependencies ⚙️ </summary>
-
-Forge install open zepelin contrats, chainlink contracts, forge-std.
-
-Chainlink ccip contracts cant be installed with forge, create in your computer a different directory
-and use npm or yarn to install them then coppy the node_modules folder inside the lib folder under the name
-of node_modules_ccip.
-
-forge install (name of other packages)
-
-npm install @chainlink/contracts-ccip --save
-
-</details>
-
----
-
-## Deploy backend and run front-end 🧑‍💻
-
-<details> <summary> Deploy backend and run front-end 🧑‍💻 </summary>
-
-```bash
-bla bla...
-```
-
-</details>
-
----
-
-## Run Tests 🤖
-
-Run test instructions in here [./test](./test/).
-
----
-
 ## Naming convention 📝
 
 <details> <summary> Naming convention 📝 </summary>

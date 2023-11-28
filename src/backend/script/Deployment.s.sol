@@ -21,8 +21,8 @@ contract DeployFightsContracts is Script {
 
     function setUp() public virtual {}
 
+    // @notice NO BROADCAST IS STARTED NEITHER STOPPED HERE
     function run() public virtual {
-        vm.startBroadcast();
         // Deploy Executor
         FightExecutor fightExecutor = new FightExecutor(funcs_router, funcs_subsId, vrf_router);
         console.log("FightExecutor deployed at:");
@@ -42,7 +42,5 @@ contract DeployFightsContracts is Script {
         fightExecutor.initializeMatchmaker(fightMatchmaker);
         fightMatchmaker.initializeContracts(fightExecutor, betsVault);
         betsVault.initializeMatchmaker(fightMatchmaker);
-
-        vm.stopBroadcast();
     }
 }

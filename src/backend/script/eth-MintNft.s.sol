@@ -22,7 +22,6 @@ contract MintNft is Script {
 
     function run() public virtual {
         vm.startBroadcast();
-        collectionContract.initializeReceiver(address(7));
         i_LINK_TOKEN.approve(DEPLOYED_SEPOLIA_COLLECTION, 3 ether);
         collectionContract.safeMint(DEPLOYER, NFT_VALID_PROMPT);
         vm.stopBroadcast();
