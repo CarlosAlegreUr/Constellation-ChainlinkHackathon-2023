@@ -53,7 +53,7 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
     address immutable i_funcsSubsAccess;
     address immutable i_vrfSubsAccess;
 
-    constructor(address _funcsRouter, address _vrfCoordinator) {
+    constructor(address _funcsRouter, uint64 _funcSubsId, address _vrfCoordinator) {
         i_LINK_TOKEN = block.chainid == ETH_SEPOLIA_CHAIN_ID
             ? LinkTokenInterface(ETH_SEPOLIA_LINK)
             : LinkTokenInterface(AVL_FUJI_LINK);
@@ -61,8 +61,12 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
         i_vrfSubsId = VRFCoordinatorV2Interface(_vrfCoordinator).createSubscription();
         VRFCoordinatorV2Interface(_vrfCoordinator).addConsumer(i_vrfSubsId, address(this));
 
-        i_funcsSubsId = IFunctionsSubscriptions(_funcsRouter).createSubscription();
-        IFunctionsSubscriptions(_funcsRouter).addConsumer(i_funcsSubsId, address(this));
+        i_funcsSubsId = _funcSubsId;
+
+        // @dev Doesn't work, needs to accept TermsOfService first, so far this is only
+        // possible trhough Chainlink's API.
+        // IFunctionsSubscriptions(_funcsRouter).createSubscription();
+        // IFunctionsSubscriptions(_funcsRouter).addConsumer(i_funcsSubsId, address(this));
 
         i_funcsSubsAccess = _funcsRouter;
         i_vrfSubsAccess = _vrfCoordinator;

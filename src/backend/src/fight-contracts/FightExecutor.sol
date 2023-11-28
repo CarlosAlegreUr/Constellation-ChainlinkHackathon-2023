@@ -62,9 +62,9 @@ contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient,
     mapping(bytes32 => bytes32) s_requestsIdToFightId;
     mapping(bytes32 => address) s_requestsIdToUser;
 
-    constructor(address _router, address _vrfCoordinator)
-        ChainlinkSubsManager(_router, _vrfCoordinator)
-        FunctionsClient(_router)
+    constructor(address _funcsRouter, uint64 _funcSubsId, address _vrfCoordinator)
+        ChainlinkSubsManager(_funcsRouter, _funcSubsId, _vrfCoordinator)
+        FunctionsClient(_funcsRouter)
         VRFConsumerBaseV2(_vrfCoordinator)
     {
         i_VRF_COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
@@ -101,7 +101,7 @@ contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient,
         );
         require(cfParam.bytesArgs.length == 0, "We don't use off-chain encoded data here.");
         require(
-            keccak256(abi.encode(cfParam.source)) == GENERATE_FIGHT_SCRIPT,
+            keccak256(abi.encode(cfParam.source)) == GENERATE_FIGHT_SCRIPT_HASH,
             "Thats not a PromptFighters fight execution file."
         );
         _;
@@ -123,7 +123,7 @@ contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient,
         returns (bytes32 requestId)
     {
         FunctionsRequest.Request memory req;
-        req.initializeRequestForInlineJavaScript(_cfParam.source);
+        req.initializeRequestForInlineJavaScript(FIGHT_GENERATION_SCRIPT);
         req.addSecretsReference(_cfParam.encryptedSecretsUrls);
         if (_cfParam.args.length > 0) req.setArgs(_cfParam.args); // Args are NFT prompts.
 

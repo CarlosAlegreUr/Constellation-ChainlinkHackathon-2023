@@ -10,6 +10,7 @@ contract UtilsValues is Test {
     address public MOCK_MATCHMAKER_ADDRESS = makeAddr("mock-matchmaker");
     address public MOCK_EXECUTOR_ADDRESS = makeAddr("mock-executor");
 
+    uint64 public MOCK_FUNCS_SUBS_ID = 1;
 
     address public PLAYER_ONE = makeAddr("player1");
     address public PLAYER_TWO = makeAddr("player2");

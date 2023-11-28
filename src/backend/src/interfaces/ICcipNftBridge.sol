@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import {ICcipMessageCoder} from "./ICcipMessageCoder.sol";
+
 /**
  * @title ICcipNftBridge
  * @author PromtFighters team: Carlos
  * @dev Interface for all the contracts that move fighter NFTs around.
  */
-interface ICcipNftBridge {
+interface ICcipNftBridge is ICcipMessageCoder {
     // Events
     event ICCIPNftBridge__NftSent(
         address indexed user, uint64 indexed chainSelector, string indexed nftId, uint256 timestamp
@@ -25,13 +27,12 @@ interface ICcipNftBridge {
      * You can only fight with your NFT on the chain it currently is.
      * For simplicity to use CCIP you have to pay with the native coin -> msg.value
      *
-     * @param destinationChainSelector The identifier (aka selector) for the destination blockchain.
      * @param receiver The address of the recipient on the destination blockchain.
      * FighterBarracks.sol in this project or the NFT collection when moving to Sepolia.
      * @param nftId The text to be sent. In this case it must be the string version of your NFT ID.
      * @return messageId The ID of the CCIP message that was sent. Maybe there is no need for this.
      */
-    function sendNft(uint64 destinationChainSelector, address receiver, string calldata nftId)
+    function sendNft(address receiver, string calldata nftId, string calldata nftIdStringLength)
         external
         payable
         returns (bytes32 messageId);
@@ -49,10 +50,11 @@ interface ICcipNftBridge {
      *
      * Therefore ownerOf() doesn't exist as those contracts are not ERC721 but just
      * ownership mappings assigned at transfered time. So we need a function to generalize
-     * the way we access the ownership state and comfortable use the same Matchmaker contracts
-     * in each chain.
+     * the way we access the ownership state.
      *
      * TODO: revise Matchmaker an associeted contracts to use getOwnerOf()
      */
     function getOwnerOf(uint256 _nftId) external view returns (address);
+
+    function getPromptOf(uint256 _nftId) external view returns (string memory);
 }

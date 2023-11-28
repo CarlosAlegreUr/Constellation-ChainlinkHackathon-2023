@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import "./Utils.sol";
+
 /**
  * @title Initializable
  * @author PromtFighters team: Carlos
@@ -11,7 +13,7 @@ contract Initializable {
     bool s_isInitializedLock;
 
     // @dev: TODO This must be an address owned by the deployer of the system.
-    address constant INTIALIZER_ADDRESS = address(777);
+    address constant INTIALIZER_ADDRESS = DEPLOYER;
 
     /**
      * @dev Add in all functions that shouldn't be used before the other
