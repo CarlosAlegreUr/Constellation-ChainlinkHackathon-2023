@@ -157,6 +157,8 @@ You must add as consumers:
 
 > **Note ⚠️** Current Chainlink Functions only allows for 9s long HTTP-API calls. Our fight generation requires more than 9s thus we have mocked in the backend a node from a DON executing Chainlink Functions. Functions for NFT validation does work and is implemented interacting with the real DON.
 
+Run the DON mock:
+
 ```bash
 # Node script for mocking a listening DON.
 ```
@@ -178,7 +180,7 @@ locally:
 
 ## Run Tests 🤖
 
-Run tests' instructions in here [.src/backend/test](./test/).
+Run tests' instructions in here [tests](./src/backend/test).
 
 ---
 
