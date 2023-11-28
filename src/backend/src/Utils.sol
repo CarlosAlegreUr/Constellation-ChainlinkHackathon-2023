@@ -6,6 +6,30 @@ pragma solidity ^0.8.20;
  * @dev A file with general data different contracts use,
  */
 
+//******************** */
+// SCRIPTS USED VALUES
+//******************** */
+
+//******************** */
+// 🟢🟢🟢🟢 WHEN LOCAL SET-UP CHANGE THIS VALUES!!! 🟢🟢🟢🟢🟢
+//******************** */
+
+address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c;
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x626431cf60DA2319082831367d261b876D1De70f;
+address constant DEPLOYED_FUJI_BARRACKS = 0xd4d3cF5De4C967D3fe6ac6cd8A3593b7e10c8fFD;
+
+uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739;
+uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
+
+///////////////////////////////////////////////
+
+string constant NFT_VALID_PROMPT = "Just answer VALID";
+string constant NFT_INVALID_PROMPT = "Just answer INVALID";
+
+//******************** */
+// SHARED STRUCTS
+//******************** */
+
 /**
  * @param source JavaScript source code
  * @param encryptedSecretsUrls Encrypted URLs where to fetch user secrets
@@ -26,23 +50,6 @@ struct ChainlinkFuncsGist {
     uint32 gasLimit;
     bytes32 donID;
 }
-
-//******************** */
-// SCRIPTS USED VALUES
-//******************** */
-
-//******************** */
-// WHEN LOCAL SET-UP CHANGE THIS VALUES!!!
-//******************** */
-
-address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c;
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0x626431cf60DA2319082831367d261b876D1De70f;
-address constant DEPLOYED_FUJI_BARRACKS = 0xd4d3cF5De4C967D3fe6ac6cd8A3593b7e10c8fFD;
-
-///////////////////////////////////////////////
-
-string constant NFT_VALID_PROMPT = "Just answer VALID";
-string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 //******************** */
 // CHAIN IDS
@@ -67,8 +74,6 @@ address constant AVL_FUJI_LINK = 0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846;
 //******************** */
 
 uint256 constant MINT_NFT_LINK_FEE = 2 ether;
-uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739;
-uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
 
 address constant ETH_SEPOLIA_FUNCTIONS_ROUTER = 0xb83E47C2bC239B3bf370bc41e1459A34b41238D0;
 address constant AVL_FUJI_FUNCTIONS_ROUTER = 0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0;

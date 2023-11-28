@@ -140,6 +140,21 @@ Now change in [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_FUJI
 forge script script/00-Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast -vvvv
 ```
 
+**TODO**: if we have time automate this process with chainlink tool-kit
+Now go to the [Chanlink Functions UI](https://functions.chain.link/) and create subscriptions for the Fuji testnet and for the Sepolia testnet, then change the its value in [Utils.sol](./src/backend/src/Utils.sol)
+
+```solidity
+// Utils.sol
+
+uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = YOUR_ID;
+uint64 constant AVL_FUJI_FUNCS_SUBS_ID = YOUR_ID;
+```
+
+You must add as consumers:
+
+- In sepolia the collection address.
+- `FightExecutor.sol` in both chains (not really in current implementation as we are mocking a DON)
+
 > **Note ⚠️** Current Chainlink Functions only allows for 9s long HTTP-API calls. Our fight generation requires more than 9s thus we have mocked in the backend a node from a DON executing Chainlink Functions. Functions for NFT validation does work and is implemented interacting with the real DON.
 
 ```bash
