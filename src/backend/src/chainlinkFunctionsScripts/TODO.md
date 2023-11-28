@@ -1,5 +1,7 @@
 ## TODO
 
+- Create new model that won't use chainlink functions
+
 ### Prompt engineering
 
 - Minting Figther:
