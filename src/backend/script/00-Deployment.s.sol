@@ -31,6 +31,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             console.log("We are in SEPOLIA");
             // Deploys all contracts that are shared accross chans.
             super.run();
+
             // Deploy collection
             console.log("Deploying collection...");
             PromptFightersNFT promptFighters =
@@ -41,6 +42,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             console.log("We are in FUJI");
             // Deploys all contracts that are shared accross chans.
             super.run();
+
             // Deploy barracks
             FightersBarracks barracks =
                 new FightersBarracks(AVL_FUJI_CCIP_ROUTER, DEPLOYED_SEPOLIA_COLLECTION, fightMatchmaker);

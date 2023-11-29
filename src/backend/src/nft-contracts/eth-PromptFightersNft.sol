@@ -37,19 +37,18 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
     using FunctionsRequest for FunctionsRequest.Request;
 
     // Initialized at 1 as nftId is used as the empty value in some systems' logic.
-    uint256 private _nextTokenId = 1;
+    uint256 public _nextTokenId = 1;
 
     // On-chain traits
-    mapping(uint256 => string) s_nftIdToPrompt;
-    // @notice Commented out to simplify POC
-    // mapping(uint256 => bool) private s_winsCount;
-    // mapping(uint256 => bool) private s_losesCount;
+    // Prompt is in bytes, to get human readable do hex-to-string
+    // prompt format: descrpition traits separated by "-"
+    mapping(uint256 => bytes) public s_nftIdToPrompt;
 
     // Chainlink Functions Management
     LinkTokenInterface private immutable i_LINK_TOKEN;
     uint64 private immutable i_funcsSubsId;
     bytes32 private immutable i_DON_ID;
-    mapping(bytes32 => address) s_reqIdToUser;
+    mapping(bytes32 => address) public s_reqIdToUser;
 
     // CCIP reciever address initialization
     // to connect the briged contracts one must be deployed first and the other one
@@ -144,8 +143,11 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
      * @param response If its a success the prompt the user wrote is saved here as a string.
      * @param err If ther is an error it means ChatGPT deemd the NFT invalid.
      */
+
     function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
-        if (err.length > 0 && s_reqIdToUser[requestId] != address(0)) {
+        // For some reason when there is an error err.length > 0. TODO: figure out how to no enter
+        // this "if" when error ocures
+        if (s_reqIdToUser[requestId] != address(0)) {
             uint256 tokenId = _nextTokenId;
             _nextTokenId++;
 
@@ -153,10 +155,8 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
             s_isOnChain[tokenId] = true;
             _safeMint(s_reqIdToUser[requestId], tokenId);
 
-            // Decode prompt from response TODO I'm not sure if this is the right way
-            string memory prompt = abi.decode(response, (string));
-            s_nftIdToPrompt[tokenId] = prompt;
-            emit PromptFighters__NftMinted(ownerOf(tokenId), tokenId);
+            s_nftIdToPrompt[tokenId] = response;
+            emit PromptFighters__NftMinted(ownerOf(tokenId), tokenId, response, err, block.timestamp);
         }
         delete s_reqIdToUser[requestId];
     }
@@ -170,8 +170,10 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         arg[0] = _nftPrompt;
 
         FunctionsRequest.Request memory req;
-        req.initializeRequestForInlineJavaScript(NFT_GENERATION_SCRIPT);
+        req.initializeRequestForInlineJavaScript(NFT_GENERATION_SCRIPT_MOCK);
         req.setArgs(arg); // Args are NFT prompts.
+
+        // TODO: Add url for GPT-API
 
         bytes32 lastRequestId = _sendRequest(req.encodeCBOR(), i_funcsSubsId, GAS_LIMIT_NFT_GENERATION, i_DON_ID);
 
@@ -188,7 +190,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         override(CcipNftBridge, IPromptFightersCollection)
         returns (string memory)
     {
-        return s_nftIdToPrompt[_nftId];
+        return abi.decode(s_nftIdToPrompt[_nftId], (string));
     }
 
     function getOwnerOf(uint256 _nftId) public view override returns (address) {
@@ -206,11 +208,8 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(
-            /*virtual*/
-            ERC721,
-            CCIPReceiver
-        )
+        /*virtual*/
+        override(ERC721, CCIPReceiver)
         returns (bool)
     {
         return ERC721.supportsInterface(interfaceId) || CCIPReceiver.supportsInterface(interfaceId);

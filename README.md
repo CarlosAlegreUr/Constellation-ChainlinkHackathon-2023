@@ -130,13 +130,13 @@ forge script script/00-Deployment.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-k
 Now in the [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION` address value to the one you will se printed onto the screen and after run:
 
 ```bash
-forge script script/00-Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast -vvvv
+forge script script/00-Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast
 ```
 
 Now change in [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_FUJI_BARRACKS` address value to the one you will se printed onto the screen and after run:
 
 ```bash
-forge script script/00-Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast -vvvv
+forge script script/00-Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
 ```
 
 **TODO**: if we have time automate this process with chainlink tool-kit
