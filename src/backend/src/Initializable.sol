@@ -3,6 +3,8 @@ pragma solidity ^0.8.20;
 
 import "./Utils.sol";
 
+// TODO: use CREATE2 instead
+
 /**
  * @title Initializable
  * @author PromtFighters team: Carlos

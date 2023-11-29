@@ -190,7 +190,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         override(CcipNftBridge, IPromptFightersCollection)
         returns (string memory)
     {
-        return abi.decode(s_nftIdToPrompt[_nftId], (string));
+        return string(s_nftIdToPrompt[_nftId]);
     }
 
     function getOwnerOf(uint256 _nftId) public view override returns (address) {

@@ -16,6 +16,8 @@ import {CCIPReceiver} from "./libEdits/edit-CCIPReceiver.sol";
 
 import "./Utils.sol";
 
+import "forge-std/console.sol";
+
 /**
  * @title CcipNftBridge
  * @author PromtFighters team: Carlos
@@ -99,9 +101,9 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, Initializable {
 
         uint256 nftIdInt = stringToUint(_nftId);
         _sendNftCrossChainChecksAndUpdates(nftIdInt);
-
+        console.log("PATATA");
         string memory codedCcipMessage = codeSendNftMessage(_nftId, _nftIdStringLength, getPromptOf(nftIdInt));
-
+        // console.log(codedCcipMessage);
         // Create an EVM2AnyMessage struct in memory with necessary information for sending a cross-chain message
         Client.EVM2AnyMessage memory evm2AnyMessage = _buildCCIPMessage(_receiver, codedCcipMessage, address(0));
 
@@ -267,9 +269,7 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, Initializable {
         require(delimiterIndex > 0 && delimiterIndex < ccipTextBytes.length, "Invalid delimiter index");
 
         bytes memory nftId = new bytes(delimiterIndex);
-        bytes memory nftPrompt = new bytes(
-            ccipTextBytes.length - delimiterIndex - 1
-        );
+        bytes memory nftPrompt = new bytes(ccipTextBytes.length - delimiterIndex - 1);
 
         for (uint256 i = 1; i <= delimiterIndex; i++) {
             nftId[i - 1] = ccipTextBytes[i];

@@ -15,15 +15,16 @@ pragma solidity ^0.8.20;
 //******************** */
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c;
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0x7f2A638e35F7dED8320fC4Cb1fb5b68aD54Bfd84;
-address constant DEPLOYED_FUJI_BARRACKS = 0xe9297d77B686d73d4Ab45547B4b6b79Ad690BE23;
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x47C01ccB7a7408a64356cFF11d0f0B288E7643c7;
+address constant DEPLOYED_FUJI_BARRACKS = 0x75Ec4AFc6163083A616c6F4B3735C5e2A19152ce;
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739;
 uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
 
 ///////////////////////////////////////////////
 
-string constant NFT_VALID_PROMPT = "a Just A prompt Named Juan-he is geourgious human-his weapon is love-he can fly-he is scared of birds";
+string constant NFT_VALID_PROMPT =
+    "a Just uan-he is gn idddddddddddddddddddds love-hddassssssssssssse can fly-he isdasdasdsaof birds";
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 //******************** */
@@ -108,8 +109,8 @@ uint16 constant AVL_FUJI_REQ_CONFIRIMATIONS = 3;
 // Estimate is 20.000 gas per word, we distribute bets "within" this function
 // so lets keep it up. Proper testing of gas consumption should be made in order
 // to assert a fitter value.
-uint32 constant ETH_SEPOLIA_CALLBACK_GAS_LIMIT = 55_000;
-uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT = 55_000;
+uint32 constant ETH_SEPOLIA_CALLBACK_GAS_LIMIT = 2_000_000;
+uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT = 2_000_000;
 
 //******************** */
 // Chainlink CCIP
@@ -120,6 +121,8 @@ address constant AVL_FUJI_CCIP_ROUTER = 0x554472a2720E5E7D5D3C817529aBA05EEd5F82
 
 uint64 constant ETH_SEPOLIA_SELECTOR = 16015286601757825753;
 uint64 constant AVL_FUJI_SELECTOR = 14767482510784806043;
+
+uint256 constant SEND_NFT_PRICE = 0.1 ether;
 
 //******************** */
 // SHARED CONSTANTS
