@@ -23,7 +23,7 @@ uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
 
 ///////////////////////////////////////////////
 
-string constant NFT_VALID_PROMPT = "atoma toma tomate-mecaguendios-tomaya";
+string constant NFT_VALID_PROMPT = "a Just A prompt Named Juan-he is geourgious human-his weapon is love-he can fly-he is scared of birds";
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 //******************** */

@@ -209,10 +209,10 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         public
         view
         /*virtual*/
-        override(ERC721, CCIPReceiver)
+        override(ERC721, CcipNftBridge)
         returns (bool)
     {
-        return ERC721.supportsInterface(interfaceId) || CCIPReceiver.supportsInterface(interfaceId);
+        return ERC721.supportsInterface(interfaceId) || CcipNftBridge.supportsInterface(interfaceId);
     }
 
     // The following functions are inherited from CcipNftBridge and are only

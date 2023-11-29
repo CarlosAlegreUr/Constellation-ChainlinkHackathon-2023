@@ -1,4 +1,5 @@
 # Contribution guidelines 🚧👷⚠️
+
 ## (delete this section before dev branch is merged to main)
 
 Just` create branches` for any work you do `that originate from` this `dev branch`.
@@ -71,25 +72,26 @@ Well say no more, we present... **_`PROMPT FIGHTERS`_** ❗
 git clone https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023.git
 ```
 
-2. **Initialize foundry and forge**
-
-> **Note ⚠️** We've included a `/lib` folder in the repository containing all necessary dependencies. This is due to modifications made to some CCIP files for resolving variable name conflicts with other Chainlink libraries.
-
-**TODO, to complete**:
+2. **Initialize foundry, forge and dependencies**
 
 ```bash
-cd ./src/backend
+cd ./ConstellationChainlinkHackathon2023/src/backend
 foundryup
 forge init
 forge install --no-commit OpenZeppelin/openzeppelin-contracts
 forge install --no-commit smartcontractkit/chainlink
 # forge install foundry-rs/forge-std
 
-# Chainlink ccip contracts cant be installed with forge, create in your computer a different directory
-# and use npm or yarn to install them then coppy the node_modules folder inside the lib folder under the name
-# of node_modules_ccip.
-# Use this to isntall CCIP contracts somewhere else.
+# Chainlink ccip contracts cant be installed with forge
+
+# Use this to isntall CCIP contracts in "./src/backend" (you should already be here)
 npm install @chainlink/contracts-ccip --save
+
+# Change the name to node_modules_ccip
+mv ./node_modules ./node_modules_ccip
+
+# Move it inside the /lib diretory
+mv ./node_modules_ccip ./lib
 ```
 
 3. **Run the Backend and forge scripts**
