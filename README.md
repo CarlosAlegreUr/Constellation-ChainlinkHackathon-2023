@@ -72,26 +72,40 @@ Well say no more, we present... **_`PROMPT FIGHTERS`_** ❗
 git clone https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023.git
 ```
 
-2. **Initialize foundry and forge**
-
-> **Note ⚠️** We've included a `/lib` folder in the repository containing all necessary dependencies. This is due to modifications made to some CCIP files for resolving variable name conflicts with other Chainlink libraries.
-
-**TODO, to complete**:
+2. **Initialize foundry, forge and dependencies**
 
 ```bash
-cd ./src/backend
+cd ./ConstellationChainlinkHackathon2023/src/backend
 foundryup
-forge init
-forge install --no-commit OpenZeppelin/openzeppelin-contracts
-forge install --no-commit smartcontractkit/chainlink
-# forge install foundry-rs/forge-std
+forge init --force --no-commit
+forge install --no-commit OpenZeppelin/openzeppelin-contracts@932fddf69a699a9a80fd2396fd1a2ab91cdda123
 
-# Chainlink ccip contracts cant be installed with forge, create in your computer a different directory
-# and use npm or yarn to install them then coppy the node_modules folder inside the lib folder under the name
-# of node_modules_ccip.
-# Use this to isntall CCIP contracts somewhere else.
+forge install --no-commit smartcontractkit/chainlink@cdb0c6a6089d3a69dd09a9b0a9fbdd070eaeb442
+
+# Chainlink ccip contracts cant be installed with forge
+
+# Use this to isntall CCIP contracts in "./src/backend" (you should already be here)
+
+# Just leave everythin empty and press enter
+npm init
 npm install @chainlink/contracts-ccip --save
+
+# Change the name to node_modules_ccip
+mv ./node_modules ./node_modules_ccip
+
+# Move it inside the /lib diretory
+mv ./node_modules_ccip ./lib
+# ⚠️ Wait until all has moved correctly
+# ⚠️ node_modules_ccip should be now ONLY inside ./lib
+# Notice ℹ️ you can remove package.jon and package-lock.json
+# if you want.
 ```
+
+***The /lib directory should now look like this:***
+
+<img src="./repo-images/lib-example.png">
+
+<br/>
 
 3. **Run the Backend and forge scripts**
 
@@ -131,13 +145,13 @@ forge script script/00-Deployment.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-k
 Now in the [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION` address value to the one you will se printed onto the screen and after run:
 
 ```bash
-forge script script/00-Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast -vvvv
+forge script script/00-Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast
 ```
 
 Now change in [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_FUJI_BARRACKS` address value to the one you will se printed onto the screen and after run:
 
 ```bash
-forge script script/00-Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast -vvvv
+forge script script/00-Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
 ```
 
 **TODO**: if we have time automate this process with chainlink tool-kit

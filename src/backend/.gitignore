@@ -15,7 +15,7 @@ docs/
 .env
 
 # Libraries used
-lib/
+/lib
 
 node_modules
 .env
@@ -31,3 +31,4 @@ node_modules
 # solidity-coverage files
 /coverage
 /coverage.json
+.gas-snapshot

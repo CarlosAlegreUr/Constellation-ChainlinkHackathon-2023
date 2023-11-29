@@ -9,7 +9,10 @@ import {Initializable} from "./Initializable.sol";
 import {IRouterClient} from "@chainlink-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {OwnerIsCreator} from "@chainlink-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {Client} from "@chainlink-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
+// import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
+
+// Using personalized version for compatibility with Chainlink Functions
+import {CCIPReceiver} from "./libEdits/edit-CCIPReceiver.sol";
 
 import "./Utils.sol";
 
@@ -217,6 +220,21 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, Initializable {
     function getOwnerOf(uint256 _nftId) public view virtual returns (address);
 
     function getPromptOf(uint256 _nftId) public view virtual returns (string memory);
+
+    // @notice Overriden so in the contracts with inheriting conflict they can still
+    // access CCIPReceiver its IERC165.
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        /**
+         * @notice Changed to view for funcs compatibility
+         */
+        virtual
+        override
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
 
     //************************ */
     // CCIP MESSAGE ENCODING FUNCS

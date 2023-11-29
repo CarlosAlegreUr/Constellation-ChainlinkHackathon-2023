@@ -8,7 +8,9 @@ pragma solidity ^0.8.20;
  */
 interface IPromptFightersCollection {
     // Events
-    event PromptFighters__NftMinted(address indexed owner, uint256 nftId);
+    event PromptFighters__NftMinted(
+        address indexed owner, uint256 nftId, bytes funcsResponse, bytes funcsError, uint256 timestamp
+    );
 
     // Functions
 

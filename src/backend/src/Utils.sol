@@ -15,7 +15,7 @@ pragma solidity ^0.8.20;
 //******************** */
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c;
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0xB276Ef6E9a2810eAA8b24FF114647656D1e9D41b;
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x7f2A638e35F7dED8320fC4Cb1fb5b68aD54Bfd84;
 address constant DEPLOYED_FUJI_BARRACKS = 0xe9297d77B686d73d4Ab45547B4b6b79Ad690BE23;
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739;
@@ -23,7 +23,7 @@ uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
 
 ///////////////////////////////////////////////
 
-string constant NFT_VALID_PROMPT = "Just answer VALID";
+string constant NFT_VALID_PROMPT = "a Just A prompt Named Juan-he is geourgious human-his weapon is love-he can fly-he is scared of birds";
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 //******************** */
@@ -84,8 +84,8 @@ bytes32 constant ETH_SEPOLIA_DON_ID = 0x66756e2d657468657265756d2d7365706f6c6961
 bytes32 constant AVL_FUJI_DON_ID = 0x66756e2d6176616c616e6368652d66756a692d31000000000000000000000000;
 
 // Propper gas limits should be tested and set, 35.000 is just a random first try.
-uint32 constant GAS_LIMIT_FIGHT_GENERATION = 35_000;
-uint32 constant GAS_LIMIT_NFT_GENERATION = 35_000;
+uint32 constant GAS_LIMIT_FIGHT_GENERATION = 300_000;
+uint32 constant GAS_LIMIT_NFT_GENERATION = 300_000;
 
 // source.js - Files executed by CLFunctions at the end of this file.
 
@@ -136,6 +136,11 @@ uint256 constant NOT_DECIDING_WINNER_VALUE = 2;
 // TODO: add final files
 bytes32 constant GENERATE_FIGHT_SCRIPT_HASH = keccak256(abi.encode(FIGHT_GENERATION_SCRIPT));
 bytes32 constant GENERATE_NFT_SCRIPT_HASH = keccak256(abi.encode(NFT_GENERATION_SCRIPT));
+
+string constant NFT_GENERATION_SCRIPT_MOCK = "console.log(\"date is: \", Date.now());\n\n"
+    "function splitString(input) {\n" "  return input.split(\"-\");\n" "}\n\n" "const fullPrompt = args[0];\n"
+    "const parts = splitString(fullPrompt);\n\n" "let result;\n" "if (parts[0][0] == \"a\") {\n" "  result = args[0];\n"
+    "} else {\n" "  result = \"INVALID\";\n" "}\n" "console.log(result);\n" "return Functions.encodeString(result);";
 
 string constant NFT_GENERATION_SCRIPT = "console.log(\"date is: \", Date.now());\n\n"
     "const gptPrompt = `Take a deep breath and do 1 thing:\n\n" "1.- Deem the description VALID or INVALID\n\n"
