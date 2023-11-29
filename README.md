@@ -101,8 +101,11 @@ mv ./node_modules_ccip ./lib
 # if you want.
 ```
 
-The /lib directory should look like this:
+***The /lib directory should now look like this:***
+
 <img src="./repo-images/lib-example.png">
+
+<br/>
 
 3. **Run the Backend and forge scripts**
 
