@@ -77,14 +77,17 @@ git clone https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023.
 ```bash
 cd ./ConstellationChainlinkHackathon2023/src/backend
 foundryup
-forge init
-forge install --no-commit OpenZeppelin/openzeppelin-contracts
-forge install --no-commit smartcontractkit/chainlink
-# forge install foundry-rs/forge-std
+forge init --force --no-commit
+forge install --no-commit OpenZeppelin/openzeppelin-contracts@932fddf69a699a9a80fd2396fd1a2ab91cdda123
+
+forge install --no-commit smartcontractkit/chainlink@cdb0c6a6089d3a69dd09a9b0a9fbdd070eaeb442
 
 # Chainlink ccip contracts cant be installed with forge
 
 # Use this to isntall CCIP contracts in "./src/backend" (you should already be here)
+
+# Just leave everythin empty and press enter
+npm init
 npm install @chainlink/contracts-ccip --save
 
 # Change the name to node_modules_ccip
@@ -92,7 +95,14 @@ mv ./node_modules ./node_modules_ccip
 
 # Move it inside the /lib diretory
 mv ./node_modules_ccip ./lib
+# ⚠️ Wait until all has moved correctly
+# ⚠️ node_modules_ccip should be now ONLY inside ./lib
+# Notice ℹ️ you can remove package.jon and package-lock.json
+# if you want.
 ```
+
+The /lib directory should look like this:
+<img src="./repo-images/lib-example.png">
 
 3. **Run the Backend and forge scripts**
 
