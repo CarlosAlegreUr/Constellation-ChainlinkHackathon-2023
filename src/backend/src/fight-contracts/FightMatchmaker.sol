@@ -7,6 +7,10 @@ import {IBetsVault} from "../interfaces/IBetsVault.sol";
 import {PromptFightersNFT} from "../nft-contracts/eth-PromptFightersNft.sol";
 import {ChainlinkFuncsGist} from "../Utils.sol";
 import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
+import {ILogAutomation} from "../interfaces/IAutomation.sol";
+import {IAutomationRegistrar} from "../interfaces/IAutomation.sol";
+import {KeeperRegistry2_1} from "@chainlink/automation/v2_1/KeeperRegistry2_1.sol";
+// import {IAutomationForwarder} from "@chainlink/automation/interfaces/IAutomationForwarder.sol";
 
 //**************************************** */
 //            FOR DEVS!
@@ -39,59 +43,6 @@ import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterfac
  * @notice Assumes each player is engaged in only one fight at a time.
  */
 
-///////////////////////
-// AUTOMATION CONFIG //
-///////////////////////
-
-struct RegistrationParams {
-    string name;
-    bytes encryptedEmail;
-    address upkeepContract;
-    uint32 gasLimit;
-    address adminAddress;
-    uint8 triggerType;
-    bytes checkData;
-    bytes triggerConfig;
-    bytes offchainConfig;
-    uint96 amount;
-}
-
-// ESTO YO ENTIENDO QUE DEBERÍA UTILIZARSE EN registerUpkeep AL REGISTRAR
-// NUESTRO CONTRATO EN LA AUTOMATIZACIÓN,
-// PERO TODAVÍA NO HE DESCUBIERTO CÓMO SE HACE
-
-struct LogTriggerConfig {
-    address contractAddress;
-    uint8 filterSelector;
-    bytes32 topic0;
-    bytes32 topic1;
-    bytes32 topic2;
-    bytes32 topic3;
-}
-
-struct Log {
-    uint256 index; // Index of the log in the block
-    uint256 timestamp; // Timestamp of the block containing the log
-    bytes32 txHash; // Hash of the transaction containing the log
-    uint256 blockNumber; // Number of the block containing the log
-    bytes32 blockHash; // Hash of the block containing the log
-    address source; // Address of the contract that emitted the log
-    bytes32[] topics; // Indexed topics of the log
-    bytes data; // Data of the log
-}
-
-interface AutomationRegistrarInterface {
-    function registerUpkeep(RegistrationParams calldata requestParams) external returns (uint256);
-}
-
-interface ILogAutomation {
-    function checkLog(Log calldata log, bytes memory checkData)
-        external
-        returns (bool upkeepNeeded, bytes memory performData);
-
-    function performUpkeep(bytes calldata performData) external;
-}
-
 contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
     //******************** */
     // CONTRACT'S STATE
@@ -116,23 +67,31 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
 
     uint8 constant AUTOMATED_NFTS_ALLOWED = 5;
     mapping(uint256 => bool) private s_isNftAutomated;
+    mapping(uint256 nftId => uint256 automationBalance) private s_nftAutomationBalance;
     // For now, every fight you do in automated mode will have the same amount of bet.
-    mapping(uint256 => uint256) private s_atmNftToAtmBet;
-    mapping(uint256 => uint256) private s_atmNftToMinBetAcepted;
+    mapping(uint256 => uint256) private s_automatedNftBet;
+    mapping(uint256 => uint256) private s_automatedNftMinBet;
     // This mapping is treated as an array. For cheaper computation
     // every uint8 is an index and it maps to an nft id.
     // @TODO:Change to a normal array if I'm wrong cause I'm not sure.
-    mapping(uint8 => uint256) private s_nftsAutomated;
+    mapping(uint8 => uint256) private s_nftsAutomated; // BORRAR!!
+    uint256[AUTOMATED_NFTS_ALLOWED] private s_automatedNfts; 
     // Whenever someone requests a fight acceptable by anyone then it's added to this array.
     bytes32[AUTOMATED_NFTS_ALLOWED] private s_fightIdsQueue;
+    mapping(bytes32 fight => bool isAutomated) private s_isfightAutomated;
     uint8 s_nextIndexFightQueue;
+    uint8 fightQueueEmptyIndex = AUTOMATED_NFTS_ALLOWED; // default to impossible index
+    // uint8[AUTOMATED_NFTS_ALLOWED] s_emptyIndexes = [0,1,2,3,4]
 
     ///////////////////////
     // AUTOMATION /////////
     ///////////////////////
 
     LinkTokenInterface public immutable i_link;
-    AutomationRegistrarInterface public immutable i_registrar;
+    IAutomationRegistrar public immutable i_registrar;
+    KeeperRegistry2_1 public immutable i_registry;
+    address private automationForwarder;
+    uint256 constant AUTOMATION_BALANCE_THRESHOLD = 0.001 ether // ESTO HAY QUE VERLO, PORQUE DEPENDERÁ DE SI ESTAMOS EN SEPOLIA O FUJI, ENTIENDO
 
     function checkLog(Log calldata log, bytes memory)
         external
@@ -141,27 +100,53 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
     {
         // ENTIENDO QUE ESTO NO HARÁ FALTA, PORQUE HABREMOS DESCUBIERTO CÓMO INDICAR QUE FightMatchmaker__FightRequested ES
         // EL EVENTO QUE DESENCADENE LA AUTOMATIZACIÓN, PERO DE MOMENTO LO DEJO ASÍ
-        if (log.topics[0] == keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)")) {
-            upkeepNeeded = true;
-        }
-        uint256 nftId = uint256(log.topics[1]);
+        // if (log.topics[0] == keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)")) {
+        //     upkeepNeeded = true;
+        // }
+
+        upkeepNeeded = true;
+        // uint256 nftId = uint256(log.topics[1]);
         bytes32 fightId = log.topics[2];
-        performData = abi.encode(nftId, fightId);
+        // performData = abi.encode(nftId, fightId);
+        performData = abi.encode(fightId);
     }
 
-    function performUpkeep(bytes calldata performData) external override {
-        (uint256 nftId, bytes32 fightId) = abi.decode(performData, (uint256, bytes32));
-        acceptFight(fightId, nftId);
-        // ESTO HAY QUE VER CÓMO LO HACEMOS, NO TENGO CLARO SI EL CONTRATO MATCHMAKER TIENE ALGUNOS NFT PROPIOS O QUÉ
-        // POR OTRA PARTE, SI HACE FALTA EMITIR TODA ESA INFORMACIÓN EN EL EVENTO YO CREO QUE VA A ESTAR COMPLICADO
-        // emit FightMatchmaker__FightAcceptedByUpkeep(
-        // challenger,
-        // nftIdChallenger,
-        // nftIdChallengee,
-        // betChallenger,
-        // betChallengee,
-        // block.timestamp
-        // );
+    function performUpkeep(bytes calldata performData) external {
+        require(
+            msg.sender == automationForwarder,
+            "Only AutomationForwarder can perform upkeep."
+        );
+        bytes32 fightId = abi.decode(performData, bytes32);
+        uint8 randIndex = uint8(uint256(fightId) % AUTOMATED_NFTS_ALLOWED);
+        uint256 accepterNft = getFight(fightId).nftTwo; // Takes a value if requester specified challengee NFT (even though they didn't specify challengee address), 0 otherwise
+        
+        if(accepterNft != 0) {
+            if(getIsNftAutomated(accepterNft)){ // AHORA VEO QUE ESTA COMPROBACIÓN LA HICE EN acceptFight (NO TENGO CLARO DÓNDE ES MEJOR)
+                acceptFight(fightId, accepterNft);
+            } else {
+                revert FightMatchMaker__ChallengeeNftNotAutomated(accepterNft);
+            }
+        } 
+        } else {
+            for(uint8 i = randIndex; i < AUTOMATED_NFTS_ALLOWED; i++){ // hay que ver si el NFT automatizado tiene una apuesta lo suficientemente alta para aceptar la apuesta del requester
+                if(getFight(fightId).minBet <= s_automatedNftBet[s_automatedNfts[i]]) {
+                    accepterNft = s_automatedNfts[i];
+                    break;
+                }
+            }
+            for(uint8 i; i < randIndex; i++){
+                if(accepterNft != 0) break;
+                if(getFight(fightId).minBet <= s_automatedNftBet[s_automatedNfts[i]]) {
+                    accepterNft = s_automatedNfts[i];
+                }
+            }
+
+            if(accepterNft != 0){
+                acceptFight(fightId, accepterNft);
+            } else{
+                revert FightMatchMaker__NoAutomatedNftHasHighEnoughBet(fightId);
+            }
+        }
     }
 
     //******************** */
@@ -179,30 +164,37 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
         );
         _;
     }
-
+   
     constructor(
         IFightExecutor _fightExecutorAddress,
         IBetsVault _betsVaultAddress,
         PromptFightersNFT _promptFightersNftAddress,
-        LinkTokenInterface link,
-        AutomationRegistrarInterface registrar
+        LinkTokenInterface _link,
+        KeeperRegistry2_1 _registry, // Sepolia: 0x86EFBD0b6736Bed994962f9797049422A3A8E8Ad
+        IAutomationRegistrar _registrar, // Sepolia: 0xb0E49c5D0d05cbc241d68c05BC5BA1d1B7B72976
+        IAutomationRegistrar.RegistrationParams memory _params,
+        ILogAutomation.LogTriggerConfig memory _triggerConfig
     ) {
         i_FIGHT_EXECUTOR_CONTRACT = _fightExecutorAddress;
         i_BETS_VAULT = _betsVaultAddress;
         i_PROMPT_FIGHTERS_NFT = _promptFightersNftAddress;
-        i_link = link;
-        i_registrar = registrar;
-    }
-
-    function registerAndPredictID(RegistrationParams memory params) public {
-        // LINK must be approved for transfer - this can be done every time or once
-        // with an infinite approval
-        i_link.approve(address(i_registrar), params.amount);
-        uint256 upkeepID = i_registrar.registerUpkeep(params);
+        i_link = _link;
+        i_registrar = _registrar;
+        i_registry = _registry;
+        _params.triggerConfig = abi.encode(
+            _triggerConfig.contractAddress, // DIRECCIÓN DE ESTE CONTRATO FIGHTMATCHMAKER
+            _triggerConfig.filterSelector, // 2 - para que tenga en cuenta la fightId (creo)
+            _triggerConfig.topic0, // FIRMA DEL EVENTO: keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)")
+            _triggerConfig.topic1,
+            _triggerConfig.topic2, // fightId
+            _triggerConfig.topic3
+        );
+        i_link.approve(address(i_registrar), _params.amount);
+        uint256 upkeepID = i_registrar.registerUpkeep(_params);
         if (upkeepID != 0) {
-            // DEV - Use the upkeepID however you see fit
+            automationForwarder = address(i_registry.getForwarder(upkeepID));
         } else {
-            revert("auto-approve disabled");
+            revert("Chainlink upkeep registration: auto-approve disabled");
         }
     }
 
@@ -255,9 +247,18 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
             // }
 
             if (participants[1] == address(0)) {
-                if (s_nextIndexFightQueue == 5) s_nextIndexFightQueue = 0;
-                s_fightIdsQueue[s_nextIndexFightQueue] = fightId;
-                s_nextIndexFightQueue++;
+                if(fightQueueEmptyIndex < AUTOMATED_NFTS_ALLOWED) { // If a slot in the queue has become available
+                    s_fightIdsQueue[fightQueueEmptyIndex] = fightId;
+                    s_isfightAutomated[fightId] = true;
+                } 
+                else {
+                    if (s_nextIndexFightQueue == AUTOMATED_NFTS_ALLOWED) { // If nextIndex is max reset to 0
+                        s_nextIndexFightQueue = 0;
+                    }
+                    s_fightIdsQueue[s_nextIndexFightQueue] = fightId;
+                    s_isfightAutomated[fightId] = true;
+                    s_nextIndexFightQueue++;
+                }
                 emit FightMatchmaker__FightRequested(
                     participants[0], nftIds[0], fightId, _fightRequest.minBet, block.timestamp
                 );
@@ -280,51 +281,81 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
     }
 
     function acceptFight(bytes32 _fightId, uint256 _nftId) public payable {
-        if (msg.sender != i_PROMPT_FIGHTERS_NFT.getOwnerOf(_nftId)) {
-            revert FightMatchMaker__NftNotOwnedByAccepter(msg.sender, _nftId);
-        }
-
+        uint256 accepterBet;
         Fight memory fight = getFight(_fightId);
-        address[2] memory participants =
-            [i_PROMPT_FIGHTERS_NFT.getOwnerOf(fight.nftOne), i_PROMPT_FIGHTERS_NFT.getOwnerOf(fight.nftTwo)];
+        uint256[2] fightingNftIds = [fight.nftOne, _nftId]; // TODO: ESTO PUEDE QUE NO SEA MUY EFICIENTE EN CUANTO A GAS - REVISAR?
 
         if (fight.state != FightState.REQUESTED) {
             revert FightMatchMaker__FightNotRequested(_fightId);
         }
 
-        if (msg.value < fight.minBet) {
-            revert FightMatchMaker__NotEnoughEthSentToAcceptFight(_fightId);
+        if (fight.nftTwo != 0 && fight.nftTwo != fightingNftIds[1]) {
+            // If NFT to battle against was specified at request and accepter/upkeep didn't send that NFT
+            revert FightMatchMaker__NftSentDoesntMatchChallengeeNft(fightingNftIds[1], fight.nftTwo);
         }
 
-        if (participants[1] != address(0) && participants[1] != msg.sender) {
-            // If challengee was specified at request and sender is not challengee
-            revert FightMatchMaker__AcceptingUserIsNotChallengee(msg.sender, participants[1]);
+        if (msg.sender != automationForwarder) {
+            if (msg.sender != i_PROMPT_FIGHTERS_NFT.getOwnerOf(fightingNftIds[1])) {
+                revert FightMatchMaker__NftNotOwnedByAccepter(msg.sender, fightingNftIds[1]);
+            }
+
+            address[2] memory participants =
+                [i_PROMPT_FIGHTERS_NFT.getOwnerOf(fightingNftIds[0]), i_PROMPT_FIGHTERS_NFT.getOwnerOf(fight.nftTwo)];
+
+            if (msg.value < fight.minBet) {
+                revert FightMatchMaker__NotEnoughEthSentToAcceptFight(_fightId);
+            }
+
+            if (participants[1] != address(0) && participants[1] != msg.sender) {
+                // If challengee was specified at request and accepter is not challengee
+                revert FightMatchMaker__AcceptingUserIsNotChallengee(msg.sender, participants[1]);
+            }
+
+            accepterBet = msg.value;
+        } else {
+            if (!getIsNftAutomated(fightingNftIds[1])) {
+                revert FightMatchMaker__NftNotAutomated(fightingNftIds[1]);
+            }
+
+            address[2] memory participants = [
+                i_PROMPT_FIGHTERS_NFT.getOwnerOf(fightingNftIds[0]),
+                i_PROMPT_FIGHTERS_NFT.getOwnerOf(fightingNftIds[1])
+            ];
+
+            accepterBet = getAutomatedNftBet(_nftId);
+
+            if (getNftAutomationBalance(fightingNftIds[1]) < accepterBet) {
+                revert FightMatchMaker__NotEnoughAutomationBalanceToAcceptFight(_fightId, fightingNftIds[1]);
+            }
+            
+            if (accepterBet < fight.minBet) {
+                revert FightMatchMaker__NotEnoughEthSentToAcceptFight(_fightId);
+            }
+
+            _substractAutomationBalance(fightingNftIds[1], accepterBet);
         }
 
-        if (fight.nftTwo != 0 && fight.nftTwo != _nftId) {
-            // If NFT to battle against was specified at request and accepter didn't send that NFT
-            revert FightMatchMaker__NftSentDoesntMatchChallengeeNft(_nftId, fight.nftTwo);
-        }
-
-        try i_BETS_VAULT.lockBet{value: msg.value}(_fightId, msg.sender) {
+        try i_BETS_VAULT.lockBet{value: accepterBet}(_fightId, participants[1]) {
             IBetsVault.BetsState memory betState = i_BETS_VAULT.getBetsState(_fightId);
             emit FightMatchmaker__FightAccepted(
                 participants[0],
                 participants[1],
-                fight.nftOne,
-                fight.nftTwo,
+                fightingNftIds[0],
+                fightingNftIds[1],
                 betState.requesterBet,
-                msg.value,
+                accepterBet,
                 block.timestamp
             );
         } catch {
-            revert FightMatchMaker__FightAcceptFailed(msg.sender, _nftId, _fightId, msg.value, block.timestamp);
+            revert FightMatchMaker__FightAcceptFailed(
+                participants[1], fightingNftIds[1], _fightId, accepterBet, block.timestamp
+            );
         }
 
         try i_FIGHT_EXECUTOR_CONTRACT.startFight(_fightId) returns (bytes32) {
             _updateFightState(_fightId, FightState.ONGOING);
-            _setUserFightId(msg.sender, _fightId); // setting msg.sender -> fightId means accepter is fighting
-            emit FightMatchmaker__FightStateChange(_fightId, FightState.REQUESTED, FightState.ONGOING, msg.sender);
+            _setUserFightId(participants[1], _fightId); // setting accepter -> fightId means accepter is fighting
+            emit FightMatchmaker__FightStateChange(_fightId, FightState.REQUESTED, FightState.ONGOING, participants[1]);
         } catch {
             revert FightMatchMaker__FightStartFailed(_fightId);
         }
@@ -351,6 +382,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
         _setUserFightId(participants[0], 0); // Mark challenger as not fighting
         _setUserFightId(participants[1], 0); // Mark challengee as not fighting
         _updateFightState(_fightId, FightState.AVAILABLE);
+        if(getIsFightAutomated(_fightId)) _removeFightFromQueue(_fightId); // switches value in array from fightId to 0
         emit FightMatchmaker__FightStateChange(_fightId, fight.state, FightState.AVAILABLE, msg.sender);
     }
 
@@ -362,8 +394,28 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
     //     settleFight(_fightId, WinningAction.IGNORE_WINNING_ACTION);
     // }
 
-    function setNftAutomated(uint256 _nftId, bool _isAutomated) external returns (bool) {
-        s_isNftAutomated[_nftId] = _isAutomated;
+    function setNftAutomated(uint256 _nftId, bool _isAutomated, uint256 _bet, uint256 _minBet) external payable returns (bool) {
+        if (msg.sender == i_PROMPT_FIGHTERS_NFT.getOwnerOf(_nftId)) {
+            if(_bet == 0) revert FightMatchMaker__AutomatedBetCannotBeZero();
+            s_isNftAutomated[_nftId] = _isAutomated;
+            s_automatedNfts.push(_nftId); 
+            if (_isAutomated) {
+                s_nftAutomationBalance[_nftId] += msg.value;
+                s_automatedNftBet[_nftId] = _bet;
+                s_automatedNftMinBet[_nftId] = _minBet;
+                emit FightMatchmaker__nftAutomated(_nftId, msg.value, _bet, _minBet);
+            } else {
+                uint256 remainingAutomationBalance = s_nftAutomationBalance[_nftId];
+                delete s_nftAutomationBalance[_nftId];
+                delete s_automatedNftBet[_nftId];
+                delete s_automatedNftMinBet[_nftId];
+                (bool callSuccess,) = msg.sender.call.value(remainingAutomationBalance)("");
+                require(callSuccess, "Remaining automation balance transfer failed");
+                emit FightMatchmaker__nftAutomationCancelled(_nftId);
+            }
+        } else {
+            revert FightMatchMaker__OnlyNFtOnwerCanSetNftAutomated();
+        }
         return _isAutomated;
     }
 
@@ -390,6 +442,29 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
         }
         emit FightMatchmaker__FightIdToFightSet(_fightId, s_fightIdToFight[_fightId]);
     }
+
+    function _substractAutomationBalance(uint256 _nftId, uint256 _amount) internal {
+        s_nftAutomationBalance[_nftId] -= _amount;
+        emit FightMatchmaker__nftAutomationBalanceUpdated(_nftId, s_nftAutomationBalance[_nftId]);
+        if(s_nftAutomationBalance[_nftId] < AUTOMATION_BALANCE_THRESHOLD) {
+            s_isNftAutomated[_nftId] = false;
+            emit FightMatchmaker__nftAutomationCancelled(_nftId);
+        }
+    }
+
+    function _removeFightFromQueue(bytes32 _fightId) internal {
+        for(uint8 i; i < AUTOMATED_NFTS_ALLOWED; i++){
+            if(s_fightIdsQueue[i] == _fightId) {
+                delete s_fightIdsQueue[i];
+                fightQueueEmptyIndex = i;
+                break;
+            } 
+        }        
+    }
+
+    // function _getFightQueueEmptyIndex() internal returns (uint8) {
+    //     return fightQueueEmptyIndex;
+    // }
 
     ///////////////
     // GETTERS ////
@@ -418,4 +493,21 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation {
     function getIsNftAutomated(uint256 _nftId) public view returns (bool) {
         return s_isNftAutomated[_nftId];
     }
+
+    function getNftAutomationBalance(uint256 _nftId) public view returns (uint256) {
+        return s_nftAutomationBalance[_nftId];
+    }
+
+    function getNftAutomatedNftBet(uint256 _nftId) public view returns (uint256) {
+        return s_automatedNftBet[_nftId];
+    }
+
+    function getNftAutomatedNftMinBet(uint256 _nftId) public view returns (uint256) {
+        return s_automatedNftMinBet[_nftId];
+    }
+
+    function getIsFightAutomated(bytes32 _fightId) public view returns (bool) {
+        return s_isfightAutomated[_fightId];
+    }
 }
+

@@ -79,6 +79,23 @@ interface IFightMatchmaker {
      */
     event FightMatchmaker__FightIdToFightSet(bytes32 indexed fightId, Fight indexed fight); // ESTO ES ASÍ??
 
+    /**
+     * @dev Event emitted when NFT automated
+     */
+    event FightMatchmaker__nftAutomated(
+        uint256 indexed nftId, uint256 indexed automationBalance, uint256 indexed automatedBet, uint256 automatedMinBet
+    );
+
+    /**
+     * @dev Event emitted when NFT no longer automated
+     */
+    event FightMatchmaker__nftAutomationCancelled(uint256 indexed nftId);
+
+    /**
+     * @dev Event emitted when NFT automation balance updated
+     */
+    event FightMatchmaker__nftAutomationBalanceUpdated(uint256 indexed nftId, uint256 indexed automationBalance);
+
     //************************ */
     // Errors
     //************************ */
@@ -104,11 +121,17 @@ interface IFightMatchmaker {
 
     error FightMatchMaker__NftNotOnThisChain(uint256 nftId, uint256 chainId);
 
+    error FightMatchMaker__NftNotAutomated(uint256 nftId);
+
+    error FightMatchMaker__OnlyNFtOnwerCanSetNftAutomated();
+
     error FightMatchMaker__FightNotAvailable(address challenger, bytes32 fightId);
 
     error FightMatchMaker__FightNotRequested(bytes32 fightId);
 
     error FightMatchMaker__NotEnoughEthSentToAcceptFight(bytes32 fightId);
+
+    error FightMatchMaker__NotEnoughAutomationBalanceToAcceptFight(bytes32 fightId, uint256 automatedNftId);
 
     error FightMatchMaker__NftSentDoesntMatchChallengeeNft(uint256 sentNftId, uint256 challengeeNftId);
 
@@ -118,7 +141,13 @@ interface IFightMatchmaker {
 
     error FightMatchMaker__SettingNftsNotFightingFailed(uint256 nftOneId, uint256 nftTwoId);
 
-    error FightMatchMaker__CannotCancelFight(bytes32 _fightId, FightState fightState);
+    error FightMatchMaker__CannotCancelFight(bytes32 fightId, FightState fightState);
+
+    error FightMatchMaker__AutomatedBetCannotBeZero();
+
+    error FightMatchMaker__NoAutomatedNftHasHighEnoughBet(bytes32 fightId);
+
+    error FightMatchMaker__ChallengeeNftNotAutomated(uint256 challengeeNftId);
 
     //************************ */
     // Data Structures
@@ -274,7 +303,7 @@ interface IFightMatchmaker {
     /**
      * @return bool saying if the nft is in automation mode.
      */
-    function setNftAutomated(uint256 nftId, bool isAutomated) external returns (bool);
+    function setNftAutomated(uint256 nftId, bool isAutomated, uint256 bet, uint256 minBet) external returns (bool);
 
     /**
      * sets fightIdtoFight mapping
