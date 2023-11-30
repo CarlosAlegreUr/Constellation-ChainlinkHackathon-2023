@@ -1,20 +1,18 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {ICcipMessageCoder} from "./ICcipMessageCoder.sol";
-
 /**
  * @title ICcipNftBridge
  * @author PromtFighters team: Carlos
  * @dev Interface for all the contracts that move fighter NFTs around.
  */
-interface ICcipNftBridge is ICcipMessageCoder {
+interface ICcipNftBridge {
     // Events
     event ICCIPNftBridge__NftSent(
-        address indexed user, uint64 indexed chainSelector, string indexed nftId, uint256 timestamp
+        address indexed user, uint256 indexed chainId, uint256 indexed nftId, uint256 timestamp
     );
     event ICCIPNftBridge__NftReceived(
-        address indexed user, uint256 indexed chain, uint256 indexed nftID, uint256 timestamp
+        address indexed user, uint256 indexed chainId, uint256 indexed nftID, uint256 timestamp
     );
 
     // Functions
@@ -27,15 +25,10 @@ interface ICcipNftBridge is ICcipMessageCoder {
      * You can only fight with your NFT on the chain it currently is.
      * For simplicity to use CCIP you have to pay with the native coin -> msg.value
      *
-     * @param receiver The address of the recipient on the destination blockchain.
-     * FighterBarracks.sol in this project or the NFT collection when moving to Sepolia.
      * @param nftId The text to be sent. In this case it must be the string version of your NFT ID.
      * @return messageId The ID of the CCIP message that was sent. Maybe there is no need for this.
      */
-    function sendNft(address receiver, string calldata nftId, string calldata nftIdStringLength)
-        external
-        payable
-        returns (bytes32 messageId);
+    function sendNft(uint256 nftId) external payable returns (bytes32 messageId);
 
     // Getters
 

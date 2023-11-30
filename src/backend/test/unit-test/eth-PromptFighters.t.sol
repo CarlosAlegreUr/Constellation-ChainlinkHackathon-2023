@@ -26,8 +26,9 @@ contract PromptFightersNftTest is ChainlinkMocksDeployed, UtilsValues {
 
     function setUp() public override {
         super.setUp();
-        promptFightersNFT =
-        new PromptFightersNFT(address(funcsSubsMock), MOCK_FUNCS_SUBS_ID, ETH_SEPOLIA_CCIP_ROUTER,  IFightMatchmaker(address(0)));
+        promptFightersNFT = new PromptFightersNFT(
+            address(funcsSubsMock), MOCK_FUNCS_SUBS_ID, ETH_SEPOLIA_CCIP_ROUTER, IFightMatchmaker(address(0))
+        );
     }
 
     function test_NothingBeforeInitialize() public {
@@ -35,6 +36,6 @@ contract PromptFightersNftTest is ChainlinkMocksDeployed, UtilsValues {
         promptFightersNFT.safeMint(MOCK_INTIALIZER_ADDRESS, VALID_PROMPT);
 
         vm.expectRevert("Contract is not initialized.");
-        promptFightersNFT.sendNft(MOCK_RECEIVER_ADDRESS, "22", "2");
+        promptFightersNFT.sendNft(2);
     }
 }
