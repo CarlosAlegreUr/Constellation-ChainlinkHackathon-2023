@@ -57,7 +57,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
 
     constructor(address _functionsRouter, uint64 _funcSubsId, address _ccipRouter, IFightMatchmaker _fightMatchmaker)
         ERC721("PromptFightersNFT", "PFT")
-        CcipNftBridge(ETH_SEPOLIA_SELECTOR, address(0), _ccipRouter, _fightMatchmaker)
+        CcipNftBridge(AVL_FUJI_SELECTOR, address(0), _ccipRouter, _fightMatchmaker)
         FunctionsClient(_functionsRouter)
     {
         require(_ccipRouter == ETH_SEPOLIA_CCIP_ROUTER, "Incorrect router.");
@@ -190,7 +190,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         override(CcipNftBridge, IPromptFightersCollection)
         returns (string memory)
     {
-        return abi.decode(s_nftIdToPrompt[_nftId], (string));
+        return string(s_nftIdToPrompt[_nftId]);
     }
 
     function getOwnerOf(uint256 _nftId) public view override returns (address) {
@@ -215,12 +215,18 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         return ERC721.supportsInterface(interfaceId) || CcipNftBridge.supportsInterface(interfaceId);
     }
 
-    // The following functions are inherited from CcipNftBridge and are only
+    // The following functions are inherited from CcipNftBridge and are mainly
     // needed in chains that don't have the official collection. So in main-chain they
-    // just do nothing.
+    // just emit an event or do nothing.
 
-    function _updateNftStateOnSend(uint256 _nftId) internal override {}
-    function _updateNftStateOnReceive(uint256 _nftId, address _owner, string memory _prompt) internal override {}
+    function _updateNftStateOnSendChainSpecifics(uint256 _nftId) internal override {
+        emit ICCIPNftBridge__NftSent(msg.sender, ETH_SEPOLIA_CHAIN_ID, _nftId, block.timestamp);
+    }
+
+    function _updateNftStateOnReceiveChainSpecifics(uint256 _nftId, address _owner, string memory /*_prompt*/) internal override {
+        emit ICCIPNftBridge__NftReceived(_owner, ETH_SEPOLIA_CHAIN_ID, _nftId, block.timestamp);
+    }
+
     function setOwnerOf(uint256 _nftId, address _owner) internal override {}
     function setPromptOf(uint256 _nftId, string memory _prompt) internal override {}
 }

@@ -17,7 +17,7 @@ contract FightersBarracks is CcipNftBridge {
     mapping(uint256 => string) private s_nftIdToPrompt;
 
     constructor(address _router, address _receiverContract, IFightMatchmaker _fightMatchmaker)
-        CcipNftBridge(AVL_FUJI_SELECTOR, _receiverContract, _router, _fightMatchmaker)
+        CcipNftBridge(ETH_SEPOLIA_SELECTOR, _receiverContract, _router, _fightMatchmaker)
     {
         require(_router == AVL_FUJI_CCIP_ROUTER, "Not allowed router.");
     }
@@ -26,15 +26,17 @@ contract FightersBarracks is CcipNftBridge {
     // INTERNAL FUNCTIONS
     //******************** */
 
-    function _updateNftStateOnSend(uint256 _nftId) internal override {
+    function _updateNftStateOnSendChainSpecifics(uint256 _nftId) internal override {
         // Maybe delete if not needed, kept just in case.
         delete s_nftIdToOwner[_nftId];
         delete s_nftIdToPrompt[_nftId];
+        emit ICCIPNftBridge__NftSent(msg.sender, AVL_FUJI_CHAIN_ID, _nftId, block.timestamp);
     }
 
-    function _updateNftStateOnReceive(uint256 _nftId, address _owner, string memory _prompt) internal override {
+    function _updateNftStateOnReceiveChainSpecifics(uint256 _nftId, address _owner, string memory _prompt) internal override {
         s_nftIdToOwner[_nftId] = _owner;
         s_nftIdToPrompt[_nftId] = _prompt;
+        emit ICCIPNftBridge__NftReceived(_owner, AVL_FUJI_CHAIN_ID, _nftId, block.timestamp);
     }
 
     // Setters

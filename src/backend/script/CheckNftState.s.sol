@@ -16,7 +16,7 @@ import "forge-std/console.sol";
 /**
  * @dev Executes mintng and NFT process in Ethereum.
  */
-contract SendNftCcip is Script {
+contract CheckNftState is Script {
     PromptFightersNFT public collectionContract;
     FightersBarracks public barracks;
 
@@ -28,10 +28,14 @@ contract SendNftCcip is Script {
     function run() public virtual {
         vm.startBroadcast();
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            collectionContract.sendNft{value: SEND_NFT_PRICE}(1);
+            console.log(collectionContract.isNftOnChain(1));
+            console.log(collectionContract.getOwnerOf(1));
+            console.log(collectionContract.getPromptOf(1));
         }
         if (block.chainid == AVL_FUJI_CHAIN_ID) {
-            barracks.sendNft{value: SEND_NFT_PRICE_FUJI}(1);
+            console.log(barracks.isNftOnChain(1));
+            console.log(barracks.getOwnerOf(1));
+            console.log(barracks.getPromptOf(1));
         }
         vm.stopBroadcast();
     }
