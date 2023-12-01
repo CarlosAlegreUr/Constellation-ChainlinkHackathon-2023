@@ -1,10 +1,11 @@
 [profile.default]
-src = "src"
+src = "contracts"
 out = "out"
 libs = ["lib"]
+version = "0.8.20"
 remappings = [
     "@openzeppelin/=lib/openzeppelin-contracts/contracts/",
     "@chainlink/=lib/chainlink/contracts/src/v0.8/",
-    "@chainlink-ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/",
+    "@chainlink-ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/"
 ]
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options

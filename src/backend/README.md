@@ -1,28 +1,22 @@
-## Dependencies ⚙️
-
-Forge install open zepelin contrats, chainlink contracts, forge-std.
-
-Chainlink ccip contracts cant be installed with forge, create in your computer a different directory
-and use npm or yarn to install them then coppy the node_modules folder inside the lib folder under the name
-of node_modules_ccip.
-
-forge install (name of other packages)
-
-npm install @chainlink/contracts-ccip --save
-
 ## Naming convention 📝
+
+<details> <summary> Naming convention 📝 </summary>
 
 If a smart contract starts with:
 
-- `avl`-Name: means that contract will only be deployed in `Avalanche`.
+- _`avl`-Name_ : means that contract will only be deployed in `Avalanche`.
 
-- `eth`-Name: means that contract will only be deployed in `Ethereum`.
+- _`eth`-Name_ : means that contract will only be deployed in `Ethereum`.
 
-- `Name`: menas that contract will be deployed in `both chains`.
+- `Name`: means that contract will be deployed in `both chains`.
+
+</details>
 
 ---
 
 ## Contracts' Structure 📜
+
+<details> <summary> Contracts' Structure 📜 </summary>
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -84,5 +78,7 @@ contract ContractName {
     // e.g., function getCount() public view returns (uint256) { ... }
 }
 ```
+
+</details>
 
 ---

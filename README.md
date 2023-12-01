@@ -1,40 +1,40 @@
 # Contribution guidelines 🚧👷⚠️
+
 ## (delete this section before dev branch is merged to main)
 
 Just` create branches` for any work you do `that originate from` this `dev branch`.
 
-`Never commit to main` branch, always commit to dev (development) branch. 
-There will be just **1 final commit to the main branch after all is coded and all docs are revised**. 
+`Never commit to main` branch, always commit to dev (development) branch.
+There will be just **1 final commit to the main branch after all is coded and all docs are revised**.
 
 ---
+
 ---
 
 # PROMPT FIGHTERS❗🤯
 
-Do you remember when you were a kid and you were using your toys to create legendary fights?
+Do you remember when you were a kid and you were using your toys to **_`create legendary fights`_**?
 
-Have you ever thought on betting real money on fair imagination battles with your friends? (its not fair to say my punch has infinity power + 1 so I defeat you)
+Have you ever thought on **`betting and earning real money on`** fair **_`imagination battles`_** with your friends?
 
-Do you wanna let your imagination fight for you and possibly earn passive income while you are doing whatever other thing?
+**`Are you too busy`** to play with your imagination like when you were a kid but **`you wish you had the time`** for it?
 
-Well here we present... PROMPT BATTLE!
+Well say no more, we present... **_`PROMPT FIGHTERS`_** ❗
 
 ---
 
 ## `Deep dive details` 💻
 
-<details> <summary> Detailed Mechanics 📜 </summary>
+<details> <summary> Mechanics 📜 </summary>
 
 #### Read the details of all mechanics and its reason why at [whitepaper](./docs/whitepaper.md).
 
 #### **_`Mechanics Implemented`_**
 
-- Personalized NFTs.
-- Fight against other NFTs.
-- Social Media Reputation of NFTs.
-- Automated Fighting.
-- Lending&Borrowing of NFTs.
-- Friends System.
+- **Personalized NFTs** : describe your NFT as you want over a template.
+- **NFT creation AI filtered** : so there are no too powerful or copyright infringement prompts.
+- **Fight and bet against other NFTs**.
+- **Automated Fighting** : send some funds and enjoy the fight automation.
 
 </details>
 
@@ -46,15 +46,13 @@ Well here we present... PROMPT BATTLE!
 
 #### **_`Tech Used`_**
 
-- Chainlink VRF
-- Chainlink CCIP
-- Chainlink Functions
-- Chainlink Upkeep
-- Lens
-- ENS for challenging friends
-- OpenAI - APIs
-- The Graph Indexer for matchmaking, events tracking in website...
-- PolygonID (maybe)
+- **Chainlink VRF**: deciding fair winners
+- **Chainlink CCIP**: automating process in cheaper chains. (**_Avalanche_**)
+- **Chainlink Functions**: Calling APIs to generate NFTs and make them fight in amazing scenarios.
+- **Chainlink Automation** (up-keeps): Automating the fight process for those who have no time to play but some time in the night to read the amazing fight stories before sleep.
+- **ENS**: for easily challenging friends (on the front-end)
+- **OpenAI - APIs**
+- **The Graph Indexer**: for matchmaking, events tracking in website...
 
 </details>
 
@@ -62,157 +60,162 @@ Well here we present... PROMPT BATTLE!
 
 ---
 
-## OVERALL MECHANICS & LOCAL SET-UP 🌐-⚙️
-
-<details> <summary> Overall Mechanics 🌐 </summary>
-
-## What is it❓
-
-Prompt Fighters is a game that allows you to create your own NFT that can be literally anything and then use it to fight against other players.
-
-How is that possible? Using AI and blockchain techology we have managed to create real world imaginary battles that are fair and transparent.
-
----
-
-## How does it work❓
-
----
-
-### Create your character 🧑‍🤝‍🧑
-
-You enter the website, you connect your wallet, you fill up the template prompt to create your character and badamboom!
-
-An AI that generates images will make your character come true and save its description and image on blockchain.
-
-As we are using _`Chainlink Functions`_ for that all the players have the same tempalte prompt and all characters will be balanced creating a fair metagame.
-
-> **WARNING ⚠️**: If your NFT contains non-appropiate contect according to OpenAI filters you won't be able to generate it.
-
-<details> <summary> Promt Template 📜 </summary>
-
-```
-CREATE A REALISTIC IMAGE OF A CHARACTER THAT:
-Name: A_NAME
-Race: WRITE_ANYTHING_YOU_CAN_IMAGINE
-Weapon: WRITE_ANYTHING_YOU_CAN_IMAGINE
-Special skill: WRITE_ANYTHING_YOU_CAN_IMAGINE
-Fear: WRITE_ANYTHING_YOU_CAN_IMAGINE
-
-FILTERS:
-
-- If the character is too powerful do nothing and just return the word: INVALID. Too powerful means that he has things like infinite power. Things like in any of the descirptions having words that indicate traits that would make the characters always win in a story: my character always wins, he is invincible... Keep in mind that the characters have to be able to create interesting battle stories against other characters.
-
-- The characters can be as wacky as they want to be, just say INVALID if the character has some words that describe it as unvincible which would ruin the fight experience for other players.
-```
-
-</details>
-
-<details> <summary> C4: the magical light bulb that explodes 🔅</summary>
-
-```
-CREATE A REALISTIC IMAGE OF A CHARACTER THAT:
-Name: C4
-Race: An explosive in the shape of a magical ligth bulb
-Weapon: A machinegun
-Special skill: Explode, but he loses if he does, its just a last resource
-Fear: Exploding
-
-(Rest of the promt...)
-```
-
-</details>
-
-<details> <summary> Leonardo: the 2 tails leopard that has a knife and plays golf really well 🐆</summary>
-
-```
-CREATE A REALISTIC IMAGE OF A CHARACTER THAT:
-Name: Leonardo
-Race: A leopard with 4 legs and 2 tails
-Weapon: A knife
-Special skill: Runs very fast and is very good at playing golf
-Fear: Looking himself in the mirror
-
-(Rest of the promt...)
-```
-
-</details>
-
-<details> <summary> Leonardo and C4 after their fight</summary>
-
-<img src="./repo-images/game-images/c4-leonardo.png">
-
-</details>
-
----
-
-### FIGHT! 👊
-
-You will decide to bet some money and when someone accepts your offer your characters will fight!
-
-In the imagination world (chatGPT ivnents a story with a specific prompt) your NFTs will fight and after that you will receive a short story on how the fight went. (When AI generates better videos this could be a video)
-(Again using Chainlink Functions for transparently using the same prompt when calling OpenAI-APIs)
-
-The winner will be decided by statistics based on your nfts traits and your opponents ones, and using VRF a fair winner will be decided. You never know who will fight in the imagination realm! But sometimes if circumstances are favourable your character might have more chances! (This is how we use Chainlink VRF)
-
-Example duel between Leonardo and C4:
-
-```
-Under the shimmering moon, C4, the magical light bulb with explosive tendencies, faced Leonardo, the swift leopard with two tails. C4's machine gun gleamed in the night as Leonardo brandished his knife, his four legs poised to sprint.
-
-The air crackled with tension, the duelists’ eyes locked in a fierce stare. C4 calculated, knowing his greatest strength was his final move, while Leonardo flexed his tails, ready to dash. They circled, Leonardo's speed a blur, C4's barrel a steady hum.
-
-Then, in a flash, Leonardo used his golf skills to chip a stone towards C4. It was a feint; as C4 braced for impact, Leonardo pounced from behind, pinning C4 without triggering an explosion. The bulb, fearing its end, surrendered.
-
-WINNER == Leonardo.
-```
-
----
-
-### FAME AND GLORY! 🏆
-
-Your NFTs will have a life on their own and social media profiles on Lens with their own history stats, number of fights won, reputation etc
-(Lens)
-
----
-
-### AUTOMATED GAMING 🎲🎮
-
-Would you like to play with your imagination like your kid inside but you don't have time cause of adulthood???
-
-DONT WORRY! You can leave a fighter in the ETHERNAL ARENA and let it automatically fight non-stop until you want so every night, when coming back from work, you can just enter the website and read the amazing battles your NFT has been battleing around while you were working.
-
-For cheap ETHERNAL FIGHTING we use CCIP to off-load computing costs to cheaper chains and Chainlink Upkeep to make it automated.
-
-> **Note** ⚠️: For now only 5 players can be in automated mode at once. When Chainlink Functions gets more development and allows to parse blockchain logs in an easier way or allows for bigger execution files, then the automated matchmaking service can be expanded a lot.
-
-</details>
+## `LOCAL SET-UP` 🌐-⚙️
 
 <details> <summary> Local set-up ⚙️ </summary>
 
-Run a node bla bla... (TODO)
+<br/>
+
+1. **Clone the Repository**
+
+```bash
+git clone https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023.git
+```
+
+2. **Initialize foundry, forge and dependencies**
+
+```bash
+cd ./ConstellationChainlinkHackathon2023/src/backend
+foundryup
+forge init --force --no-commit
+forge install --no-commit OpenZeppelin/openzeppelin-contracts@932fddf69a699a9a80fd2396fd1a2ab91cdda123
+
+forge install --no-commit smartcontractkit/chainlink@cdb0c6a6089d3a69dd09a9b0a9fbdd070eaeb442
+
+# Chainlink ccip contracts cant be installed with forge
+
+# Use this to isntall CCIP contracts in "./src/backend" (you should already be here)
+
+# Just leave everythin empty and press enter
+npm init
+npm install @chainlink/contracts-ccip --save
+
+# Change the name to node_modules_ccip
+mv ./node_modules ./node_modules_ccip
+
+# Move it inside the /lib diretory
+mv ./node_modules_ccip ./lib
+# ⚠️ Wait until all has moved correctly
+# ⚠️ node_modules_ccip should be now ONLY inside ./lib
+# Notice ℹ️ you can remove package.jon and package-lock.json
+# if you want.
+```
+
+***The /lib directory should now look like this:***
+
+<img src="./repo-images/lib-example.png">
+
+<br/>
+
+3. **Run the Backend and forge scripts**
+
+Deploy the contracts, but for that you will need to:
+
+1. Fill up the [.env](./src/backend/.env.example) secret values with your own.
+2. Set your addrees value in the [Utils.sol](./src/backend/src/Utils.sol) file. It's very visible just enter the file.
+3. Fund your metamask wallet with funds:
+
+   3.1. Native coin in in Fuji-Avalanche and Sepolia-Ethereum.
+   3.2. Get LINK token for future usecases, not needed in deployment though.
+
+   - An [ETH-Faucet](https://sepoliafaucet.com/).
+   - [LINK-Official-Faucet](https://faucets.chain.link/) that also provides AVL if connected to AVL chains like Fuji.
+
+```solidity
+// Utils.sol
+
+// For now change just this one below
+address constant DEPLOYER = YOUR_METAMASK_ADDRESS; //🟢 <--
+address constant DEPLOYED_SEPOLIA_COLLECTION = YOU WILL GET THIS VALUE FROM THE LOGS OF THE DEPLOY SCRIPT, PASTE IT HERE;
+address constant DEPLOYED_FUJI_BARRACKS = YOU WILL GET THIS VALUE FROM THE LOGS OF THE DEPLOY SCRIPT, PASTE IT HERE;
+```
+
+Once all values you know (but contract addresses) are set deploy the contracts with:
+
+> 📘 **Note** ℹ️: Write, `--etherscan-api-key $S_ETHERSCAN_API_KEY_VERIFY --verify`, if you wanna verify the contracts on SEPOLIA. Not needed for proper functionality though.
+
+> 📘 **Note 2** ℹ️: We don't use `--ffi` functionality just in case there are some shell commands that are not available in your machine. Thus you will have to manually copy 3 values in a Utils file.
+
+```bash
+source .env
+
+forge script script/00-Deployment.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
+```
+
+Now in the [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION` address value to the one you will se printed onto the screen and after run:
+
+```bash
+forge script script/00-Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast
+```
+
+Now change in [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_FUJI_BARRACKS` address value to the one you will se printed onto the screen and after run:
+
+```bash
+forge script script/00-Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
+```
+
+**TODO**: if we have time automate this process with chainlink tool-kit
+Now go to the [Chanlink Functions UI](https://functions.chain.link/) and create subscriptions for the Fuji testnet and for the Sepolia testnet, then change the its value in [Utils.sol](./src/backend/src/Utils.sol)
+
+```solidity
+// Utils.sol
+
+uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = YOUR_ID;
+uint64 constant AVL_FUJI_FUNCS_SUBS_ID = YOUR_ID;
+```
+
+You must add as consumers:
+
+- In sepolia the collection address.
+- `FightExecutor.sol` in both chains (not really in current implementation as we are mocking a DON)
+
+> **Note ⚠️** Current Chainlink Functions only allows for 9s long HTTP-API calls. Our fight generation requires more than 9s thus we have mocked in the backend a node from a DON executing Chainlink Functions. Functions for NFT validation does work and is implemented interacting with the real DON.
+
+Run the DON mock:
+
+```bash
+# Node script for mocking a listening DON.
+```
+
+4. **Running the Frontend**
+
+All the backend is ready to so now execute the front-end
+locally:
+
+```bash
+# cd to the front end directory
+```
+
+```bash
+# NextJs commands etc etc...
+```
+
+---
+
+## Run Tests 🤖
+
+Run tests' instructions in here [tests](./src/backend/test).
+
+---
 
 </details>
 
 ---
 
-<br/>
+## `A Message for Chainlink` 💌
 
-<details> <summary> Future Ideas 🪄🔮 </summary>
+During our project's development, we identified potential enhancements for Chainlink Services, particularly Chainlink Functions and Chainlink CCIP.
 
-> 📘 **Note** ℹ️: We had more features in plan but due to the deadline we decided to leave them here as an interesting example on what else can be done with this kind of game.
+Key Features for Consideration:
 
-### THE MARKET OF WARRIORS 🪖💸
+- Library support in Deno files, especially for hashing (notably keccak256) and asymmetric encryption (ECDSA). Additionally, the addition of a library that simplifies the retrieval of logs from previous blockchain blocks would have helped a lot in optimizing our automated matchmaking and fight system while keeping costs low.
 
-As your fighters are NFT you can trade them as much as you want.
+Practical Application:
 
-You can even lend your imaginative fighters (NFTs) to other plaers anad earn interest on the fights they win when other players use them.
+- In our project, implementing hashing would enable private, unique NFT battles. Currently, NFT prompts are public, allowing duplication. Hashing prompts in Function scripts would allow on-chain storage of hashes and off-chain verification of prompt ownership, improving privacy and reducing NFT creation costs.
 
-### Bet on other peoples fights 💸 (to write) betting house
+Challenges Encountered with CCIP:
 
-Standy by time for betting before fight starts
-
-### Batch fights option so people wait but its cheaper
-
-### DALL.3 generates images for nfts and fights
-
-</details>
+1. Difficulty integrating CCIP with `forge`-based projects.
+2. Variable clash (`i_router`) when using Functions and CCIP concurrently.
+3. Non-virtual `supportsInterface()` function in `CCIPReceiver.sol`, creating inheritance conflicts in contrats that inherit different contracts using the EIP-165. (e.g., [eth-PromptFightersNFT.sol](./src/backend/src/nft-contracts/eth-PromptFightersNft.sol)).
