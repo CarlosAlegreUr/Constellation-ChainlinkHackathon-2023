@@ -95,24 +95,6 @@ contract FightExecutor is
         _;
     }
 
-    /**
-     * @dev Checks that the user is not expecting the contract to encode args.
-     * Checks user has provided a non empty URL object.
-     * Checks that user is using the valid fight script.
-     */
-    modifier checkChainlinkFuncsParams(ChainlinkFuncsGist memory cfParam) {
-        require(
-            cfParam.encryptedSecretsUrls.length > 0 && cfParam.donHostedSecretsVersion == 0,
-            "Only gists service supported here."
-        );
-        require(cfParam.bytesArgs.length == 0, "We don't use off-chain encoded data here.");
-        require(
-            keccak256(abi.encode(cfParam.source)) == GENERATE_FIGHT_SCRIPT_HASH,
-            "Thats not a PromptFighters fight execution file."
-        );
-        _;
-    }
-
     //******************** */
     // EXTERNAL FUNCTIONS
     //******************** */
@@ -122,16 +104,18 @@ contract FightExecutor is
      *
      * TODO: maybe _cfParam should be passed as memory?
      */
-    function startFight(bytes32 _fightId, ChainlinkFuncsGist calldata _cfParam)
-        external
-        onlyFightMatchmaker
-        checkChainlinkFuncsParams(_cfParam)
-        returns (bytes32 requestId)
-    {
+    function startFight(bytes32 _fightId) external onlyFightMatchmaker returns (bytes32 requestId) {
         FunctionsRequest.Request memory req;
+
         req.initializeRequestForInlineJavaScript(FIGHT_GENERATION_SCRIPT);
-        req.addSecretsReference(_cfParam.encryptedSecretsUrls);
-        if (_cfParam.args.length > 0) req.setArgs(_cfParam.args); // Args are NFT prompts.
+        req.addSecretsReference(FUNCTIONS_URL_SECRETS_ENDPOINT);
+
+        string[] memory args = new string[](2);
+        (string memory nftRequesterPrompt, string memory nftAcceptorPrompt) =
+            i_FIGHT_MATCHMAKER_CONTRACT.getNftsPromptsFromFightId(_fightId);
+        args[0] = nftRequesterPrompt;
+        args[1] = nftAcceptorPrompt;
+        req.setArgs(args);
 
         bytes32 lastRequestId = _sendRequest(req.encodeCBOR(), i_funcsSubsId, GAS_LIMIT_FIGHT_GENERATION, i_DON_ID);
 
@@ -202,7 +186,7 @@ contract FightExecutor is
         uint256 bit = _randomWords[0] % 2;
         uint256 winnerBit = bit == 0 ? WINNER_IS_REQUESTER : WINNER_IS_ACCEPTOR;
 
-        i_FIGHT_MATCHMAKER_CONTRACT.setFightState(fightId, IFightMatchmaker.FightState.AVAILABLE, winnerBit);
+        i_FIGHT_MATCHMAKER_CONTRACT.settleFight(fightId, IFightMatchmaker.WinningAction(winnerBit));
 
         emit FightExecutor__VrfWinnerIs(fightId, winnerBit, block.timestamp);
     }

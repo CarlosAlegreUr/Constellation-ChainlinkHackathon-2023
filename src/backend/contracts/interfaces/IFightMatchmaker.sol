@@ -139,7 +139,7 @@ interface IFightMatchmaker {
 
     error FightMatchMaker__DistributeBetsPrizeFailed(bytes32 fightId, address winner);
 
-    error FightMatchMaker__SettingNftsNotFightingFailed(uint256 nftOneId, uint256 nftTwoId);
+    error FightMatchMaker__SettingNftsNotFightingFailed(uint256 nftRequesterId, uint256 nftAcceptorId);
 
     error FightMatchMaker__CannotCancelFight(bytes32 fightId, FightState fightState);
 
@@ -193,10 +193,8 @@ interface IFightMatchmaker {
      * required for logic but not emitted in logs.
      */
     struct Fight {
-        // address challenger;
-        // address challengee;
-        uint256 nftOne;
-        uint256 nftTwo;
+        uint256 nftRequester;
+        uint256 nftAcceptor;
         uint256 minBet;
         uint256 acceptanceDeadline;
         uint256 startedAt;
@@ -326,4 +324,8 @@ interface IFightMatchmaker {
     function getUserCurrentFightId(address user) external returns (bytes32);
 
     function getFight(bytes32 fightId) external returns (Fight calldata);
+
+    function getNftsFromFightId(bytes32 _fightId) external view returns (uint256, uint256);
+
+    function getNftsPromptsFromFightId(bytes32 _fightId) external view returns (string memory, string memory);
 }

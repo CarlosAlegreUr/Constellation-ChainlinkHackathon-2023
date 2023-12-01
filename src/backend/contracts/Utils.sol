@@ -24,33 +24,12 @@ uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
 ///////////////////////////////////////////////
 
 string constant NFT_VALID_PROMPT =
-    "a Just uan-he is gn idddddddddddddddddddds love-hddassssssssssssse can fly-he isdasdasdsaof birds";
+    "anabel-A flying glass bottle-A golden swiss clock-She can fly at 233km/h-She is afraid of cans with mafioso attitude";
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 //******************** */
 // SHARED STRUCTS
 //******************** */
-
-/**
- * @param source JavaScript source code
- * @param encryptedSecretsUrls Encrypted URLs where to fetch user secrets
- * @param donHostedSecretsSlotID Don hosted secrets slotId
- * @param donHostedSecretsVersion Don hosted secrets version
- * @param args List of arguments accessible from within the source code
- * @param bytesArgs Array of bytes arguments, represented as hex strings
- * @param subscriptionId Billing ID
- */
-struct ChainlinkFuncsGist {
-    string source;
-    bytes encryptedSecretsUrls;
-    uint8 donHostedSecretsSlotID; // NOT USING
-    uint64 donHostedSecretsVersion; // NOT USING
-    string[] args; // TODO: USING IN SIMPLE VERSION WITH PROMPTS STORED ON-CHAIN
-    bytes[] bytesArgs; // NOT USING
-    uint64 subscriptionId;
-    uint32 gasLimit;
-    bytes32 donID;
-}
 
 //******************** */
 // CHAIN IDS
@@ -83,6 +62,8 @@ address constant AVL_FUJI_FUNCTIONS_ROUTER = 0xA9d587a00A31A52Ed70D6026794a8FC5E
 bytes32 constant ETH_SEPOLIA_DON_ID = 0x66756e2d657468657265756d2d7365706f6c69612d3100000000000000000000;
 // fun-avalanche-fuji-1 - in functions NPM package
 bytes32 constant AVL_FUJI_DON_ID = 0x66756e2d6176616c616e6368652d66756a692d31000000000000000000000000;
+
+bytes constant FUNCTIONS_URL_SECRETS_ENDPOINT = abi.encode("https://01.functions-gateway.testnet.chain.link/");
 
 // Propper gas limits should be tested and set, 35.000 is just a random first try.
 uint32 constant GAS_LIMIT_FIGHT_GENERATION = 300_000;
