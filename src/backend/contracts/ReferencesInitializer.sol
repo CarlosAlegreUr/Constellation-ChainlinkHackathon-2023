@@ -3,18 +3,16 @@ pragma solidity ^0.8.20;
 
 import "./Utils.sol";
 
-// TODO: use CREATE2 instead
-
 /**
  * @title Initializable
  * @author PromtFighters team: Carlos
- * @dev Used to safely intialize contracts that need each others addresses
- * in deployment.
+ * @dev Used to safely intialize contracts that reference each other
+ * but none of them are deployed yet.
  */
-contract Initializable {
+abstract contract ReferencesInitializer {
     bool s_isInitializedLock;
 
-    // @dev: TODO This must be an address owned by the deployer of the system.
+    // @dev: This must be an address owned by the deployer of the system.
     address constant INTIALIZER_ADDRESS = DEPLOYER;
 
     /**
@@ -35,4 +33,17 @@ contract Initializable {
         _;
         s_isInitializedLock = true;
     }
+
+    /**
+     * @dev 1 time use function that must have the iniitalizeActions() modifier
+     * wherever it is overriden. 
+     * 
+     * Must initialize the not known at deploy time referenced contracts.
+     * 
+     * @notice Can only be called by INTIALIZER_ADDRESS.
+     * @notice A 2 step setting process would be safer, one for proposing the address
+     * and one for confirming it and then indeed lock the setter forever. But this is
+     * a simple PoC.
+     */
+    function initializeReferences(address[] calldata externalReferences) external virtual;
 }

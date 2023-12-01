@@ -2,6 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {IChainlinkSubsManager} from "./interfaces/IChainlinkSubsManager.sol";
+
 import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
 
 import {IFunctionsSubscriptions} from "@chainlink/functions/dev/v1_0_0/interfaces/IFunctionsSubscriptions.sol";

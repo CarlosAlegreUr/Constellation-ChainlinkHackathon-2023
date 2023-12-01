@@ -5,10 +5,10 @@ pragma solidity ^0.8.13;
 // Addresse must posses enough LINK and ETH to execute the transactions.
 // 10 LINK and 0.1 ETH should be enough.
 
-import {PromptFightersNFT} from "../src/nft-contracts/eth-PromptFightersNft.sol";
-import {FightersBarracks} from "../src/nft-contracts/avl-FightersBarracks.sol";
+import {PromptFightersNFT} from "../contracts/nft-contracts/eth-PromptFightersNft.sol";
+import {FightersBarracks} from "../contracts/nft-contracts/avl-FightersBarracks.sol";
 
-import "../src/Utils.sol";
+import "../contracts/Utils.sol";
 
 import {Script, console2} from "forge-std/Script.sol";
 import "forge-std/console.sol";

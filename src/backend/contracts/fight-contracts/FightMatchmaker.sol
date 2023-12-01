@@ -5,16 +5,16 @@ import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
 import {IFightExecutor} from "../interfaces/IFightExecutor.sol";
 import {IBetsVault} from "../interfaces/IBetsVault.sol";
 import {FightExecutor} from "./FightExecutor.sol";
-import {Initializable} from "../Initializable.sol";
+import {ReferencesInitializer} from "../ReferencesInitializer.sol";
 
-/**            
-*            FOR DEVS!
-*  This contract might need more state
-*  variables or functions.
-*
-*  Feel free to add them if you deem them
-*  necessary while coding. If so, mark them with a comment saying NEW.
-*/
+/**
+ *            FOR DEVS!
+ *  This contract might need more state
+ *  variables or functions.
+ *
+ *  Feel free to add them if you deem them
+ *  necessary while coding. If so, mark them with a comment saying NEW.
+ */
 
 /**
  * @title FightMatchmaker
@@ -37,10 +37,14 @@ import {Initializable} from "../Initializable.sol";
  *
  * @notice Assumes each player is engaged in only one fight at a time.
  */
-contract FightMatchmaker is IFightMatchmaker, Initializable {
-    /**********************/
+contract FightMatchmaker is IFightMatchmaker, ReferencesInitializer {
+    /**
+     *
+     */
     /*  CONTRACT'S STATE  */
-    /**********************/
+    /**
+     *
+     */
 
     // [ External contracts interacted with ]
 
@@ -73,17 +77,18 @@ contract FightMatchmaker is IFightMatchmaker, Initializable {
     // constructor() {
     // }
 
-    function initializeContracts(IFightExecutor _fightExecutorAddress, IBetsVault _betsVaultAddress)
-        external
-        initializeActions
-    {
-        i_FIGHT_EXECUTOR_CONTRACT = _fightExecutorAddress;
-        i_BETS_VAULT = _betsVaultAddress;
+    function initializeReferences(address[] calldata _references) external override initializeActions {
+        i_FIGHT_EXECUTOR_CONTRACT = IFightExecutor(_references[0]);
+        i_BETS_VAULT = IBetsVault(_references[1]);
     }
 
-    /**********************/
+    /**
+     *
+     */
     /* EXTERNAL FUNCTIONS */
-    /**********************/
+    /**
+     *
+     */
 
     function requestFight(FightRequest calldata fightRequest) external contractIsInitialized {}
 
@@ -91,9 +96,13 @@ contract FightMatchmaker is IFightMatchmaker, Initializable {
 
     function setFightState(bytes32 fightId, FightState newState, uint256 winner) external contractIsInitialized {}
 
-    /*********************/
+    /**
+     *
+     */
     /* PUBLIC FUNCTIONS  */
-    /*********************/
+    /**
+     *
+     */
 
     // TODO: add timestamp, there could be coalitions if the same people combat with each other
     function getFigthId(address _challenger, uint256 _challengerNftId, address _challengee, uint256 _challengeeNftId)
@@ -112,8 +121,12 @@ contract FightMatchmaker is IFightMatchmaker, Initializable {
 
     function setNftAutomated(uint256 nftId, bool isAutomated) public contractIsInitialized returns (bool) {}
 
-    /**********************/
+    /**
+     *
+     */
     /* INTERNAL FUNCTIONS */
-    /**********************/
+    /**
+     *
+     */
     function _setFightState(bytes32 _fightId, FightState _newState) internal {}
 }

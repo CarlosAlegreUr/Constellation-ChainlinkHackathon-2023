@@ -6,7 +6,7 @@ import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
 import "../Utils.sol";
 
 import {ChainlinkSubsManager} from "../ChainlinkSubsManager.sol";
-import {Initializable} from "../Initializable.sol";
+import {ReferencesInitializer} from "../ReferencesInitializer.sol";
 
 import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
 import {FunctionsClient} from "@chainlink/functions/dev/v1_0_0/FunctionsClient.sol";
@@ -35,7 +35,13 @@ import "@chainlink/vrf/VRFConsumerBaseV2.sol";
  * Future plans are to use speific NFT traits to redistribute probability based on
  * fighter descriptions and how they relate to each other.
  */
-contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient, VRFConsumerBaseV2, Initializable {
+contract FightExecutor is
+    IFightExecutor,
+    ChainlinkSubsManager,
+    FunctionsClient,
+    VRFConsumerBaseV2,
+    ReferencesInitializer
+{
     using FunctionsRequest for FunctionsRequest.Request;
 
     //******************************* */
@@ -72,8 +78,8 @@ contract FightExecutor is IFightExecutor, ChainlinkSubsManager, FunctionsClient,
         i_DON_ID = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_DON_ID : AVL_FUJI_DON_ID;
     }
 
-    function initializeMatchmaker(IFightMatchmaker _fightMatchmaker) external initializeActions {
-        i_FIGHT_MATCHMAKER_CONTRACT = _fightMatchmaker;
+    function initializeReferences(address[] calldata _references) external override initializeActions {
+        i_FIGHT_MATCHMAKER_CONTRACT = IFightMatchmaker(_references[0]);
     }
 
     //******************** */

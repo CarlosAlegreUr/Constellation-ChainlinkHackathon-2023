@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {ICcipNftBridge} from "./interfaces/ICcipNftBridge.sol";
 import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
 
-import {Initializable} from "./Initializable.sol";
+import {ReferencesInitializer} from "./ReferencesInitializer.sol";
 
 import {IRouterClient} from "@chainlink-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {OwnerIsCreator} from "@chainlink-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
@@ -28,7 +28,7 @@ import "forge-std/console.sol";
  * - Messages have a certain coded format from transfering nft data.
  * (format in ICcipMessageCoder.sol)
  */
-abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, Initializable {
+abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, ReferencesInitializer {
     // CCIP nft tracking
     // canMove is false if the NFT is fighting
     mapping(uint256 => bool) internal s_isFighting;
@@ -73,18 +73,8 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, Initializable {
         i_FIGHT_MATCHMAKER = _matchmakerContract;
     }
 
-    /**
-     * @dev 1 time use function. Initializes the CCIP receiver contract addresses
-     * and blocks this same function use forever and unlocks all the functionalities
-     * of the contract.
-     *
-     * @notice Can only be called by INTIALIZER_ADDRESS.
-     * @notice A 2 step setting process would be safer, one for proposing the address
-     * and one for confirming it and then indeed lock the setter forever. But this is
-     * a simple PoC.
-     */
-    function initializeReceiver(address _receiver) external initializeActions {
-        i_RECEIVER_ADDRESS = _receiver;
+    function initializeReferences(address[] calldata _references) external override initializeActions {
+        i_RECEIVER_ADDRESS = _references[0];
     }
 
     //******************** */

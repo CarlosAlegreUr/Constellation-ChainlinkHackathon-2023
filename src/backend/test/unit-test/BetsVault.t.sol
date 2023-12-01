@@ -4,13 +4,13 @@ pragma solidity ^0.8.13;
 // Scenarios
 import {ChainlinkMocksDeployed} from "./scenarios/ChainlinkMocksDeployed.t.sol";
 
-import {IFightMatchmaker} from "../../src/interfaces/IFightMatchmaker.sol";
+import {IFightMatchmaker} from "../../contracts/interfaces/IFightMatchmaker.sol";
 
 // Contract Tested
-import {BetsVault} from "../../src/BetsVault.sol";
+import {BetsVault} from "../../contracts/BetsVault.sol";
 
 // Useful values
-import "../../src/Utils.sol";
+import "../../contracts/Utils.sol";
 import "../Utils.t.sol";
 
 import {Test} from "forge-std/Test.sol";
@@ -21,8 +21,10 @@ contract BetsVaultTest is Test, UtilsValues {
     BetsVault public betsVault;
 
     modifier initialized() {
+        address[] memory referencedContracts = new address[](1);
+        referencedContracts[0] = MOCK_MATCHMAKER_ADDRESS;
         vm.prank(MOCK_INTIALIZER_ADDRESS);
-        betsVault.initializeMatchmaker(IFightMatchmaker(MOCK_MATCHMAKER_ADDRESS));
+        betsVault.initializeReferences(referencedContracts);
         _;
     }
 

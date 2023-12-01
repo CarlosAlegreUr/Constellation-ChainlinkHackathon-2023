@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import {CcipNftBridge} from "../CcipNftBridge.sol";
 import {IPromptFightersCollection} from "../interfaces/IPromptFightersCollection.sol";
 import {IFightMatchmaker} from "../interfaces/IFightMatchmaker.sol";
-import {Initializable} from "../Initializable.sol";
 
 import "../Utils.sol";
 
@@ -13,10 +12,6 @@ import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterfac
 import {FunctionsClient} from "@chainlink/functions/dev/v1_0_0/FunctionsClient.sol";
 import {FunctionsRequest} from "@chainlink/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
 import {IFunctionsSubscriptions} from "@chainlink/functions/dev/v1_0_0/interfaces/IFunctionsSubscriptions.sol";
-import {IRouterClient} from "@chainlink-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {OwnerIsCreator} from "@chainlink-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
-import {Client} from "@chainlink-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 
 import "forge-std/console.sol";
 
@@ -223,7 +218,10 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         emit ICCIPNftBridge__NftSent(msg.sender, ETH_SEPOLIA_CHAIN_ID, _nftId, block.timestamp);
     }
 
-    function _updateNftStateOnReceiveChainSpecifics(uint256 _nftId, address _owner, string memory /*_prompt*/) internal override {
+    function _updateNftStateOnReceiveChainSpecifics(uint256 _nftId, address _owner, string memory /*_prompt*/ )
+        internal
+        override
+    {
         emit ICCIPNftBridge__NftReceived(_owner, ETH_SEPOLIA_CHAIN_ID, _nftId, block.timestamp);
     }
 

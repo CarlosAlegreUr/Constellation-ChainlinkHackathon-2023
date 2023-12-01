@@ -5,16 +5,16 @@ pragma solidity ^0.8.13;
 import {ChainlinkMocksDeployed} from "./scenarios/ChainlinkMocksDeployed.t.sol";
 
 // Contract Tested
-import {FightMatchmaker} from "../../src/fight-contracts/FightMatchmaker.sol";
+import {FightMatchmaker} from "../../contracts/fight-contracts/FightMatchmaker.sol";
 
 // Contract interacted with
-import {BetsVault} from "../../src/BetsVault.sol";
-import {IBetsVault} from "../../src/interfaces/IBetsVault.sol";
-import {IFightExecutor} from "../../src/interfaces/IFightExecutor.sol";
-import {IFightMatchmaker} from "../../src/interfaces/IFightMatchmaker.sol";
+import {BetsVault} from "../../contracts/BetsVault.sol";
+import {IBetsVault} from "../../contracts/interfaces/IBetsVault.sol";
+import {IFightExecutor} from "../../contracts/interfaces/IFightExecutor.sol";
+import {IFightMatchmaker} from "../../contracts/interfaces/IFightMatchmaker.sol";
 
 // Useful values
-import "../../src/Utils.sol";
+import "../../contracts/Utils.sol";
 import "../Utils.t.sol";
 
 import "forge-std/console.sol";
@@ -25,9 +25,13 @@ contract FightMatchmakerTest is UtilsValues {
     BetsVault public betsVault;
 
     modifier initialized() {
+        address[] memory referencedContracts = new address[](2);
+        referencedContracts[0] = address(fightMatchmaker);
         vm.startPrank(MOCK_INTIALIZER_ADDRESS);
-        fightMatchmaker.initializeContracts(IFightExecutor(MOCK_EXECUTOR_ADDRESS), betsVault);
-        betsVault.initializeMatchmaker(fightMatchmaker);
+        betsVault.initializeReferences(referencedContracts);
+        referencedContracts[0] = MOCK_EXECUTOR_ADDRESS;
+        referencedContracts[1] = address(betsVault);
+        fightMatchmaker.initializeReferences(referencedContracts);
         vm.stopPrank();
         _;
     }

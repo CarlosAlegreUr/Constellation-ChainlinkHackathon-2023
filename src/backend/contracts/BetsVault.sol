@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 import {IBetsVault} from "./interfaces/IBetsVault.sol";
 import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
-import {Initializable} from "./Initializable.sol";
+import {ReferencesInitializer} from "./ReferencesInitializer.sol";
 import {NOT_DECIDING_WINNER_VALUE} from "./Utils.sol";
 
 /**
@@ -21,7 +21,7 @@ import {NOT_DECIDING_WINNER_VALUE} from "./Utils.sol";
  * @notice This contract assumes all inputs and states recieved and checked
  * are correctly handled by the `FightMatchmaker` contract.
  */
-contract BetsVault is IBetsVault, Initializable {
+contract BetsVault is IBetsVault, ReferencesInitializer {
     //******************************* */
     // CONTRACT'S STATE && CONSTANTS
     //******************************* */
@@ -35,8 +35,8 @@ contract BetsVault is IBetsVault, Initializable {
 
     mapping(bytes32 => BetsState) s_fightIdToBetsState;
 
-    function initializeMatchmaker(IFightMatchmaker _fightMatchmaker) external initializeActions {
-        i_FIGHT_MATCHMAKER = _fightMatchmaker;
+    function initializeReferences(address[] calldata _references) external override initializeActions {
+        i_FIGHT_MATCHMAKER = IFightMatchmaker(_references[0]);
     }
 
     //******************** */
