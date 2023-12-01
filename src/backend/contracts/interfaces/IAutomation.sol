@@ -1,40 +1,42 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import {IAutomationForwarder} from "@chainlink/automation/interfaces/IAutomationForwarder.sol";
+
 ///////////////////////
 // AUTOMATION CONFIG //
 ///////////////////////
 
-interface ILogAutomation {
-    // ESTO YO ENTIENDO QUE DEBERÍA UTILIZARSE EN registerUpkeep AL REGISTRAR
-    // NUESTRO CONTRATO EN LA AUTOMATIZACIÓN,
-    // PERO TODAVÍA NO HE DESCUBIERTO CÓMO SE HACE
+// TODO: DELETE LATER log trigger struct
+struct LogTriggerConfig {
+    address contractAddress; // must have address that will be emitting the log
+    uint8 filterSelector; // must have filtserSelector, denoting  which topics apply to filter ex 000, 101, 111...only last 3 bits apply
+    bytes32 topic0; // must have signature of the emitted event
+    bytes32 topic1; // optional filter on indexed topic 1
+    bytes32 topic2; // optional filter on indexed topic 2
+    bytes32 topic3; // optional filter on indexed topic 3
+}
 
-    struct LogTriggerConfig {
-        address contractAddress; // must have address that will be emitting the log
-        uint8 filterSelector; // must have filtserSelector, denoting  which topics apply to filter ex 000, 101, 111...only last 3 bits apply
-        bytes32 topic0; // must have signature of the emitted event
-        bytes32 topic1; // optional filter on indexed topic 1
-        bytes32 topic2; // optional filter on indexed topic 2
-        bytes32 topic3; // optional filter on indexed topic 3
-    }
-
-    struct Log {
-        uint256 index; // Index of the log in the block
-        uint256 timestamp; // Timestamp of the block containing the log
-        bytes32 txHash; // Hash of the transaction containing the log
-        uint256 blockNumber; // Number of the block containing the log
-        bytes32 blockHash; // Hash of the block containing the log
-        address source; // Address of the contract that emitted the log
-        bytes32[] topics; // Indexed topics of the log
-        bytes data; // Data of the log
-    }
-
-    function checkLog(Log calldata log, bytes memory checkData)
-        external
-        returns (bool upkeepNeeded, bytes memory performData);
-
-    function performUpkeep(bytes calldata performData) external;
+// TODO: Delete later Log struct
+/**
+ * @member index the index of the log in the block. 0 for the first log
+ * @member timestamp the timestamp of the block containing the log
+ * @member txHash the hash of the transaction containing the log
+ * @member blockNumber the number of the block containing the log
+ * @member blockHash the hash of the block containing the log
+ * @member source the address of the contract that emitted the log
+ * @member topics the indexed topics of the log
+ * @member data the data of the log
+ */
+struct Log {
+    uint256 index;
+    uint256 timestamp;
+    bytes32 txHash;
+    uint256 blockNumber;
+    bytes32 blockHash;
+    address source;
+    bytes32[] topics;
+    bytes data;
 }
 
 interface IAutomationRegistrar {
@@ -52,4 +54,8 @@ interface IAutomationRegistrar {
     }
 
     function registerUpkeep(RegistrationParams calldata requestParams) external returns (uint256);
+}
+
+interface IAutomationRegistry {
+    function getForwarder(uint256 upkeepID) external view returns (IAutomationForwarder);
 }

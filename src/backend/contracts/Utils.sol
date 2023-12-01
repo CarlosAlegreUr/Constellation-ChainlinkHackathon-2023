@@ -93,6 +93,17 @@ uint16 constant AVL_FUJI_REQ_CONFIRIMATIONS = 3;
 uint32 constant ETH_SEPOLIA_CALLBACK_GAS_LIMIT = 2_000_000;
 uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT = 2_000_000;
 
+//********************** */
+// Chainlink AUTOMATION
+//********************** */
+
+address constant ETH_SEPOLIA_REGISTRY = 0x86EFBD0b6736Bed994962f9797049422A3A8E8Ad;
+address constant ETH_SEPOLIA_REGISTRAR = 0xb0E49c5D0d05cbc241d68c05BC5BA1d1B7B72976; 
+
+address constant AVL_FUJI_REGISTRY = 0x819B58A646CDd8289275A87653a2aA4902b14fe6;
+address constant AVL_FUJI_REGISTRAR = 0x819B58A646CDd8289275A87653a2aA4902b14fe6; 
+
+
 //******************** */
 // Chainlink CCIP
 //******************** */

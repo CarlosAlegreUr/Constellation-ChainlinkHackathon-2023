@@ -125,7 +125,10 @@ interface IFightMatchmaker {
 
     error FightMatchMaker__OnlyNFtOnwerCanSetNftAutomated();
 
-    error FightMatchMaker__FightNotAvailable(address challenger, bytes32 fightId);
+    error FightMatchMaker__FightNotAvailable();
+    error FightMatchMaker__FightReqFailed(address p1, uint256 nftp1, bytes32 fightId, uint256 minBet, uint256 timestamp);
+    error FightMatchMaker__FightReqToFailed(address p1, address p2, uint256 nft1, uint256 nft2, uint256 timestamp);
+    error FightMatchMaker__OnlyRequesWhenAvailable();
 
     error FightMatchMaker__FightNotRequested(bytes32 fightId);
 
@@ -171,7 +174,7 @@ interface IFightMatchmaker {
         uint256 challengerNftId;
         uint256 minBet;
         uint256 acceptanceDeadline;
-        address challengeeAddress;
+        address challengee;
         uint256 challengeeNftId;
     }
 
@@ -294,14 +297,9 @@ interface IFightMatchmaker {
     //********************************* */
 
     /**
-     * @return bool saying if the nft is in automation mode.
+     * @dev Yout must approve linkFunds amount of LINK to the contract before calling this function.
      */
-    function getIsNftAutomated(uint256 nftId) external returns (bool);
-
-    /**
-     * @return bool saying if the nft is in automation mode.
-     */
-    function setNftAutomated(uint256 nftId, bool isAutomated, uint256 bet, uint256 minBet) external returns (bool);
+    function setNftAutomated(uint256 nftId, uint256 bet, uint256 minBet, uint256 linkFunds) external;
 
     /**
      * sets fightIdtoFight mapping

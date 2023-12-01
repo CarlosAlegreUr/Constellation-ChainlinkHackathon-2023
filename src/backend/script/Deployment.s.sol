@@ -16,12 +16,14 @@ contract PromptFightersDeploy is DeployFightsContracts {
             funcs_router = ETH_SEPOLIA_FUNCTIONS_ROUTER;
             funcs_subsId = ETH_SEPOLIA_FUNCS_SUBS_ID;
             vrf_router = ETH_SEPOLIA_VRF_COORDINATOR;
+            link_token = ETH_SEPOLIA_LINK;
         }
 
         if (block.chainid == AVL_FUJI_CHAIN_ID) {
             funcs_router = AVL_FUJI_FUNCTIONS_ROUTER;
             funcs_subsId = AVL_FUJI_FUNCS_SUBS_ID;
             vrf_router = AVL_FUJI_VRF_COORDINATOR;
+            link_token = AVL_FUJI_LINK;
         }
     }
 
