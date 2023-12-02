@@ -92,8 +92,6 @@ contract FightExecutor is
 
     /**
      * @notice Send a simple request sendRequest()
-     *
-     * TODO: maybe _cfParam should be passed as memory?
      */
     function startFight(bytes32 _fightId) external onlyFightMatchmaker returns (bytes32 requestId) {
         FunctionsRequest.Request memory req;
@@ -116,13 +114,11 @@ contract FightExecutor is
         return lastRequestId;
     }
 
-    // TODO: Need to implement function that will be called from our server to set the two stories for both battles
-    // after MAYBE call Chainlink VRF to select winner?
-
     //******************** */
     // INTERNAL FUNCTIONS
     //******************** */
 
+    // TODO: simulate functions from server because story generations lasts more than 9s
     /**
      * @dev Emits an event with latest result/error from Chainlink Functions.
      * If not erros given then it calls VFR.
@@ -138,18 +134,17 @@ contract FightExecutor is
         require(s_reqIsValid[requestId], "Unexpected funcs request ID.");
         delete s_reqIsValid[requestId];
 
-        if (err.length == 0) {
-            // Success, call VRF to generate winner
-            uint256 newReqId = _requestRandomWinner();
-            delete s_requestsIdToUser[requestId];
-            _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
+        // @dev TODO: ADD A WAY OF MARKING FALIED RESPONSES
 
-            // From this event front-end will parse the stories generated.
-            emit FightExecutor__FuncsResponse(requestId, response, block.timestamp);
-        } else {
-            // Failure
-            emit FightExecutor__FuncsError(requestId, err, block.timestamp);
-        }
+        // Success, call VRF to generate winner
+        uint256 newReqId = _requestRandomWinner();
+        delete s_requestsIdToUser[requestId];
+        _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
+
+        // From this event front-end will parse the stories generated.
+        emit FightExecutor__FuncsResponse(requestId, response, block.timestamp);
+        // Failure
+        emit FightExecutor__FuncsError(requestId, err, block.timestamp);
     }
 
     /**

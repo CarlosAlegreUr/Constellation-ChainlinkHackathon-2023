@@ -51,8 +51,8 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
     // All the following addresses are in practice immuntable
     // once initializeReferences() is executed by deployer
-    IFightExecutor private i_FIGHT_EXECUTOR_CONTRACT;
-    IBetsVault private i_BETS_VAULT;
+    IFightExecutor public i_FIGHT_EXECUTOR_CONTRACT;
+    IBetsVault public i_BETS_VAULT;
     ICcipNftBridge private i_PROMPT_FIGHTERS_NFT;
 
     LinkTokenInterface public immutable i_LINK;
@@ -87,7 +87,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
      */
     modifier onlyFightExecutorOrBetsVault() {
         require(
-            msg.sender == address(i_FIGHT_EXECUTOR_CONTRACT) || msg.sender == address(i_BETS_VAULT),
+            msg.sender == address(i_FIGHT_EXECUTOR_CONTRACT) || msg.sender == address(i_BETS_VAULT) /*TESTING|| msg.sender == DEPLOYER todo DELTE */,
             "Only FightExecutor or BetsVault can call this."
         );
         _;
@@ -189,7 +189,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
                 nftRequester: nftIds[0],
                 nftAcceptor: nftIds[1],
                 minBet: _fightReq.minBet,
-                acceptanceDeadline: _fightReq.minBet,
+                acceptanceDeadline: _fightReq.acceptanceDeadline,
                 startedAt: block.timestamp,
                 state: FightState.REQUESTED
             });
@@ -211,6 +211,8 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         }
     }
 
+
+    // TODO: add nft is fighting changes, make 1 player only 1 fight at a time 1 new maping for that
     function acceptFight(bytes32 _fightId, uint256 _nftId) public payable {
         Fight memory fight = getFight(_fightId);
         bool automationCalling = msg.sender == address(i_AUTOMATION_FORWARDER);

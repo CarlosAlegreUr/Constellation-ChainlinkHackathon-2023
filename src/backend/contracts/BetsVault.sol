@@ -84,6 +84,7 @@ contract BetsVault is IBetsVault, ReferencesInitializer {
         uint256 amount = betsState.acceptorBet + betsState.requesterBet;
         (bool success,) = winner.call{value: amount}("");
         require(success, "Transfer prize to winner failed.");
+        delete s_fightIdToBetsState[_fightId];
         emit BetsVault__BetsSentToWinner(winner, _fightId, amount, block.timestamp);
     }
 

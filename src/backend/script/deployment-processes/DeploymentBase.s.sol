@@ -17,12 +17,12 @@ contract DeployFightsContracts is DeploymentConfig {
     // @notice NO BROADCAST IS STARTED NEITHER STOPPED HERE, IT IS STARTED IN DEPLOYMENT.S.SOL run()
     function run() public virtual override {
         // Deploy Executor
-        FightExecutor fightExecutor = new FightExecutor(funcs_router, funcs_subsId, vrf_router);
+        fightExecutor = new FightExecutor(funcs_router, funcs_subsId, vrf_router);
         console.log("FightExecutor deployed at:");
         console.log(address(fightExecutor));
 
         // Deploy BetsVault
-        BetsVault betsVault = new BetsVault();
+        betsVault = new BetsVault();
         console.log("BetsVault deployed at:");
         console.log(address(betsVault));
 

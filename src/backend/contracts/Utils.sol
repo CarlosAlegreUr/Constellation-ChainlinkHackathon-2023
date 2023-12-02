@@ -15,7 +15,7 @@ pragma solidity ^0.8.20;
 //******************** */
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c;
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0x497954935649e5D9899c7b5e321Fb67BEf6F74b4;
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x346A9167d08a76F2b36731527AE504360b782552;
 address constant DEPLOYED_FUJI_BARRACKS = 0xe79570Bf8f4eD645A63Bf5b85210eb81D725989b;
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739;
@@ -24,7 +24,10 @@ uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
 ///////////////////////////////////////////////
 
 string constant NFT_VALID_PROMPT =
-    "anabel-A flying glass bottle-Golden swiss clock-She can fly at 233km/h-She is afraid of cans with mafioso attitude";
+    "athirdnftnastasio-your mother-she is overweight xdd-im a joker";
+
+    // "anabel-A flying glass bottle-Golden swiss clock-She can fly at 233km/h-She is afraid of cans with mafioso attitude";
+
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 //******************** */
@@ -109,7 +112,7 @@ uint256 constant FUJI_AUTOMATION_THRESHOLD_BALANCE = 2 ether;
 uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 500_000;
 uint32 constant GAS_LIMIT_FUJI_AUTOMATION = 800_000;
 
-uint96 constant LINK_AMOUNT_FOR_REGISTRATION = 2 ether;
+uint96 constant LINK_AMOUNT_FOR_REGISTRATION = 1 ether;
 
 //******************** */
 // Chainlink CCIP

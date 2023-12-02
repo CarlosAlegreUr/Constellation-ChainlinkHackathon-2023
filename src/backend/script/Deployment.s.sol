@@ -23,9 +23,10 @@ contract PromptFightersDeploy is DeployFightsContracts {
             super.run();
 
             // Deploy collection
+            // TODO: comment prompt deploy after first deploy when testing in this branch
             console.log("Deploying collection...");
             PromptFightersNFT promptFighters = new PromptFightersNFT(
-                ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
+            ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
             );
             console.log("PromptFighters deployed at:");
             console.log(address(promptFighters));
@@ -35,7 +36,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             address[] memory referencedContracts = new address[](3);
             referencedContracts[0] = address(fightExecutor);
             referencedContracts[1] = address(betsVault);
-            referencedContracts[2] = address(promptFighters);
+            referencedContracts[2] = address(DEPLOYED_SEPOLIA_COLLECTION);
             // Fund automation registration with LINK
             link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
             fightMatchmaker.initializeReferencesAndAutomation(
