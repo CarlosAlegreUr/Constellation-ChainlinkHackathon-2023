@@ -3,32 +3,20 @@ pragma solidity ^0.8.13;
 
 import {PromptFightersNFT} from "../contracts/nft-contracts/eth-PromptFightersNft.sol";
 import {FightersBarracks} from "../contracts/nft-contracts/avl-FightersBarracks.sol";
-import {DeployFightsContracts} from "./DeploymentBase.s.sol";
+import {DeployFightsContracts} from "./deployment-processes/DeploymentBase.s.sol";
 
 import "../contracts/Utils.sol";
-
 import "forge-std/console.sol";
 
 contract PromptFightersDeploy is DeployFightsContracts {
     function setUp() public override {
-        // TODO: Automation Contracts for Matchmaker add
-        if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            funcs_router = ETH_SEPOLIA_FUNCTIONS_ROUTER;
-            funcs_subsId = ETH_SEPOLIA_FUNCS_SUBS_ID;
-            vrf_router = ETH_SEPOLIA_VRF_COORDINATOR;
-            link_token = ETH_SEPOLIA_LINK;
-        }
-
-        if (block.chainid == AVL_FUJI_CHAIN_ID) {
-            funcs_router = AVL_FUJI_FUNCTIONS_ROUTER;
-            funcs_subsId = AVL_FUJI_FUNCS_SUBS_ID;
-            vrf_router = AVL_FUJI_VRF_COORDINATOR;
-            link_token = AVL_FUJI_LINK;
-        }
+        super.setUp();
     }
 
     function run() public override {
         vm.startBroadcast();
+
+        // Sepolia
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
             console.log("We are in SEPOLIA");
             // Deploys all contracts that are shared accross chans.
@@ -41,7 +29,22 @@ contract PromptFightersDeploy is DeployFightsContracts {
             );
             console.log("PromptFighters deployed at:");
             console.log(address(promptFighters));
-        } else {
+
+            // Intialize FightMatchmaker as it required frist the collection address.
+            // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
+            address[] memory referencedContracts = new address[](3);
+            referencedContracts[0] = address(fightExecutor);
+            referencedContracts[1] = address(betsVault);
+            referencedContracts[2] = address(promptFighters);
+            // Fund automation registration with LINK
+            link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
+            fightMatchmaker.initializeReferencesAndAutomation(
+                referencedContracts, automationRegistry, automationRegistrar, automationRegistration
+            );
+        }
+
+        // Fuji
+        if (block.chainid == AVL_FUJI_CHAIN_ID) {
             console.log("We are in FUJI");
             // Deploys all contracts that are shared accross chans.
             super.run();
@@ -55,10 +58,23 @@ contract PromptFightersDeploy is DeployFightsContracts {
 
             // Initialize barracks
             console.log("Initializing CCIP on barrracks...");
-            address[] memory referencedContracts = new address[](1);
+            address[] memory referencedContracts = new address[](3);
             referencedContracts[0] = DEPLOYED_SEPOLIA_COLLECTION;
             barracks.initializeReferences(referencedContracts);
+
+            // Intialize FightMatchmaker as it required frist the barracks address.
+            // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
+            referencedContracts[0] = address(fightExecutor);
+            referencedContracts[1] = address(betsVault);
+            referencedContracts[2] = address(barracks);
+            // TODO: registering automation in Fuji not working, check why
+            // Fund automation registration with LINK
+            // link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
+            // fightMatchmaker.initializeReferencesAndAutomation(
+            //     referencedContracts, automationRegistry, automationRegistrar, automationRegistration
+            // );
         }
+
         vm.stopBroadcast();
     }
 

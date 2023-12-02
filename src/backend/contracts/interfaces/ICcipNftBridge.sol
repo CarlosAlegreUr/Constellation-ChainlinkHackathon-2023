@@ -52,4 +52,8 @@ interface ICcipNftBridge {
     function getOwnerOf(uint256 _nftId) external view returns (address);
 
     function getPromptOf(uint256 _nftId) external view returns (string memory);
+
+    function getIsNftFighting(uint256 _nftId) external view returns (bool);
+
+    function getIsNftOnChain(uint256 _nftId) external view returns (bool);
 }

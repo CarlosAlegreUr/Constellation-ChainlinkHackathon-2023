@@ -19,6 +19,7 @@ import {IAutomationForwarder} from "@chainlink/automation/interfaces/IAutomation
 import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
 
 import "../Utils.sol";
+import "forge-std/console.sol";
 
 /**
  * @title FightMatchmaker
@@ -48,14 +49,14 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
     // [ External contracts interacted with ]
 
-    // They are in practice immuntable once initializeReferences()
-    // is executed by deployer
+    // All the following addresses are in practice immuntable
+    // once initializeReferences() is executed by deployer
     IFightExecutor private i_FIGHT_EXECUTOR_CONTRACT;
     IBetsVault private i_BETS_VAULT;
     ICcipNftBridge private i_PROMPT_FIGHTERS_NFT;
 
     LinkTokenInterface public immutable i_LINK;
-    IAutomationForwarder private immutable i_AUTOMATION_FORWARDER;
+    IAutomationForwarder private i_AUTOMATION_FORWARDER;
 
     // [ Matchmaking - state ]
 
@@ -73,7 +74,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
     // For now, every fight you do in automated mode will have the same amount of bet.
     uint256 private s_automatedNftBet;
     uint256 private s_automatedNftMinBet;
-    // If balance goes below this threshold automation is stopped and NFT is deleted from automation.
+    // If balance goes below this threshold, automation is stopped and NFT is deleted from automation.
     uint256 immutable i_AUTOMATION_BALANCE_THRESHOLD;
 
     //******************** */
@@ -123,16 +124,20 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
     // CONSTRUCTOR
     //******************** */
 
-    constructor(
-        LinkTokenInterface _link,
+    constructor(LinkTokenInterface _link, uint256 _automationBalanceThreshold) {
+        i_LINK = _link;
+        i_AUTOMATION_BALANCE_THRESHOLD = _automationBalanceThreshold;
+    }
+
+    function initializeReferencesAndAutomation(
+        address[] memory _references,
         IAutomationRegistry _registry,
         IAutomationRegistrar _registrar,
-        IAutomationRegistrar.RegistrationParams memory _params,
-        uint256 _automationBalanceThreshold
-    ) {
-        i_LINK = _link;
-
-        // Automation registration
+        IAutomationRegistrar.RegistrationParams memory _params
+    ) external initializeActions {
+        // Automation registration complete params that require address(this)
+        _params.upkeepContract = address(this);
+        _params.adminAddress = address(this);
         _params.triggerConfig = abi.encode(
             address(this), // Listen to this contract
             2, // Binary 010, considering only topic2 (fightId)
@@ -141,21 +146,24 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
             0x0, // If you don't want to filter on a specific fightId
             0x0 // If you don't want to filter on a specific bet
         );
-
         i_LINK.approve(address(_registrar), _params.amount);
         uint256 upkeepID = _registrar.registerUpkeep(_params);
         if (upkeepID == 0) {
             revert("Chainlink upkeep registration: auto-approve disabled");
         }
 
-        // Get forwarder
+        // Get&Set forwarder
         i_AUTOMATION_FORWARDER = _registry.getForwarder(upkeepID);
 
-        // Set threshold so contract doesnt run out of funds while automating
-        i_AUTOMATION_BALANCE_THRESHOLD = _automationBalanceThreshold;
+        (bool success,) = address(this).call(abi.encodeWithSignature("initializeReferences(address[])", _references));
+        require(success, "Failure intializing references");
     }
 
-    function initializeReferences(address[] memory _references) external override initializeActions {
+    /**
+     * @notice In this contract this can only be called from initializeReferencesAndAutomation()
+     */
+    function initializeReferences(address[] memory _references) public override {
+        require(msg.sender == address(this), "Only callable by itself.");
         i_FIGHT_EXECUTOR_CONTRACT = IFightExecutor(_references[0]);
         i_BETS_VAULT = IBetsVault(_references[1]);
         i_PROMPT_FIGHTERS_NFT = ICcipNftBridge(_references[2]);
@@ -351,8 +359,14 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         if (expectedAcceptor != address(0) && i_PROMPT_FIGHTERS_NFT.getOwnerOf(s_nftIdAutomated) != expectedAcceptor) {
             upkeepNeeded = false;
         }
+
         // The bet is acceptable for challenger
         if (f.minBet < s_automatedNftBet) {
+            upkeepNeeded = false;
+        }
+
+        // The NFT is not fighting
+        if (i_PROMPT_FIGHTERS_NFT.getIsNftFighting(s_nftIdAutomated)) {
             upkeepNeeded = false;
         }
 

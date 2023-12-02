@@ -36,10 +36,10 @@ abstract contract ReferencesInitializer {
 
     /**
      * @dev 1 time use function that must have the iniitalizeActions() modifier
-     * wherever it is overriden. 
-     * 
+     * wherever it is overriden.
+     *
      * Must initialize the not known at deploy time referenced contracts.
-     * 
+     *
      * @notice Can only be called by INTIALIZER_ADDRESS.
      * @notice A 2 step setting process would be safer, one for proposing the address
      * and one for confirming it and then indeed lock the setter forever. But this is

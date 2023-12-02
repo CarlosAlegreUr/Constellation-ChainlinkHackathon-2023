@@ -15,15 +15,6 @@ import {IFunctionsSubscriptions} from "@chainlink/functions/dev/v1_0_0/interface
 import "@chainlink/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/vrf/VRFConsumerBaseV2.sol";
 
-//**************************************** */
-//            FOR DEVS!
-// This contract might need more state
-// variables or functions.
-//
-// Feel free to add them if you deem them
-// necessary while coding.
-//**************************************** */
-
 /**
  * @title FightExecutor
  * @author PromptFighters team: Carlos

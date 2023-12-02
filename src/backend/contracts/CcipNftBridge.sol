@@ -212,6 +212,14 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, ReferencesIniti
 
     function getPromptOf(uint256 _nftId) public view virtual returns (string memory);
 
+    function getIsNftFighting(uint256 _nftId) public view returns (bool) {
+        return s_isFighting[_nftId];
+    }
+
+    function getIsNftOnChain(uint256 _nftId) public view returns (bool) {
+        return s_isOnChain[_nftId];
+    }
+
     // @notice Overriden so in the contracts with inheriting conflict they can still
     // access CCIPReceiver its IERC165.
     function supportsInterface(bytes4 interfaceId)
