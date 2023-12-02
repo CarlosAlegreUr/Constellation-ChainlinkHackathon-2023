@@ -98,7 +98,7 @@ contract FightExecutor is
     function startFight(bytes32 _fightId) external onlyFightMatchmaker returns (bytes32 requestId) {
         FunctionsRequest.Request memory req;
 
-        req.initializeRequestForInlineJavaScript(FIGHT_GENERATION_SCRIPT);
+        req.initializeRequestForInlineJavaScript(FIGHT_GENERATION_SCRIPT_MOCK);
         req.addSecretsReference(FUNCTIONS_URL_SECRETS_ENDPOINT);
 
         string[] memory args = new string[](2);

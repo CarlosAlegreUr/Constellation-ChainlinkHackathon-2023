@@ -24,7 +24,7 @@ uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
 ///////////////////////////////////////////////
 
 string constant NFT_VALID_PROMPT =
-    "anabel-A flying glass bottle-A golden swiss clock-She can fly at 233km/h-She is afraid of cans with mafioso attitude";
+    "anabel-A flying glass bottle-Golden swiss clock-She can fly at 233km/h-She is afraid of cans with mafioso attitude";
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 //******************** */
@@ -144,6 +144,14 @@ string constant NFT_GENERATION_SCRIPT_MOCK = "console.log(\"date is: \", Date.no
     "function splitString(input) {\n" "  return input.split(\"-\");\n" "}\n\n" "const fullPrompt = args[0];\n"
     "const parts = splitString(fullPrompt);\n\n" "let result;\n" "if (parts[0][0] == \"a\") {\n" "  result = args[0];\n"
     "} else {\n" "  result = \"INVALID\";\n" "}\n" "console.log(result);\n" "return Functions.encodeString(result);";
+
+string constant FIGHT_GENERATION_SCRIPT_MOCK = "function splitString(input) {\n" "  return input.split(\"-\");\n"
+    "}\n\n" "const fullPrompt = args[0];\n" "const parts = splitString(fullPrompt);\n\n"
+    "const fullPrompt2 = args[1];\n" "const parts2 = splitString(fullPrompt2);\n\n"
+    "const result = `${parts[0]} fought against  \n" "    ${parts2[0]}. It was a fight so legendary that broke \n"
+    "    OpenAIs API services. WOOOOOW!` \n" "    `${parts[1]} used its ${parts[3]} against\n"
+    "    the ${parts2[3]} of ${parts[1]}. After the clash the winner was...`;\n\n" "console.log(result);\n"
+    "return Functions.encodeString(result);";
 
 string constant NFT_GENERATION_SCRIPT = "console.log(\"date is: \", Date.now());\n\n"
     "const gptPrompt = `Take a deep breath and do 1 thing:\n\n" "1.- Deem the description VALID or INVALID\n\n"
