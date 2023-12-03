@@ -15,7 +15,7 @@ pragma solidity ^0.8.20;
 //******************** */
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c;
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0x346A9167d08a76F2b36731527AE504360b782552;
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x3d77A16db2Cc8F98E63aa03b2210fcC9664E7518;
 address constant DEPLOYED_FUJI_BARRACKS = 0xe79570Bf8f4eD645A63Bf5b85210eb81D725989b;
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739;
@@ -93,8 +93,8 @@ uint16 constant AVL_FUJI_REQ_CONFIRIMATIONS = 3;
 // Estimate is 20.000 gas per word, we distribute bets "within" this function
 // so lets keep it up. Proper testing of gas consumption should be made in order
 // to assert a fitter value.
-uint32 constant ETH_SEPOLIA_CALLBACK_GAS_LIMIT = 2_000_000;
-uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT = 2_000_000;
+uint32 constant ETH_SEPOLIA_CALLBACK_GAS_LIMIT_VRF = 2_000_000;
+uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT_VRF = 2_000_000;
 
 //********************** */
 // Chainlink AUTOMATION
@@ -104,7 +104,7 @@ address constant ETH_SEPOLIA_REGISTRY = 0x86EFBD0b6736Bed994962f9797049422A3A8E8
 address constant ETH_SEPOLIA_REGISTRAR = 0xb0E49c5D0d05cbc241d68c05BC5BA1d1B7B72976;
 
 address constant AVL_FUJI_REGISTRY = 0x819B58A646CDd8289275A87653a2aA4902b14fe6;
-address constant AVL_FUJI_REGISTRAR = 0x819B58A646CDd8289275A87653a2aA4902b14fe6;
+address constant AVL_FUJI_REGISTRAR = 0x5Cb7B29e621810Ce9a04Bee137F8427935795d00;
 
 uint256 constant SEPOLIA_AUTOMATION_THRESHOLD_BALANCE = 2 ether;
 uint256 constant FUJI_AUTOMATION_THRESHOLD_BALANCE = 2 ether;
@@ -113,6 +113,7 @@ uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 500_000;
 uint32 constant GAS_LIMIT_FUJI_AUTOMATION = 800_000;
 
 uint96 constant LINK_AMOUNT_FOR_REGISTRATION = 1 ether;
+uint96 constant LINK_AMOUNT_FOR_REGISTRATION_EXAGERATED = 15 ether;
 
 //******************** */
 // Chainlink CCIP

@@ -43,30 +43,38 @@ contract FightExecutor is
     IFightMatchmaker private i_FIGHT_MATCHMAKER_CONTRACT;
     VRFCoordinatorV2Interface private immutable i_VRF_COORDINATOR;
 
-    // Chainlink Functions related
-    // uint64 immutable i_funcsSubsId;
-    bytes32 immutable i_DON_ID;
-
-    // Chainlink VRF related
-    uint32 constant WINNER_BIT_SIZE = 1;
-    uint256 constant WINNER_IS_REQUESTER = 0;
-    uint256 constant WINNER_IS_ACCEPTOR = 1;
-    // uint64 immutable i_vrfSubsId;
-
     // Tracking fightIds to requests
     // First the ID will be a funcReqId and then a vftReqId
     mapping(bytes32 => bool) s_reqIsValid;
     mapping(bytes32 => bytes32) s_requestsIdToFightId;
     mapping(bytes32 => address) s_requestsIdToUser;
 
-    constructor(address _funcsRouter, uint64 _funcSubsId, address _vrfCoordinator)
-        ChainlinkSubsManager(_funcsRouter, _funcSubsId, _vrfCoordinator)
+    // Chainlink Functions related
+    bytes32 immutable i_donId;
+
+    // Chainlink VRF related
+    uint32 constant WINNER_BIT_SIZE = 1;
+    uint256 constant WINNER_IS_REQUESTER = 0;
+    uint256 constant WINNER_IS_ACCEPTOR = 1;
+    bytes32 immutable i_keyHash;
+    uint16 immutable i_requConfirmations;
+    uint32 immutable i_callbackGasLimit;
+
+    constructor(
+        address _funcsRouter,
+        address _vrfCoordinator,
+        FightExecutor__ChainlinkServicesInitParmas memory _cfiParams
+    )
+        ChainlinkSubsManager(_funcsRouter, _cfiParams.funcSubsId, _vrfCoordinator)
         FunctionsClient(_funcsRouter)
         VRFConsumerBaseV2(_vrfCoordinator)
     {
+        i_donId = _cfiParams.donId;
+
         i_VRF_COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
-        // Indeed if deployed in any other blockchain than SEPOLIA or FUJI it won't work.
-        i_DON_ID = block.chainid == ETH_SEPOLIA_CHAIN_ID ? ETH_SEPOLIA_DON_ID : AVL_FUJI_DON_ID;
+        i_keyHash = _cfiParams.keyHash;
+        i_requConfirmations = _cfiParams.requConfirmations;
+        i_callbackGasLimit = _cfiParams.callbackGasLimit;
     }
 
     function initializeReferences(address[] calldata _references) external override initializeActions {
@@ -106,7 +114,7 @@ contract FightExecutor is
         args[1] = nftAcceptorPrompt;
         req.setArgs(args);
 
-        bytes32 lastRequestId = _sendRequest(req.encodeCBOR(), i_funcsSubsId, GAS_LIMIT_FIGHT_GENERATION, i_DON_ID);
+        bytes32 lastRequestId = _sendRequest(req.encodeCBOR(), i_funcsSubsId, GAS_LIMIT_FIGHT_GENERATION, i_donId);
 
         s_requestsIdToFightId[lastRequestId] = _fightId;
         s_reqIsValid[lastRequestId] = true;
@@ -138,6 +146,7 @@ contract FightExecutor is
 
         // Success, call VRF to generate winner
         uint256 newReqId = _requestRandomWinner();
+        _userConsumesFunds(s_requestsIdToUser[requestId]);
         delete s_requestsIdToUser[requestId];
         _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
 
@@ -183,14 +192,8 @@ contract FightExecutor is
 
     // requestRandomWords()
     function _requestRandomWinner() private returns (uint256 requestId) {
-        bool isSepolia = block.chainid == ETH_SEPOLIA_CHAIN_ID;
-        bytes32 keyHash = isSepolia ? ETH_SEPOLIA_KEY_HASH : AVL_FUJI_KEY_HASH;
-        uint16 requConfirmations = isSepolia ? ETH_SEPOLIA_REQ_CONFIRIMATIONS : AVL_FUJI_REQ_CONFIRIMATIONS;
-        uint32 callbackGasLimit = isSepolia ? ETH_SEPOLIA_CALLBACK_GAS_LIMIT : AVL_FUJI_CALLBACK_GAS_LIMIT;
-
-        // Will revert if subscription is not set and funded.
         requestId = i_VRF_COORDINATOR.requestRandomWords(
-            keyHash, i_vrfSubsId, requConfirmations, callbackGasLimit, WINNER_BIT_SIZE
+            i_keyHash, i_vrfSubsId, i_requConfirmations, i_callbackGasLimit, WINNER_BIT_SIZE
         );
 
         emit FightExecutor__VrfReqSent(requestId, block.timestamp);

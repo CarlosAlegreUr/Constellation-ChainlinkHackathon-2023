@@ -87,7 +87,8 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
      */
     modifier onlyFightExecutorOrBetsVault() {
         require(
-            msg.sender == address(i_FIGHT_EXECUTOR_CONTRACT) || msg.sender == address(i_BETS_VAULT) /*TESTING|| msg.sender == DEPLOYER todo DELTE */,
+            msg.sender == address(i_FIGHT_EXECUTOR_CONTRACT) || msg.sender == address(i_BETS_VAULT)
+                || msg.sender == DEPLOYER, /* todo DELTE */
             "Only FightExecutor or BetsVault can call this."
         );
         _;
@@ -114,7 +115,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         }
 
         // Sender is not fighting check
-        if (getUserCurrentFight(msg.sender).state != FightState.AVAILABLE) {
+        if (s_userToFightId[msg.sender] != bytes32(0)) {
             revert FightMatchMaker__OnlyRequesWhenAvailable();
         }
         _;
@@ -163,6 +164,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
      * @notice In this contract this can only be called from initializeReferencesAndAutomation()
      */
     function initializeReferences(address[] memory _references) public override {
+        console.log("Low level calling...");
         require(msg.sender == address(this), "Only callable by itself.");
         i_FIGHT_EXECUTOR_CONTRACT = IFightExecutor(_references[0]);
         i_BETS_VAULT = IBetsVault(_references[1]);
@@ -211,8 +213,6 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         }
     }
 
-
-    // TODO: add nft is fighting changes, make 1 player only 1 fight at a time 1 new maping for that
     function acceptFight(bytes32 _fightId, uint256 _nftId) public payable {
         Fight memory fight = getFight(_fightId);
         bool automationCalling = msg.sender == address(i_AUTOMATION_FORWARDER);
@@ -241,6 +241,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
             _updateFightState(_fightId, FightState.ONGOING);
             // setting accepter -> fightId means accepter is fighting
             _setUserFightId(acceptor, _fightId);
+            _updateNftsStates(fight.nftRequester, _nftId);
             emit FightMatchmaker__FightStateChange(_fightId, FightState.REQUESTED, FightState.ONGOING, acceptor);
         } catch {
             revert FightMatchMaker__FightStartFailed(_fightId);
@@ -262,10 +263,8 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
         // Ownership checkings
 
-        address[2] memory participants = [
-            i_PROMPT_FIGHTERS_NFT.getOwnerOf(_fight.nftRequester),
-            i_PROMPT_FIGHTERS_NFT.getOwnerOf(_fight.nftAcceptor)
-        ];
+        address[2] memory participants =
+            [i_PROMPT_FIGHTERS_NFT.getOwnerOf(_fight.nftRequester), i_PROMPT_FIGHTERS_NFT.getOwnerOf(_nftId)];
 
         if (_automationCalling) {
             // If specified an acceptor
@@ -294,11 +293,23 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
             }
         }
 
+        // Acceptor is not already in a battle or requesting one
+        if (s_userToFightId[participants[1]] == bytes32(0)) {
+            revert FightMatchMaker__YouCantAcceptIfRequestingOrFighting();
+        }
+
         // Bets checkings
 
         if (acceptorBet < _fight.minBet) {
             revert FightMatchMaker__NotEnoughEthSentToAcceptFight(_fightId);
         }
+
+        // Funds provided to execute Chainlink Serivces provided
+        if (!i_FIGHT_EXECUTOR_CONTRACT.canPlay(participants[0]) && !i_FIGHT_EXECUTOR_CONTRACT.canPlay(participants[1]))
+        {
+            revert FightMatchMaker__AnyFighterHasEnoughFunds();
+        }
+
         _checkAndUpdateAutomationBalance(_automationCalling);
     }
 
@@ -401,6 +412,11 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
             s_fightIdToFight[_fightId].state = _fightState;
         }
         emit FightMatchmaker__FightIdToFightSet(_fightId, s_fightIdToFight[_fightId]);
+    }
+
+    function _updateNftsStates(uint256 _nftOne, uint256 _nftTwo) internal {
+        i_PROMPT_FIGHTERS_NFT.setIsNftFighting(_nftOne, true);
+        i_PROMPT_FIGHTERS_NFT.setIsNftFighting(_nftTwo, true);
     }
 
     function _checkAndUpdateAutomationBalance(bool _needUpdate) internal {

@@ -25,12 +25,6 @@ interface IChainlinkSubsManager {
     function getUserSubsBalance(address user) external view returns (uint256);
 
     /**
-     * @dev Called every time a user consumes a Chainlink service and it substracts
-     * 0.5 LINK from its balance.
-     */
-    function userConsumesFunds() external;
-
-    /**
      * @dev Checks if user has enough LINK sent to use the services.
      * > 15 LINK in this specific case.
      */

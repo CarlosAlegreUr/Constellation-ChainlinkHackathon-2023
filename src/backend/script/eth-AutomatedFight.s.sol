@@ -38,6 +38,17 @@ contract Fight is Script {
         vm.startBroadcast();
 
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
+            // Automate NFT 2
+            
+            // Fund LINK for automation upkeeps
+            linkToken.approve(address(matchmaker), 1 ether);
+
+                // Fund Chainlink Subscriptions
+            console.log("Funding LINK consumption from fight contracts...");
+            linkToken.approve(address(executor), 1 ether);
+            executor.fundMySubscription(1 ether);
+            matchmaker.setNftAutomated(2, 0.001 ether, 0.001 ether, 1 ether);
+
             IFightMatchmaker.FightRequest memory fr = IFightMatchmaker.FightRequest({
                 challengerNftId: 1,
                 minBet: 0.001 ether,
@@ -48,14 +59,9 @@ contract Fight is Script {
             console.log("Trying to request fight...");
             matchmaker.requestFight{value: 0.005 ether}(fr);
 
-            // Fund Chainlink Subscriptions
-            console.log("Funding LINK consumption from fight contracts...");
-            linkToken.approve(address(executor), 1 ether);
-            executor.fundMySubscription(1 ether);
-
-            bytes32 fightId = matchmaker.getFightId(DEPLOYER, fr.challengerNftId, fr.challengee, fr.challengeeNftId);
-            console.log("Trying to accept fight...");
-            matchmaker.acceptFight{value: 0.005 ether}(fightId, 2);
+            console.log("Fight should be accepted by upkeep in later block...");
+            console.log("Check state on block explorer...");
+           
         }
 
         vm.stopBroadcast();

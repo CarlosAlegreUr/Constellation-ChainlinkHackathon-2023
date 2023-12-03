@@ -10,7 +10,6 @@ import {IRouterClient} from "@chainlink-ccip/src/v0.8/ccip/interfaces/IRouterCli
 import {OwnerIsCreator} from "@chainlink-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {Client} from "@chainlink-ccip/src/v0.8/ccip/libraries/Client.sol";
 // import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
-
 // Using personalized version for compatibility with Chainlink Functions
 import {CCIPReceiver} from "./libEdits/edit-CCIPReceiver.sol";
 
@@ -34,22 +33,22 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, ReferencesIniti
     mapping(uint256 => bool) internal s_isFighting;
     mapping(uint256 => bool) internal s_isOnChain;
 
-    IFightMatchmaker immutable i_FIGHT_MATCHMAKER;
+    // IFightMatchmaker immutable i_FIGHT_MATCHMAKER;
 
     // TODO: delete after testing
-    // IFightMatchmaker i_FIGHT_MATCHMAKER;
+    IFightMatchmaker i_FIGHT_MATCHMAKER;
 
     // TODO: delete after testing
-    // function setMatchmaker(address m) external {
-    //     require(DEPLOYER == msg.sender);
-    //     i_FIGHT_MATCHMAKER = IFightMatchmaker(m);
-    // }
+    function setMatchmaker(address m) external {
+        require(DEPLOYER == msg.sender);
+        i_FIGHT_MATCHMAKER = IFightMatchmaker(m);
+    }
 
     // TODO: delete after testing
-    // function nftFighting(uint256 m, bool fight) external {
-    //     require(DEPLOYER == msg.sender);
-    //     s_isFighting[m] = fight;
-    // }
+    function nftFighting(uint256 m, bool fight) external {
+        require(DEPLOYER == msg.sender);
+        s_isFighting[m] = fight;
+    }
 
     string constant HANDLE_RECEIVE_NFT_FUNCTION_SIG = "_updateNftStateOnReceive(uint256,address,string)";
 

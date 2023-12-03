@@ -144,11 +144,13 @@ interface IFightMatchmaker {
 
     error FightMatchMaker__SettingNftsNotFightingFailed(uint256 nftRequesterId, uint256 nftAcceptorId);
 
+    error FightMatchMaker__YouCantAcceptIfRequestingOrFighting();
     error FightMatchMaker__CannotCancelFight(bytes32 fightId, FightState fightState);
 
     error FightMatchMaker__AutomatedBetCannotBeZero();
 
     error FightMatchMaker__NoAutomatedNftHasHighEnoughBet(bytes32 fightId);
+    error FightMatchMaker__AnyFighterHasEnoughFunds();
 
     error FightMatchMaker__ChallengeeNftNotAutomated(uint256 challengeeNftId);
 

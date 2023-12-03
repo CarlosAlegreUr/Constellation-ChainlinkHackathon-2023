@@ -24,12 +24,12 @@ contract PromptFightersDeploy is DeployFightsContracts {
 
             // Deploy collection
             // TODO: comment prompt deploy after first deploy when testing in this branch
-            console.log("Deploying collection...");
-            PromptFightersNFT promptFighters = new PromptFightersNFT(
-            ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
-            );
-            console.log("PromptFighters deployed at:");
-            console.log(address(promptFighters));
+            // console.log("Deploying collection...");
+            // PromptFightersNFT promptFighters = new PromptFightersNFT(
+            // ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
+            // );
+            // console.log("PromptFighters deployed at:");
+            // console.log(address(promptFighters));
 
             // Intialize FightMatchmaker as it required frist the collection address.
             // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
@@ -70,10 +70,10 @@ contract PromptFightersDeploy is DeployFightsContracts {
             referencedContracts[2] = address(barracks);
             // TODO: registering automation in Fuji not working, check why
             // Fund automation registration with LINK
-            // link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
-            // fightMatchmaker.initializeReferencesAndAutomation(
-            //     referencedContracts, automationRegistry, automationRegistrar, automationRegistration
-            // );
+            link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
+            fightMatchmaker.initializeReferencesAndAutomation(
+                referencedContracts, automationRegistry, automationRegistrar, automationRegistration
+            );
         }
 
         vm.stopBroadcast();

@@ -17,7 +17,7 @@ contract DeployFightsContracts is DeploymentConfig {
     // @notice NO BROADCAST IS STARTED NEITHER STOPPED HERE, IT IS STARTED IN DEPLOYMENT.S.SOL run()
     function run() public virtual override {
         // Deploy Executor
-        fightExecutor = new FightExecutor(funcs_router, funcs_subsId, vrf_router);
+        fightExecutor = new FightExecutor(funcs_router, vrf_router, fexecServicesInit);
         console.log("FightExecutor deployed at:");
         console.log(address(fightExecutor));
 

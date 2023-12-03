@@ -32,7 +32,7 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
     // CONTRACT'S STATE
     //******************** */
 
-    uint256 constant MIN_LINK_IN_SUBS = 10 ether;
+    uint256 constant MIN_LINK_IN_SUBS = 0.8 ether;
     LinkTokenInterface private immutable i_LINK_TOKEN;
 
     mapping(address => uint256) s_userToSubsBalance;
@@ -74,7 +74,7 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
         require(success, "Faild to transfer LINK.");
 
         i_LINK_TOKEN.transferAndCall(i_funcsSubsAccess, amount / 2, abi.encode(i_funcsSubsId));
-        i_LINK_TOKEN.transferAndCall(i_vrfSubsAccess, amount / 2, abi.encode(i_vrfSubsAccess));
+        i_LINK_TOKEN.transferAndCall(i_vrfSubsAccess, amount / 2, abi.encode(i_vrfSubsId));
     }
 
     // @notice Not implemented for PoC
@@ -84,11 +84,15 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
     //     require(success, "Faild to transfer LINK.");
     // }
 
-    function userConsumesFunds() external {
-        s_userToSubsBalance[msg.sender] -= 0.5 ether;
+    /**
+     * @dev Called every time a user consumes a Chainlink service and it substracts
+     * 0.5 LINK from its balance.
+     */
+    function _userConsumesFunds(address _user) internal {
+        s_userToSubsBalance[_user] -= 0.5 ether;
     }
 
-    function canPlay(address _user) external view returns (bool) {
+    function canPlay(address _user) public view returns (bool) {
         return s_userToSubsBalance[_user] >= MIN_LINK_IN_SUBS ? true : false;
     }
 

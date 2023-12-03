@@ -4,6 +4,7 @@ pragma solidity ^0.8.13;
 import {FightMatchmaker} from "../../contracts/fight-contracts/FightMatchmaker.sol";
 import {BetsVault} from "../../contracts/BetsVault.sol";
 import {FightExecutor} from "../../contracts/fight-contracts/FightExecutor.sol";
+import {IFightExecutor} from "../../contracts/interfaces/IFightExecutor.sol";
 
 import {IAutomationRegistrar} from "../../contracts/interfaces/IAutomation.sol";
 import {IAutomationRegistry} from "../../contracts/interfaces/IAutomation.sol";
@@ -25,6 +26,8 @@ contract DeploymentConfig is Script {
 
     address public vrf_router;
 
+    IFightExecutor.FightExecutor__ChainlinkServicesInitParmas public fexecServicesInit;
+
     IAutomationRegistry public automationRegistry;
     IAutomationRegistrar public automationRegistrar;
     uint256 public automationBalanceThreshold;
@@ -42,6 +45,13 @@ contract DeploymentConfig is Script {
             funcs_router = ETH_SEPOLIA_FUNCTIONS_ROUTER;
             funcs_subsId = ETH_SEPOLIA_FUNCS_SUBS_ID;
             vrf_router = ETH_SEPOLIA_VRF_COORDINATOR;
+            fexecServicesInit = IFightExecutor.FightExecutor__ChainlinkServicesInitParmas({
+                keyHash: ETH_SEPOLIA_KEY_HASH,
+                requConfirmations: ETH_SEPOLIA_REQ_CONFIRIMATIONS,
+                callbackGasLimit: ETH_SEPOLIA_CALLBACK_GAS_LIMIT_VRF,
+                funcSubsId: funcs_subsId,
+                donId: ETH_SEPOLIA_DON_ID
+            });
             automationRegistry = IAutomationRegistry(ETH_SEPOLIA_REGISTRY);
             automationRegistrar = IAutomationRegistrar(ETH_SEPOLIA_REGISTRAR);
             automationBalanceThreshold = SEPOLIA_AUTOMATION_THRESHOLD_BALANCE;
@@ -65,6 +75,13 @@ contract DeploymentConfig is Script {
             funcs_router = AVL_FUJI_FUNCTIONS_ROUTER;
             funcs_subsId = AVL_FUJI_FUNCS_SUBS_ID;
             vrf_router = AVL_FUJI_VRF_COORDINATOR;
+            fexecServicesInit = IFightExecutor.FightExecutor__ChainlinkServicesInitParmas({
+                keyHash: AVL_FUJI_KEY_HASH,
+                requConfirmations: AVL_FUJI_REQ_CONFIRIMATIONS,
+                callbackGasLimit: AVL_FUJI_CALLBACK_GAS_LIMIT_VRF,
+                funcSubsId: funcs_subsId,
+                donId: AVL_FUJI_DON_ID
+            });
             automationRegistry = IAutomationRegistry(AVL_FUJI_REGISTRY);
             automationRegistrar = IAutomationRegistrar(AVL_FUJI_REGISTRAR);
             automationBalanceThreshold = FUJI_AUTOMATION_THRESHOLD_BALANCE;
@@ -83,7 +100,7 @@ contract DeploymentConfig is Script {
         }
 
         if (isValidConfig) {
-            console.log("Chain is supported, deployng...");
+            console.log("Chain is supported, actions incoming...");
         } else {
             revert("Chain not supported.");
         }
