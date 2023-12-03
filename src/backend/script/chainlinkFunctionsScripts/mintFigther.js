@@ -61,6 +61,7 @@ const openAIResponse = await Functions.makeHttpRequest({
     "Content-Type": "application/json",
   },
   data: postData,
+  timeout: 9000,
 });
 
 console.log("Executes till here");
