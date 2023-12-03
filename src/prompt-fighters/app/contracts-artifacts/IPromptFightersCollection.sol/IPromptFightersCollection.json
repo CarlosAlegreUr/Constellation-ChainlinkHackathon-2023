@@ -1,0 +1,618 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "funcsResponse",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "funcsError",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "PromptFighters__NftMinted",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getPromptOf",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "nftDescriptionPrompt",
+          "type": "string"
+        }
+      ],
+      "name": "safeMint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "getPromptOf(uint256)": "d6862a9d",
+    "safeMint(address,string)": "d204c45e"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"nftId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"funcsResponse\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"bytes\",\"name\":\"funcsError\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"PromptFighters__NftMinted\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"nftId\",\"type\":\"uint256\"}],\"name\":\"getPromptOf\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"nftDescriptionPrompt\",\"type\":\"string\"}],\"name\":\"safeMint\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"PromtFighters team: Carlos\",\"details\":\"Interface for interacting with the NFT collection.\",\"kind\":\"dev\",\"methods\":{\"safeMint(address,string)\":{\"details\":\"Before minting the promt, it must pass an AI filter so as to the NFTs are interesting to play with and don't violate any copyright or ethical rules OpenAI has. The filter is applied with Chainlink Functions.\"}},\"title\":\"IPromptFightersCollection\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"safeMint(address,string)\":{\"notice\":\"Before minting you must approve this contract to use 0.5 LINK to pass the filter. In the future the amounts should be calculated and tested to asses fair prices covering Chainlink Functions and OpenAI's API.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/interfaces/IPromptFightersCollection.sol\":\"IPromptFightersCollection\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@chainlink-ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/\",\":@chainlink/=lib/chainlink/contracts/src/v0.8/\",\":@openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":chainlink/=lib/chainlink/\",\":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/openzeppelin-contracts/lib/forge-std/src/\",\":node_modules_ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"contracts/interfaces/IPromptFightersCollection.sol\":{\"keccak256\":\"0x3b867a32c98e8baa0503643815025350e30b49a84da024ed4ebf288714f377cb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://85d8a27ea54c3204004b6857f6375fda8db8e360fc87e0a774427d34816bf4c6\",\"dweb:/ipfs/QmcL6v5osa3x5AiGao9UMBg1sVXV89JxNZA2eaHFMuPFap\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.20+commit.a1b79de6"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "nftId",
+              "type": "uint256",
+              "indexed": false
+            },
+            {
+              "internalType": "bytes",
+              "name": "funcsResponse",
+              "type": "bytes",
+              "indexed": false
+            },
+            {
+              "internalType": "bytes",
+              "name": "funcsError",
+              "type": "bytes",
+              "indexed": false
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "PromptFighters__NftMinted",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "nftId",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "getPromptOf",
+          "outputs": [
+            {
+              "internalType": "string",
+              "name": "",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "internalType": "string",
+              "name": "nftDescriptionPrompt",
+              "type": "string"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "safeMint"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "safeMint(address,string)": {
+            "details": "Before minting the promt, it must pass an AI filter so as to the NFTs are interesting to play with and don't violate any copyright or ethical rules OpenAI has. The filter is applied with Chainlink Functions."
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "safeMint(address,string)": {
+            "notice": "Before minting you must approve this contract to use 0.5 LINK to pass the filter. In the future the amounts should be calculated and tested to asses fair prices covering Chainlink Functions and OpenAI's API."
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@chainlink-ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/",
+        ":@chainlink/=lib/chainlink/contracts/src/v0.8/",
+        ":@openzeppelin/=lib/openzeppelin-contracts/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":chainlink/=lib/chainlink/",
+        ":ds-test/=lib/openzeppelin-contracts/lib/forge-std/lib/ds-test/src/",
+        ":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        ":forge-std/=lib/openzeppelin-contracts/lib/forge-std/src/",
+        ":node_modules_ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/interfaces/IPromptFightersCollection.sol": "IPromptFightersCollection"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/interfaces/IPromptFightersCollection.sol": {
+        "keccak256": "0x3b867a32c98e8baa0503643815025350e30b49a84da024ed4ebf288714f377cb",
+        "urls": [
+          "bzz-raw://85d8a27ea54c3204004b6857f6375fda8db8e360fc87e0a774427d34816bf4c6",
+          "dweb:/ipfs/QmcL6v5osa3x5AiGao9UMBg1sVXV89JxNZA2eaHFMuPFap"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/interfaces/IPromptFightersCollection.sol",
+    "id": 2356,
+    "exportedSymbols": {
+      "IPromptFightersCollection": [
+        2355
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "32:1038:12",
+    "nodes": [
+      {
+        "id": 2326,
+        "nodeType": "PragmaDirective",
+        "src": "32:24:12",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".20"
+        ]
+      },
+      {
+        "id": 2355,
+        "nodeType": "ContractDefinition",
+        "src": "199:870:12",
+        "nodes": [
+          {
+            "id": 2339,
+            "nodeType": "EventDefinition",
+            "src": "255:142:12",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "a83b8e4812c548d278e57c069558f08267d47eb49eb938a40548304e5a912631",
+            "name": "PromptFighters__NftMinted",
+            "nameLocation": "261:25:12",
+            "parameters": {
+              "id": 2338,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2329,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "owner",
+                  "nameLocation": "312:5:12",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2339,
+                  "src": "296:21:12",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2328,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "296:7:12",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2331,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "nftId",
+                  "nameLocation": "327:5:12",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2339,
+                  "src": "319:13:12",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2330,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "319:7:12",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2333,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "funcsResponse",
+                  "nameLocation": "340:13:12",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2339,
+                  "src": "334:19:12",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 2332,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "334:5:12",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2335,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "funcsError",
+                  "nameLocation": "361:10:12",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2339,
+                  "src": "355:16:12",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 2334,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "355:5:12",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2337,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "timestamp",
+                  "nameLocation": "381:9:12",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2339,
+                  "src": "373:17:12",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2336,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "373:7:12",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "286:110:12"
+            }
+          },
+          {
+            "id": 2347,
+            "nodeType": "FunctionDefinition",
+            "src": "915:77:12",
+            "nodes": [],
+            "documentation": {
+              "id": 2340,
+              "nodeType": "StructuredDocumentation",
+              "src": "421:489:12",
+              "text": " @dev Before minting the promt, it must pass an AI filter so as to the\n NFTs are interesting to play with and don't violate any copyright or ethical\n rules OpenAI has. The filter is applied with Chainlink Functions.\n @notice Before minting you must approve this contract to use 0.5 LINK to pass the filter.\n In the future the amounts should be calculated and tested to asses fair prices covering\n Chainlink Functions and OpenAI's API."
+            },
+            "functionSelector": "d204c45e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "safeMint",
+            "nameLocation": "924:8:12",
+            "parameters": {
+              "id": 2345,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2342,
+                  "mutability": "mutable",
+                  "name": "to",
+                  "nameLocation": "941:2:12",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2347,
+                  "src": "933:10:12",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2341,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "933:7:12",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2344,
+                  "mutability": "mutable",
+                  "name": "nftDescriptionPrompt",
+                  "nameLocation": "961:20:12",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2347,
+                  "src": "945:36:12",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_calldata_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2343,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "945:6:12",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "932:50:12"
+            },
+            "returnParameters": {
+              "id": 2346,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "991:0:12"
+            },
+            "scope": 2355,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 2354,
+            "nodeType": "FunctionDefinition",
+            "src": "998:69:12",
+            "nodes": [],
+            "functionSelector": "d6862a9d",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getPromptOf",
+            "nameLocation": "1007:11:12",
+            "parameters": {
+              "id": 2350,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2349,
+                  "mutability": "mutable",
+                  "name": "nftId",
+                  "nameLocation": "1027:5:12",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2354,
+                  "src": "1019:13:12",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2348,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1019:7:12",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1018:15:12"
+            },
+            "returnParameters": {
+              "id": 2353,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2352,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2354,
+                  "src": "1052:13:12",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 2351,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1052:6:12",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1051:15:12"
+            },
+            "scope": 2355,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IPromptFightersCollection",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 2327,
+          "nodeType": "StructuredDocumentation",
+          "src": "58:140:12",
+          "text": " @title IPromptFightersCollection\n @author PromtFighters team: Carlos\n @dev Interface for interacting with the NFT collection."
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          2355
+        ],
+        "name": "IPromptFightersCollection",
+        "nameLocation": "209:25:12",
+        "scope": 2356,
+        "usedErrors": [],
+        "usedEvents": [
+          2339
+        ]
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 12
+}

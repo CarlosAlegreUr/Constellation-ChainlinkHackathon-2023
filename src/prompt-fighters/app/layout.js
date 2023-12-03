@@ -20,7 +20,7 @@ const montserrat = Montserrat({ subsets: ["latin"] });
 /*Configure Rainbow Kit*/
 const { chains, publicClient } = configureChains(
   [sepolia, avalancheFuji],
-  [alchemyProvider({ apiKey: process.env.ALCHEMY_ID }), publicProvider()]
+  [alchemyProvider({ apiKey: "QGCJ46bYN5eef_-YWFqOMROVbfIO3WcI" }), publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
