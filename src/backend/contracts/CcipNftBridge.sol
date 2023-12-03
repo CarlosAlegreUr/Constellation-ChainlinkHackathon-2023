@@ -36,6 +36,21 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, ReferencesIniti
 
     IFightMatchmaker immutable i_FIGHT_MATCHMAKER;
 
+    // TODO: delete after testing
+    // IFightMatchmaker i_FIGHT_MATCHMAKER;
+
+    // TODO: delete after testing
+    // function setMatchmaker(address m) external {
+    //     require(DEPLOYER == msg.sender);
+    //     i_FIGHT_MATCHMAKER = IFightMatchmaker(m);
+    // }
+
+    // TODO: delete after testing
+    // function nftFighting(uint256 m, bool fight) external {
+    //     require(DEPLOYER == msg.sender);
+    //     s_isFighting[m] = fight;
+    // }
+
     string constant HANDLE_RECEIVE_NFT_FUNCTION_SIG = "_updateNftStateOnReceive(uint256,address,string)";
 
     uint64 immutable i_DESTINATION_CHAIN_SELECTOR;
@@ -211,6 +226,14 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, ReferencesIniti
     function getOwnerOf(uint256 _nftId) public view virtual returns (address);
 
     function getPromptOf(uint256 _nftId) public view virtual returns (string memory);
+
+    function getIsNftFighting(uint256 _nftId) public view returns (bool) {
+        return s_isFighting[_nftId];
+    }
+
+    function getIsNftOnChain(uint256 _nftId) public view returns (bool) {
+        return s_isOnChain[_nftId];
+    }
 
     // @notice Overriden so in the contracts with inheriting conflict they can still
     // access CCIPReceiver its IERC165.

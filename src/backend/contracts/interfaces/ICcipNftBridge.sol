@@ -30,6 +30,8 @@ interface ICcipNftBridge {
      */
     function sendNft(uint256 nftId) external payable returns (bytes32 messageId);
 
+    function setIsNftFighting(uint256 nftId, bool isFightihng) external;
+
     // Getters
 
     function isNftOnChain(uint256 nftId) external view returns (bool);
@@ -50,4 +52,8 @@ interface ICcipNftBridge {
     function getOwnerOf(uint256 _nftId) external view returns (address);
 
     function getPromptOf(uint256 _nftId) external view returns (string memory);
+
+    function getIsNftFighting(uint256 _nftId) external view returns (bool);
+
+    function getIsNftOnChain(uint256 _nftId) external view returns (bool);
 }

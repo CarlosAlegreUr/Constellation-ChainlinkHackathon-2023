@@ -84,13 +84,14 @@ contract BetsVault is IBetsVault, ReferencesInitializer {
         uint256 amount = betsState.acceptorBet + betsState.requesterBet;
         (bool success,) = winner.call{value: amount}("");
         require(success, "Transfer prize to winner failed.");
+        delete s_fightIdToBetsState[_fightId];
         emit BetsVault__BetsSentToWinner(winner, _fightId, amount, block.timestamp);
     }
 
     function unlockAndRetrieveBet(bytes32 _fightId) external contractIsInitialized {
         BetsState memory betsState = s_fightIdToBetsState[_fightId];
         require(msg.sender == betsState.requester || msg.sender == betsState.acceptor, "You must be in the fight.");
-        IFightMatchmaker.Fight memory fightDetails = i_FIGHT_MATCHMAKER.getFightDetails(_fightId);
+        IFightMatchmaker.Fight memory fightDetails = i_FIGHT_MATCHMAKER.getFight(_fightId);
 
         // If can't unlock it will revert
         _checkUnlockConditions(fightDetails);
@@ -109,7 +110,7 @@ contract BetsVault is IBetsVault, ReferencesInitializer {
 
         // If both players already retrieved their bets the fight becomes AVAILABLE again.
         if (betsState.requesterBet + betsState.acceptorBet == 0) {
-            i_FIGHT_MATCHMAKER.setFightState(_fightId, IFightMatchmaker.FightState.AVAILABLE, NOT_DECIDING_WINNER_VALUE);
+            i_FIGHT_MATCHMAKER.settleFight(_fightId, IFightMatchmaker.WinningAction.IGNORE_WINNING_ACTION);
             delete s_fightIdToBetsState[_fightId];
         }
 

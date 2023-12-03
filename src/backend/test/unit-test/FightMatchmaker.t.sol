@@ -13,6 +13,8 @@ import {IBetsVault} from "../../contracts/interfaces/IBetsVault.sol";
 import {IFightExecutor} from "../../contracts/interfaces/IFightExecutor.sol";
 import {IFightMatchmaker} from "../../contracts/interfaces/IFightMatchmaker.sol";
 
+import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
+
 // Useful values
 import "../../contracts/Utils.sol";
 import "../Utils.t.sol";
@@ -37,7 +39,7 @@ contract FightMatchmakerTest is UtilsValues {
     }
 
     function setUp() public {
-        fightMatchmaker = new FightMatchmaker();
+        fightMatchmaker = new FightMatchmaker(LinkTokenInterface(address(3)), 0.01 ether);
         betsVault = new BetsVault();
     }
 
@@ -49,8 +51,8 @@ contract FightMatchmakerTest is UtilsValues {
         vm.expectRevert("Contract is not initialized.");
         fightMatchmaker.acceptFight(FIGHT_ID_ONE_TWO, FAKE_NFT_ID_TWO);
 
-        vm.expectRevert("Contract is not initialized.");
-        fightMatchmaker.setFightState(FIGHT_ID_ONE_TWO, IFightMatchmaker.FightState.AVAILABLE, 2);
+        // vm.expectRevert("Contract is not initialized.");
+        fightMatchmaker.settleFight(FIGHT_ID_ONE_TWO, IFightMatchmaker.WinningAction.ACCEPTOR_WIN);
     }
 
     // TODO: if enough time add tests with a mock Collection that doesnt

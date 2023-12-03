@@ -10,15 +10,6 @@ import "@chainlink/interfaces/VRFCoordinatorV2Interface.sol";
 
 import "./Utils.sol";
 
-//**************************************** */
-//            FOR DEVS!
-// This contract might need more state
-// variables or functions.
-//
-// Feel free to add them if you deem them
-// necessary while coding.
-//**************************************** */
-
 /**
  * @title ChainlinkSubsManager
  * @author PromptFighters team: Carlos
@@ -46,10 +37,10 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
 
     mapping(address => uint256) s_userToSubsBalance;
 
-    uint64 immutable i_funcsSubsId;
+    uint64 public immutable i_funcsSubsId;
 
     // Chainlink VRF related
-    uint64 immutable i_vrfSubsId;
+    uint64 public immutable i_vrfSubsId;
 
     address immutable i_funcsSubsAccess;
     address immutable i_vrfSubsAccess;

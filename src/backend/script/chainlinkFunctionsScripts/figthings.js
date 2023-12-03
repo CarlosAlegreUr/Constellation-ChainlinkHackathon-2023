@@ -1,31 +1,37 @@
-// crear a partir de esto 'un template' que se completará js
+function splitString(input) {
+  return input.split("-");
+}
+
+const fullPrompt = args[0];
+const parts = splitString(fullPrompt);
+
+const fullPrompt2 = args[1];
+const parts2 = splitString(fullPrompt2);
 
 const gptPrompt = `
 Here are 2 characters:
 
 - CHARACTER 1:
-    - Name: ${args[0]}
-    - Race: ${args[1]}
-    - Weapon: ${args[2]}
-    - Special skill: ${args[3]}
-    - Fear: ${args[4]}
+    - Name: ${parts[0]}
+    - Race: ${parts[1]}
+    - Weapon: ${parts[2]}
+    - Special skill: ${parts[3]}
+    - Fear: ${parts[4]}
 
 - CHARACTER 2:
-    - Name: ${args[5]}
-    - Race: ${args[6]}
-    - Weapon: ${args[7]}
-    - Special skill: ${args[8]}
-    - Fear: ${args[9]}
+    - Name: ${parts2[5]}
+    - Race: ${parts2[6]}
+    - Weapon: ${parts2[7]}
+    - Special skill: ${parts2[8]}
+    - Fear: ${parts2[9]}
 
-Take a deep breath and write a 2 super interesting stories.
+Take a deep breath and write 2 super interesting stories.
 These 2 stories describe a duel involving this 2 characters.
 In 1 of the fights CHARACTER 1 wins and in the other CHARACTER 2 wins.
 The stories musts be at most 6 lines of length. 
 
-
 Between the stories as a way to sparate them you will put this string: "---",
 Your response will be use for a script and this is the only way that can be used by the script to separate the two stories.
-
 `;
 
 const postData = {

@@ -15,7 +15,7 @@ interface IFightMatchmaker {
      * @dev Event emitted just when challenging any address.
      */
     event FightMatchmaker__FightRequested(
-        bytes32 indexed fightId, uint256 indexed nftId, uint256 indexed bet, address challenger, uint256 timestamp
+        address challenger, uint256 indexed nftId, bytes32 indexed fightId, uint256 indexed bet, uint256 timestamp
     );
     /**
      * @dev Event emitted when challenging only specific address or nfts.
@@ -25,17 +25,27 @@ interface IFightMatchmaker {
         address indexed challengee,
         uint256 nftIdChallenger,
         uint256 indexed nftIdChallengee,
+        uint256 bet,
         uint256 timestamp
     );
 
     event FightMatchmaker__FightAccepted(
         address indexed challenger,
         address indexed challengee,
-        uint256 indexed timestamp,
         uint256 nftIdChallenger,
         uint256 nftIdChallengee,
-        uint256 betChallenguer,
-        uint256 betChallenguee
+        uint256 betChallenger,
+        uint256 betChallengee,
+        uint256 indexed timestamp
+    );
+
+    event FightMatchmaker__FightAcceptedByUpkeep(
+        address indexed challenger,
+        uint256 nftIdChallenger,
+        uint256 nftIdChallengee,
+        uint256 betChallenger,
+        uint256 betChallengee,
+        uint256 indexed timestamp
     );
 
     event FightMatchmaker__FightStateChange(
@@ -45,7 +55,7 @@ interface IFightMatchmaker {
     /**
      * @dev Event emitted when and NFT starts the automated mode.
      */
-    event FightMatchmaker__NftAutoamteStart(uint256 indexed nftId, uint256 startTimestamp);
+    event FightMatchmaker__NftAutomateStart(uint256 indexed nftId, uint256 startTimestamp);
 
     /**
      * @dev Event emitted when and NFT exits the automated mode.
@@ -53,6 +63,94 @@ interface IFightMatchmaker {
     event FightMatchmaker__NftAutomateStop(
         uint256 indexed nftId, uint256 indexed startTimestamp, uint256 indexed endTimestamp, uint256 earnings
     );
+
+    /**
+     * @dev Event emitted when userToFightId set
+     */
+    event FightMatchmaker__UserToFightIdSet(address indexed user, bytes32 indexed fightId);
+
+    /**
+     * @dev Event emitted when user is no longer fighting
+     */
+    event FightMatchmaker__UserNoLongerFighting(address indexed user);
+
+    /**
+     * @dev Event emitted when fightToFightId set
+     */
+    event FightMatchmaker__FightIdToFightSet(bytes32 indexed fightId, Fight indexed fight); // ESTO ES ASÍ??
+
+    /**
+     * @dev Event emitted when NFT automated
+     */
+    event FightMatchmaker__nftAutomated(
+        uint256 indexed nftId, uint256 indexed automationBalance, uint256 indexed automatedBet, uint256 automatedMinBet
+    );
+
+    /**
+     * @dev Event emitted when NFT no longer automated
+     */
+    event FightMatchmaker__nftAutomationCancelled(uint256 indexed nftId);
+
+    /**
+     * @dev Event emitted when NFT automation balance updated
+     */
+    event FightMatchmaker__nftAutomationBalanceUpdated(uint256 indexed nftId, uint256 indexed automationBalance);
+
+    //************************ */
+    // Errors
+    //************************ */
+    error FightMatchMaker__FightRequestFailed(
+        address challenger, uint256 nftId, bytes32 fightId, uint256 bet, uint256 timestamp
+    );
+
+    error FightMatchMaker__FightRequestToFailed(
+        address challenger, address challengee, uint256 nftIdChallenger, uint256 nftIdChallengee, uint256 timestamp
+    );
+
+    error FightMatchMaker__FightAcceptFailed(
+        address challengee, uint256 nftId, bytes32 fightId, uint256 bet, uint256 timestamp
+    );
+
+    error FightMatchMaker__FightStartFailed(bytes32 fightId);
+
+    error FightMatchMaker__NftNotOwnedByChallenger(address challenger, uint256 nftIdChallengee);
+
+    error FightMatchMaker__NftNotOwnedByChallengee(address challengee, uint256 nftIdChallengee);
+
+    error FightMatchMaker__NftNotOwnedByAccepter(address challengee, uint256 nftIdChallengee);
+
+    error FightMatchMaker__NftNotOnThisChain(uint256 nftId, uint256 chainId);
+
+    error FightMatchMaker__NftNotAutomated(uint256 nftId);
+
+    error FightMatchMaker__OnlyNFtOnwerCanSetNftAutomated();
+
+    error FightMatchMaker__FightNotAvailable();
+    error FightMatchMaker__FightReqFailed(address p1, uint256 nftp1, bytes32 fightId, uint256 minBet, uint256 timestamp);
+    error FightMatchMaker__FightReqToFailed(address p1, address p2, uint256 nft1, uint256 nft2, uint256 timestamp);
+    error FightMatchMaker__OnlyRequesWhenAvailable();
+
+    error FightMatchMaker__FightNotRequested(bytes32 fightId);
+
+    error FightMatchMaker__NotEnoughEthSentToAcceptFight(bytes32 fightId);
+
+    error FightMatchMaker__NotEnoughAutomationBalanceToAcceptFight(bytes32 fightId, uint256 automatedNftId);
+
+    error FightMatchMaker__NftSentDoesntMatchChallengeeNft(uint256 sentNftId, uint256 challengeeNftId);
+
+    error FightMatchMaker__AcceptingUserIsNotChallengee(address accepter, address challengee);
+
+    error FightMatchMaker__DistributeBetsPrizeFailed(bytes32 fightId, address winner);
+
+    error FightMatchMaker__SettingNftsNotFightingFailed(uint256 nftRequesterId, uint256 nftAcceptorId);
+
+    error FightMatchMaker__CannotCancelFight(bytes32 fightId, FightState fightState);
+
+    error FightMatchMaker__AutomatedBetCannotBeZero();
+
+    error FightMatchMaker__NoAutomatedNftHasHighEnoughBet(bytes32 fightId);
+
+    error FightMatchMaker__ChallengeeNftNotAutomated(uint256 challengeeNftId);
 
     //************************ */
     // Data Structures
@@ -73,7 +171,7 @@ interface IFightMatchmaker {
      * as the null NFT ID value.
      */
     struct FightRequest {
-        uint256 nftIdUsing;
+        uint256 challengerNftId;
         uint256 minBet;
         uint256 acceptanceDeadline;
         address challengee;
@@ -81,11 +179,11 @@ interface IFightMatchmaker {
     }
 
     /**
-     * @dev AVAILBALE => Fight can be started
+     * @dev Available => Fight can be started
      *
-     * @dev REQUESTED => A fight is waiting for someone else, player who requested it can't start more fights
+     * @dev Requested => A fight is waiting for someone else, player who requested it can't start more fights
      *
-     * @dev ONGOING => A fight is being processed.
+     * @dev Ongoing => A fight is being processed.
      */
     enum FightState {
         AVAILABLE,
@@ -98,12 +196,18 @@ interface IFightMatchmaker {
      * required for logic but not emitted in logs.
      */
     struct Fight {
-        uint256 nftOne;
-        uint256 nftTwo;
+        uint256 nftRequester;
+        uint256 nftAcceptor;
         uint256 minBet;
         uint256 acceptanceDeadline;
         uint256 startedAt;
         FightState state;
+    }
+
+    enum WinningAction {
+        REQUESTER_WIN,
+        ACCEPTOR_WIN,
+        IGNORE_WINNING_ACTION
     }
 
     //************************ */
@@ -138,7 +242,7 @@ interface IFightMatchmaker {
      *
      * @param fightRequest The fight request struct
      */
-    function requestFight(FightRequest calldata fightRequest) external;
+    function requestFight(FightRequest calldata fightRequest) external payable;
 
     /**
      * @dev This function gathers all the information necessary to call the
@@ -159,7 +263,7 @@ interface IFightMatchmaker {
      * Only thing would need to change is that startFight() function of FightExecutor will
      * have to be passed this argument too.
      */
-    function acceptFight(bytes32 fightId, uint256 nftId) external;
+    function acceptFight(bytes32 fightId, uint256 nftId) external payable;
 
     /**
      * @dev Function callable by requestFight(), or the `FightExecutor` contract
@@ -185,35 +289,41 @@ interface IFightMatchmaker {
      * if not then take it out from the automated NFTs list.
      *
      * @param fightId Id of the fight to set its state to newState.
-     * @param winner it is etiher 0 or 1, if any other value then ignore. 0 indicates requester won, 1 indicates acceptor won.
-     * This param is only used when calling from FightExecutor and state changes from ONGOING to
-     * AVAILABLE but the edge-case Chainlink services stop working is not given.
      */
-    function setFightState(bytes32 fightId, FightState newState, uint256 winner) external;
+    function settleFight(bytes32 fightId, WinningAction winner) external;
 
     //********************************* */
     // Automated Matchmaking
     //********************************* */
 
     /**
-     * @return bool saying if the nft is in automation mode.
+     * @dev Yout must approve linkFunds amount of LINK to the contract before calling this function.
      */
-    function getIsNftAutomated(uint256 nftId) external returns (bool);
+    function setNftAutomated(uint256 nftId, uint256 bet, uint256 minBet, uint256 linkFunds) external;
 
     /**
-     * @return bool saying if the nft is in automation mode.
+     * sets fightIdtoFight mapping
      */
-    function setNftAutomated(uint256 nftId, bool isAutomated) external returns (bool);
+    // function _setFight(bytes32 _fightId, Fight memory _fight) external;
+
+    /**
+     * sets userToFightId mapping
+     */
+    // function _setUserFightId(address _user, bytes32 _fightId) external;
 
     //************* */
     // Getters
     //************* */
 
-    function getFigthId(address challenger, uint256 challengerNftId, address challengee, uint256 challengeeNftId)
+    function getFightId(address challenger, uint256 challengerNftId, address challengee, uint256 challengeeNftId)
         external
         returns (bytes32);
 
     function getUserCurrentFightId(address user) external returns (bytes32);
 
-    function getFightDetails(bytes32 fightId) external returns (Fight memory);
+    function getFight(bytes32 fightId) external returns (Fight calldata);
+
+    function getNftsFromFightId(bytes32 _fightId) external view returns (uint256, uint256);
+
+    function getNftsPromptsFromFightId(bytes32 _fightId) external view returns (string memory, string memory);
 }

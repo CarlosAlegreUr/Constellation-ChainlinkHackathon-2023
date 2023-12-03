@@ -192,8 +192,6 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         return ownerOf(_nftId);
     }
 
-    // TODO: ceck if needed more getters
-
     //**************************** */
     // INHERITANCE TREE AMBIGUITIES
     //**************************** */

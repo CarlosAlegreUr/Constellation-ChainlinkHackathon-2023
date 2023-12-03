@@ -15,7 +15,7 @@ pragma solidity ^0.8.20;
 //******************** */
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c;
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0x3acA6792387AaC923988511dac4aD4e5aC1da889;
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x346A9167d08a76F2b36731527AE504360b782552;
 address constant DEPLOYED_FUJI_BARRACKS = 0xe79570Bf8f4eD645A63Bf5b85210eb81D725989b;
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739;
@@ -24,33 +24,15 @@ uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
 ///////////////////////////////////////////////
 
 string constant NFT_VALID_PROMPT =
-    "a Just uan-he is gn idddddddddddddddddddds love-hddassssssssssssse can fly-he isdasdasdsaof birds";
+    "athirdnftnastasio-your mother-she is overweight xdd-im a joker";
+
+    // "anabel-A flying glass bottle-Golden swiss clock-She can fly at 233km/h-She is afraid of cans with mafioso attitude";
+
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 //******************** */
 // SHARED STRUCTS
 //******************** */
-
-/**
- * @param source JavaScript source code
- * @param encryptedSecretsUrls Encrypted URLs where to fetch user secrets
- * @param donHostedSecretsSlotID Don hosted secrets slotId
- * @param donHostedSecretsVersion Don hosted secrets version
- * @param args List of arguments accessible from within the source code
- * @param bytesArgs Array of bytes arguments, represented as hex strings
- * @param subscriptionId Billing ID
- */
-struct ChainlinkFuncsGist {
-    string source;
-    bytes encryptedSecretsUrls;
-    uint8 donHostedSecretsSlotID; // NOT USING
-    uint64 donHostedSecretsVersion; // NOT USING
-    string[] args; // TODO: USING IN SIMPLE VERSION WITH PROMPTS STORED ON-CHAIN
-    bytes[] bytesArgs; // NOT USING
-    uint64 subscriptionId;
-    uint32 gasLimit;
-    bytes32 donID;
-}
 
 //******************** */
 // CHAIN IDS
@@ -84,6 +66,8 @@ bytes32 constant ETH_SEPOLIA_DON_ID = 0x66756e2d657468657265756d2d7365706f6c6961
 // fun-avalanche-fuji-1 - in functions NPM package
 bytes32 constant AVL_FUJI_DON_ID = 0x66756e2d6176616c616e6368652d66756a692d31000000000000000000000000;
 
+bytes constant FUNCTIONS_URL_SECRETS_ENDPOINT = abi.encode("https://01.functions-gateway.testnet.chain.link/");
+
 // Propper gas limits should be tested and set, 35.000 is just a random first try.
 uint32 constant GAS_LIMIT_FIGHT_GENERATION = 300_000;
 uint32 constant GAS_LIMIT_NFT_GENERATION = 300_000;
@@ -111,6 +95,24 @@ uint16 constant AVL_FUJI_REQ_CONFIRIMATIONS = 3;
 // to assert a fitter value.
 uint32 constant ETH_SEPOLIA_CALLBACK_GAS_LIMIT = 2_000_000;
 uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT = 2_000_000;
+
+//********************** */
+// Chainlink AUTOMATION
+//********************** */
+
+address constant ETH_SEPOLIA_REGISTRY = 0x86EFBD0b6736Bed994962f9797049422A3A8E8Ad;
+address constant ETH_SEPOLIA_REGISTRAR = 0xb0E49c5D0d05cbc241d68c05BC5BA1d1B7B72976;
+
+address constant AVL_FUJI_REGISTRY = 0x819B58A646CDd8289275A87653a2aA4902b14fe6;
+address constant AVL_FUJI_REGISTRAR = 0x819B58A646CDd8289275A87653a2aA4902b14fe6;
+
+uint256 constant SEPOLIA_AUTOMATION_THRESHOLD_BALANCE = 2 ether;
+uint256 constant FUJI_AUTOMATION_THRESHOLD_BALANCE = 2 ether;
+
+uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 500_000;
+uint32 constant GAS_LIMIT_FUJI_AUTOMATION = 800_000;
+
+uint96 constant LINK_AMOUNT_FOR_REGISTRATION = 1 ether;
 
 //******************** */
 // Chainlink CCIP
@@ -145,6 +147,14 @@ string constant NFT_GENERATION_SCRIPT_MOCK = "console.log(\"date is: \", Date.no
     "function splitString(input) {\n" "  return input.split(\"-\");\n" "}\n\n" "const fullPrompt = args[0];\n"
     "const parts = splitString(fullPrompt);\n\n" "let result;\n" "if (parts[0][0] == \"a\") {\n" "  result = args[0];\n"
     "} else {\n" "  result = \"INVALID\";\n" "}\n" "console.log(result);\n" "return Functions.encodeString(result);";
+
+string constant FIGHT_GENERATION_SCRIPT_MOCK = "function splitString(input) {\n" "  return input.split(\"-\");\n"
+    "}\n\n" "const fullPrompt = args[0];\n" "const parts = splitString(fullPrompt);\n\n"
+    "const fullPrompt2 = args[1];\n" "const parts2 = splitString(fullPrompt2);\n\n"
+    "const result = `${parts[0]} fought against  \n" "    ${parts2[0]}. It was a fight so legendary that broke \n"
+    "    OpenAIs API services. WOOOOOW!` \n" "    `${parts[1]} used its ${parts[3]} against\n"
+    "    the ${parts2[3]} of ${parts[1]}. After the clash the winner was...`;\n\n" "console.log(result);\n"
+    "return Functions.encodeString(result);";
 
 string constant NFT_GENERATION_SCRIPT = "console.log(\"date is: \", Date.now());\n\n"
     "const gptPrompt = `Take a deep breath and do 1 thing:\n\n" "1.- Deem the description VALID or INVALID\n\n"
