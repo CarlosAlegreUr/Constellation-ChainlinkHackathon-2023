@@ -99,6 +99,36 @@ contract DeploymentConfig is Script {
             });
         }
 
+        if (block.chainid == PLY_MUMBAI_CHAIN_ID) {
+            isValidConfig = true;
+            link_token = LinkTokenInterface(PLY_MUMBAI_LINK);
+            funcs_router = PLY_MUMBAI_FUNCTIONS_ROUTER;
+            funcs_subsId = PLY_MUMBAI_SUBS_ID;
+            vrf_router = PLY_MUMBAI_VRF_COORDINATOR;
+            fexecServicesInit = IFightExecutor.FightExecutor__ChainlinkServicesInitParmas({
+                keyHash: PLY_MUMBAI_KEY_HASH,
+                requConfirmations: PLY_MUMBAI_REQ_CONFIRIMATIONS,
+                callbackGasLimit: PLY_MUMBAI_REQ_CONFIRIMATIONS,
+                funcSubsId: funcs_subsId,
+                donId: PLY_MUMBAI_DON_ID
+            });
+            automationRegistry = IAutomationRegistry(PLY_MUMBAI_REGISTRY);
+            automationRegistrar = IAutomationRegistrar(PLY_MUMBAI_REGISTRY);
+            automationBalanceThreshold = PLY_MUMBAI_THRESHOLD_BALANCE;
+            automationRegistration = IAutomationRegistrar.RegistrationParams({
+                name: "Sepolia Automation PromptFighters",
+                encryptedEmail: new bytes(0),
+                upkeepContract: address(0), // Set at construction time address(this)
+                gasLimit: GAS_LIMIT_PLY_MUMBAI_AUTOMATION,
+                adminAddress: address(0), // Set at construction time address(this)
+                triggerType: 1,
+                checkData: new bytes(0),
+                triggerConfig: new bytes(0), // Set at construction time, requires address(this)
+                offchainConfig: new bytes(0),
+                amount: LINK_AMOUNT_FOR_REGISTRATION
+            });
+        }
+
         if (isValidConfig) {
             console.log("Chain is supported, actions incoming...");
         } else {

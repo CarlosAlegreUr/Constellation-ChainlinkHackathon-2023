@@ -17,16 +17,17 @@ pragma solidity ^0.8.20;
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c;
 address constant DEPLOYED_SEPOLIA_COLLECTION = 0x3d77A16db2Cc8F98E63aa03b2210fcC9664E7518;
 address constant DEPLOYED_FUJI_BARRACKS = 0xe79570Bf8f4eD645A63Bf5b85210eb81D725989b;
+address constant DEPLOYED_MUMBAI_BARRACKS = address(0);
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739;
 uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378;
+uint64 constant PLY_MUMBAI_SUBS_ID = 1027;
 
 ///////////////////////////////////////////////
 
-string constant NFT_VALID_PROMPT =
-    "athirdnftnastasio-your mother-she is overweight xdd-im a joker";
+string constant NFT_VALID_PROMPT = "athirdnftnastasio-your mother-she is cool, very chill-im a joker";
 
-    // "anabel-A flying glass bottle-Golden swiss clock-She can fly at 233km/h-She is afraid of cans with mafioso attitude";
+// "anabel-A flying glass bottle-Golden swiss clock-She can fly at 233km/h-She is afraid of cans with mafioso attitude";
 
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
@@ -40,6 +41,7 @@ string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 uint256 constant ETH_SEPOLIA_CHAIN_ID = 11155111;
 uint256 constant AVL_FUJI_CHAIN_ID = 43113;
+uint256 constant PLY_MUMBAI_CHAIN_ID = 80001;
 
 //******************** */
 // Chainlink Contracts
@@ -51,6 +53,7 @@ uint256 constant AVL_FUJI_CHAIN_ID = 43113;
 
 address constant ETH_SEPOLIA_LINK = 0x779877A7B0D9E8603169DdbD7836e478b4624789;
 address constant AVL_FUJI_LINK = 0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846;
+address constant PLY_MUMBAI_LINK = 0x326C977E6efc84E512bB9C30f76E30c160eD06FB;
 
 //******************** */
 // Chainlink Functions
@@ -60,15 +63,18 @@ uint256 constant MINT_NFT_LINK_FEE = 2 ether;
 
 address constant ETH_SEPOLIA_FUNCTIONS_ROUTER = 0xb83E47C2bC239B3bf370bc41e1459A34b41238D0;
 address constant AVL_FUJI_FUNCTIONS_ROUTER = 0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0;
+address constant PLY_MUMBAI_FUNCTIONS_ROUTER = 0x6E2dc0F9DB014aE19888F539E59285D2Ea04244C;
 
 // fun-ethereum-sepolia-1 - in functions NPM package
 bytes32 constant ETH_SEPOLIA_DON_ID = 0x66756e2d657468657265756d2d7365706f6c69612d3100000000000000000000;
 // fun-avalanche-fuji-1 - in functions NPM package
 bytes32 constant AVL_FUJI_DON_ID = 0x66756e2d6176616c616e6368652d66756a692d31000000000000000000000000;
+// fun-polygon-mumbai-1 - in functions NPM package
+bytes32 constant PLY_MUMBAI_DON_ID = 0x66756e2d706f6c79676f6e2d6d756d6261692d31000000000000000000000000;
 
 bytes constant FUNCTIONS_URL_SECRETS_ENDPOINT = abi.encode("https://01.functions-gateway.testnet.chain.link/");
 
-// Propper gas limits should be tested and set, 35.000 is just a random first try.
+// Propper gas limits should be tested and set, 300.000 is just a random first try.
 uint32 constant GAS_LIMIT_FIGHT_GENERATION = 300_000;
 uint32 constant GAS_LIMIT_NFT_GENERATION = 300_000;
 
@@ -80,14 +86,18 @@ uint32 constant GAS_LIMIT_NFT_GENERATION = 300_000;
 
 address constant ETH_SEPOLIA_VRF_COORDINATOR = 0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625;
 address constant AVL_FUJI_VRF_COORDINATOR = 0x2eD832Ba664535e5886b75D64C46EB9a228C2610;
+address constant PLY_MUMBAI_VRF_COORDINATOR = 0x7a1BaC17Ccc5b313516C5E16fb24f7659aA5ebed;
 
 // 150 gwei
 bytes32 constant ETH_SEPOLIA_KEY_HASH = 0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c;
 // 300 gwei
 bytes32 constant AVL_FUJI_KEY_HASH = 0x354d2f95da55398f44b7cff77da56283d9c6c829a4bdf1bbcaf2ad6a4d081f61;
+// 500 gwei
+bytes32 constant PLY_MUMBAI_KEY_HASH = 0x4b09e658ed251bcafeebbc69400383d49f344ace09b9576fe248bb02c003fe9f;
 
 uint16 constant ETH_SEPOLIA_REQ_CONFIRIMATIONS = 3;
 uint16 constant AVL_FUJI_REQ_CONFIRIMATIONS = 3;
+uint16 constant PLY_MUMBAI_REQ_CONFIRIMATIONS = 3;
 
 // Depends on execution cost of fullfillRandomWords().
 // Estimate is 20.000 gas per word, we distribute bets "within" this function
@@ -95,6 +105,7 @@ uint16 constant AVL_FUJI_REQ_CONFIRIMATIONS = 3;
 // to assert a fitter value.
 uint32 constant ETH_SEPOLIA_CALLBACK_GAS_LIMIT_VRF = 2_000_000;
 uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT_VRF = 2_000_000;
+uint32 constant PLY_MUMBAI_CALLBACK_GAS_LIMIT_VRF = 2_000_000;
 
 //********************** */
 // Chainlink AUTOMATION
@@ -106,11 +117,16 @@ address constant ETH_SEPOLIA_REGISTRAR = 0xb0E49c5D0d05cbc241d68c05BC5BA1d1B7B72
 address constant AVL_FUJI_REGISTRY = 0x819B58A646CDd8289275A87653a2aA4902b14fe6;
 address constant AVL_FUJI_REGISTRAR = 0x5Cb7B29e621810Ce9a04Bee137F8427935795d00;
 
-uint256 constant SEPOLIA_AUTOMATION_THRESHOLD_BALANCE = 2 ether;
-uint256 constant FUJI_AUTOMATION_THRESHOLD_BALANCE = 2 ether;
+address constant PLY_MUMBAI_REGISTRY = 0x08a8eea76D2395807Ce7D1FC942382515469cCA1;
+address constant PLY_MUMBAI_REGISTRAR = 0x0Bc5EDC7219D272d9dEDd919CE2b4726129AC02B;
+
+uint256 constant SEPOLIA_AUTOMATION_THRESHOLD_BALANCE = 1 ether;
+uint256 constant FUJI_AUTOMATION_THRESHOLD_BALANCE = 1 ether;
+uint256 constant PLY_MUMBAI_THRESHOLD_BALANCE = 1 ether;
 
 uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 500_000;
 uint32 constant GAS_LIMIT_FUJI_AUTOMATION = 800_000;
+uint32 constant GAS_LIMIT_PLY_MUMBAI_AUTOMATION = 500_000;
 
 uint96 constant LINK_AMOUNT_FOR_REGISTRATION = 1 ether;
 uint96 constant LINK_AMOUNT_FOR_REGISTRATION_EXAGERATED = 15 ether;
@@ -121,20 +137,15 @@ uint96 constant LINK_AMOUNT_FOR_REGISTRATION_EXAGERATED = 15 ether;
 
 address constant ETH_SEPOLIA_CCIP_ROUTER = 0xD0daae2231E9CB96b94C8512223533293C3693Bf;
 address constant AVL_FUJI_CCIP_ROUTER = 0x554472a2720E5E7D5D3C817529aBA05EEd5F82D8;
+address constant PLY_MUMBAI_CCIP_ROUTER = 0x70499c328e1E2a3c41108bd3730F6670a44595D1;
 
 uint64 constant ETH_SEPOLIA_SELECTOR = 16015286601757825753;
 uint64 constant AVL_FUJI_SELECTOR = 14767482510784806043;
+uint64 constant PLY_MUMBAI_SELECTOR = 12532609583862916517;
 
 uint256 constant SEND_NFT_PRICE = 0.05 ether;
 uint256 constant SEND_NFT_PRICE_FUJI = 0.17 ether;
-
-//******************** */
-// SHARED CONSTANTS
-//******************** */
-
-// @dev A value used in setFightState() calls to signal the function doesn't have to use
-// the winner parameter.
-uint256 constant NOT_DECIDING_WINNER_VALUE = 2;
+uint256 constant SEND_NFT_PRICE_MUMBAI = 0.18 ether;
 
 //**************************** */
 // CHAINLINK FUNCTIONS SCRIPTS

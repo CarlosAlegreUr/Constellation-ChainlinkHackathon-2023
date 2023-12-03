@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import {IBetsVault} from "./interfaces/IBetsVault.sol";
 import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
 import {ReferencesInitializer} from "./ReferencesInitializer.sol";
-import {NOT_DECIDING_WINNER_VALUE} from "./Utils.sol";
 
 /**
  * @title BetsVault

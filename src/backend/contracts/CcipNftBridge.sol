@@ -44,19 +44,12 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, ReferencesIniti
         i_FIGHT_MATCHMAKER = IFightMatchmaker(m);
     }
 
-    // TODO: delete after testing
-    function nftFighting(uint256 m, bool fight) external {
-        require(DEPLOYER == msg.sender);
-        s_isFighting[m] = fight;
-    }
-
     string constant HANDLE_RECEIVE_NFT_FUNCTION_SIG = "_updateNftStateOnReceive(uint256,address,string)";
 
     uint64 immutable i_DESTINATION_CHAIN_SELECTOR;
     // Can't be immutable cause you can't know both addresses before
-    // deploying them.
-    // (Well maybe you can use CREATE2 for this but lets ignore that I already had the
-    // deploy scipts done ;D )
+    // deploying them. (Well you could use CREATE2 and then you would only
+    // need to initialize 1 of the contracts. But that has not been implemented.)
     address i_RECEIVER_ADDRESS;
 
     //******************** */

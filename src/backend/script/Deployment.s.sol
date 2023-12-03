@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 import {PromptFightersNFT} from "../contracts/nft-contracts/eth-PromptFightersNft.sol";
 import {FightersBarracks} from "../contracts/nft-contracts/avl-FightersBarracks.sol";
+import {FightersBarracksPly} from "../contracts/nft-contracts/ply-FightersBarracks.sol";
 import {DeployFightsContracts} from "./deployment-processes/DeploymentBase.s.sol";
 
 import "../contracts/Utils.sol";
@@ -24,12 +25,12 @@ contract PromptFightersDeploy is DeployFightsContracts {
 
             // Deploy collection
             // TODO: comment prompt deploy after first deploy when testing in this branch
-            // console.log("Deploying collection...");
-            // PromptFightersNFT promptFighters = new PromptFightersNFT(
-            // ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
-            // );
-            // console.log("PromptFighters deployed at:");
-            // console.log(address(promptFighters));
+            console.log("Deploying collection...");
+            PromptFightersNFT promptFighters = new PromptFightersNFT(
+                ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
+            );
+            console.log("PromptFighters deployed at:");
+            console.log(address(promptFighters));
 
             // Intialize FightMatchmaker as it required frist the collection address.
             // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
@@ -53,6 +54,37 @@ contract PromptFightersDeploy is DeployFightsContracts {
             // Deploy barracks
             FightersBarracks barracks =
                 new FightersBarracks(AVL_FUJI_CCIP_ROUTER, DEPLOYED_SEPOLIA_COLLECTION, fightMatchmaker);
+            console.log("COPY THE FOLLOWING ADDRESS IN THE Utils.sol:");
+            console.log("Avl barracks deployed at:");
+            console.log(address(barracks));
+
+            // Initialize barracks
+            console.log("Initializing CCIP on barrracks...");
+            address[] memory referencedContracts = new address[](3);
+            referencedContracts[0] = DEPLOYED_SEPOLIA_COLLECTION;
+            barracks.initializeReferences(referencedContracts);
+
+            // Intialize FightMatchmaker as it required frist the barracks address.
+            // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
+            referencedContracts[0] = address(fightExecutor);
+            referencedContracts[1] = address(betsVault);
+            referencedContracts[2] = address(barracks);
+            // TODO: registering automation in Fuji not working, check why
+            // Fund automation registration with LINK
+            link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
+            fightMatchmaker.initializeReferencesAndAutomation(
+                referencedContracts, automationRegistry, automationRegistrar, automationRegistration
+            );
+        }
+
+        if (block.chainid == PLY_MUMBAI_CHAIN_ID) {
+            console.log("We are in MUMBAI");
+            // Deploys all contracts that are shared accross chans.
+            super.run();
+
+            // Deploy barracks
+            FightersBarracksPly barracks =
+                new FightersBarracksPly(PLY_MUMBAI_CCIP_ROUTER, DEPLOYED_SEPOLIA_COLLECTION, fightMatchmaker);
             console.log("COPY THE FOLLOWING ADDRESS IN THE Utils.sol:");
             console.log("Avl barracks deployed at:");
             console.log(address(barracks));
