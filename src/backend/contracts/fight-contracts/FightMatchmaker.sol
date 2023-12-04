@@ -88,8 +88,15 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
      * @dev All checks that mut be carried before requesting a fight.
      * Nfts are on this chain.
      * Participants are owners.
+     * Can't fight yourself and can only look for 1 fight or figh 1 fight at a time.
      */
     modifier requestFightChecks(FightRequest calldata fightReq) {
+        // You can't fight yourself
+        require(msg.sender != fightReq.challengee, "FightMatchMaker__CantFightYourself");
+
+        // Sender is not fighting or already requesting check
+        require(s_userToFightId[msg.sender] == bytes32(0), "FightMatchMaker__ChallengeeIsFighting");
+
         // Nfts are on chain
         require(
             i_PROMPT_FIGHTERS_NFT.getIsNftOnChain(fightReq.challengerNftId)
@@ -109,9 +116,6 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
                 "FightMatchMaker__NftNotOwnedByChallengee"
             );
         }
-
-        // Sender is not fighting or already requesting check
-        require(s_userToFightId[msg.sender] == bytes32(0), "FightMatchMaker__ChallengeeIsFighting");
 
         _;
     }
@@ -137,27 +141,28 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         IAutomationRegistrar.RegistrationParams memory _params
     ) external initializeActions {
         /*SP_MARK_START*/
-        if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            /*SP_MARK_END*/
-            // Automation registration complete params that require address(this)
-            _params.upkeepContract = address(this);
-            _params.adminAddress = address(this);
-            _params.triggerConfig = abi.encode(
-                address(this), // Listen to this contract
-                2, // Binary 010, considering only topic2 (fightId)
-                keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
-                0x0, // If you don't want to filter on a specific nftId
-                0x0, // If you don't want to filter on a specific fightId
-                0x0 // If you don't want to filter on a specific bet
-            );
-            i_LINK.approve(address(_registrar), _params.amount);
-            uint256 upkeepID = _registrar.registerUpkeep(_params);
-            require(upkeepID != 0, "Chainlink upkeep registration: auto-approve disabled");
+        // @dev For some reason initializing the Automation with auto-approval has been disabled
+        // if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
+        //     // Automation registration complete params that require address(this)
+        //     _params.upkeepContract = address(this);
+        //     _params.adminAddress = address(this);
+        //     _params.triggerConfig = abi.encode(
+        //         address(this), // Listen to this contract
+        //         2, // Binary 010, considering only topic2 (fightId)
+        //         keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
+        //         0x0, // If you don't want to filter on a specific nftId
+        //         0x0, // If you don't want to filter on a specific fightId
+        //         0x0 // If you don't want to filter on a specific bet
+        //     );
+        //     i_LINK.approve(address(_registrar), _params.amount);
+        //     uint256 upkeepID = _registrar.registerUpkeep(_params);
+        //     require(upkeepID != 0, "Chainlink upkeep registration: auto-approve disabled");
 
-            // Get&Set forwarder
-            i_AUTOMATION_FORWARDER = _registry.getForwarder(upkeepID);
-            emit FightMatchmaker__AutomatonRegistered(upkeepID);
-        }
+        //     // Get&Set forwarder
+        //     i_AUTOMATION_FORWARDER = _registry.getForwarder(upkeepID);
+        //     emit FightMatchmaker__AutomatonRegistered(upkeepID);
+        // }
+        /*SP_MARK_END*/
 
         (bool success,) = address(this).call(abi.encodeWithSignature("initializeReferences(address[])", _references));
         require(success, "Failure intializing references");
@@ -518,6 +523,13 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         return (
             i_PROMPT_FIGHTERS_NFT.getPromptOf(s_fightIdToFight[_fightId].nftRequester),
             i_PROMPT_FIGHTERS_NFT.getPromptOf(s_fightIdToFight[_fightId].nftAcceptor)
+        );
+    }
+
+    function getNftsOwnersFromFightId(bytes32 _fightId) external view returns (address, address) {
+        return (
+            i_PROMPT_FIGHTERS_NFT.getOwnerOf(s_fightIdToFight[_fightId].nftRequester),
+            i_PROMPT_FIGHTERS_NFT.getOwnerOf(s_fightIdToFight[_fightId].nftAcceptor)
         );
     }
 

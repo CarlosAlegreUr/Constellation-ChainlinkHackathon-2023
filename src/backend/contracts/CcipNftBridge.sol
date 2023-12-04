@@ -77,6 +77,7 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, ReferencesIniti
         i_DESTINATION_CHAIN_SELECTOR = _destinationChainSelector;
         i_RECEIVER_ADDRESS = _receiverAddress;
         i_FIGHT_MATCHMAKER = _matchmakerContract;
+        s_isOnChain[0] = true; // Needed so people can use id 0 for challenging
     }
 
     /**

@@ -178,7 +178,7 @@ With **_`CCIP`_**:
 
 1. Difficulty integrating CCIP with `forge`-based projects.
 2. Variable clash (`i_router`) when using Functions and CCIP concurrently.
-3. Non-virtual `supportsInterface()` function in `CCIPReceiver.sol`, creating inheritance conflicts in contrats that inherit different contracts using the EIP-165. (e.g., [eth-PromptFightersNFT.sol](./src/backend/contracts/nft-contracts/eth-PromptFightersNft.sol)).
+3. Non-virtual `supportsInterface()` function in `CCIPReceiver.sol`, creating inheritance conflicts in contrats that inherit different contracts using the EIP-165. (e.g., [eth-PromptFightersNFT.sol](./src/backend/contracts/nft-contracts/eth-PromptFightersNft.sol#L271)).
 
 With **`Automation`**:
 

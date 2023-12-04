@@ -16,6 +16,8 @@ contract SendNftCcip is Script {
     PromptFightersNFT public collectionContract;
     FightersBarracks public barracks;
 
+    uint256 constant NFT_ID_TO_SEND = 3;
+
     function setUp() public virtual {
         collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
         barracks = FightersBarracks(DEPLOYED_FUJI_BARRACKS);
@@ -24,10 +26,10 @@ contract SendNftCcip is Script {
     function run() public virtual {
         vm.startBroadcast();
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            collectionContract.sendNft{value: SEND_NFT_PRICE}(1);
+            collectionContract.sendNft{value: SEND_NFT_PRICE}(NFT_ID_TO_SEND);
         }
         if (block.chainid == AVL_FUJI_CHAIN_ID) {
-            barracks.sendNft{value: SEND_NFT_PRICE_FUJI}(1);
+            barracks.sendNft{value: SEND_NFT_PRICE_FUJI}(NFT_ID_TO_SEND);
         }
         vm.stopBroadcast();
     }

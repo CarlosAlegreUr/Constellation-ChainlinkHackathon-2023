@@ -22,41 +22,51 @@ contract Fight is Script {
     FightMatchmaker public matchmaker;
     FightExecutor public executor;
     LinkTokenInterface public linkToken = LinkTokenInterface(ETH_SEPOLIA_LINK);
+    IFightMatchmaker.FightRequest fr;
 
-    // TODO: delete when finish tensting
-    address constant mtch = 0x464526fb0634c10B749DB17d735bB189f7FEFa2a;
-    address constant exec = 0x74CB670f9E92bDA0371848c2a8f52b248053C9c3;
+    uint256 public CHALLENGER_NFT_ID = 1;
+    uint256 public CHALLENGEE_NFT_ID = 2;
 
     function setUp() public virtual {
         collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
-        // TODO: get matchmaker address add
-        matchmaker = FightMatchmaker(mtch);
-        executor = FightExecutor(exec);
+        matchmaker = FightMatchmaker(SEPOLIA_FIGHT_MATCHMAKER_OFFICIAL);
+        executor = FightExecutor(SEPOLIA_FIGHT_EXECUTOR_OFFICIAL);
+
+        fr = IFightMatchmaker.FightRequest({
+            challengerNftId: CHALLENGER_NFT_ID,
+            minBet: 0.001 ether,
+            acceptanceDeadline: block.timestamp + 1 days,
+            challengee: PLAYER_FOR_FIGHTS,
+            challengeeNftId: CHALLENGEE_NFT_ID
+        });
     }
 
     function run() public virtual {
         vm.startBroadcast();
 
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            IFightMatchmaker.FightRequest memory fr = IFightMatchmaker.FightRequest({
-                challengerNftId: 1,
-                minBet: 0.001 ether,
-                acceptanceDeadline: block.timestamp + 1 days,
-                challengee: DEPLOYER,
-                challengeeNftId: 2
-            });
-            // console.log("Trying to request fight...");
-            // matchmaker.requestFight{value: 0.005 ether}(fr);
+            // Send NFT2 to player so he can accept fight
+            console.log("Sending NFTid 2 to player so he can fight...");
+            collectionContract.transferFrom(DEPLOYER, PLAYER_FOR_FIGHTS, CHALLENGEE_NFT_ID);
 
             // Fund Chainlink Subscriptions
             console.log("Funding LINK consumption from fight contracts...");
             linkToken.approve(address(executor), 1 ether);
             executor.fundMySubscription(1 ether);
 
-            bytes32 fightId = matchmaker.getFightId(DEPLOYER, fr.challengerNftId, fr.challengee, fr.challengeeNftId);
-            console.log("Trying to accept fight...");
-            matchmaker.acceptFight{value: 0.005 ether}(fightId, 2);
+            console.log("Trying to request fight...");
+            matchmaker.requestFight{value: 0.005 ether}(fr);
         }
+
+        vm.stopBroadcast();
+    }
+
+    function accept() public {
+        vm.startBroadcast();
+
+        bytes32 fightId = matchmaker.getFightId(DEPLOYER, fr.challengerNftId, fr.challengee, fr.challengeeNftId);
+        console.log("Trying to accept fight...");
+        matchmaker.acceptFight{value: 0.005 ether}(fightId, CHALLENGEE_NFT_ID);
 
         vm.stopBroadcast();
     }
@@ -71,13 +81,12 @@ contract Fight is Script {
     // }
 
     // TODO: delete when finish tensting
-    // function settle() public {
-    //     vm.startBroadcast();
-    //     FightMatchmaker m = FightMatchmaker(mtch);
-    //     m.settleFight(
-    //         0x5c5f8cdc3d63547e35825fe0c326cd2224f7dcbd7e0b734a6fffa131e4f98643,
-    //         IFightMatchmaker.WinningAction.REQUESTER_WIN
-    //     );
-    //     vm.stopBroadcast();
-    // }
+    function settle() public {
+        vm.startBroadcast();
+        matchmaker.settleFight(
+            0xeefa5ba8b831d9208f3fdbe74caa31a6fd8dddf340aed5e97a8c6bea81237cc1,
+            IFightMatchmaker.WinningAction.REQUESTER_WIN
+        );
+        vm.stopBroadcast();
+    }
 }

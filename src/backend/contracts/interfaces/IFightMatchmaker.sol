@@ -198,6 +198,8 @@ interface IFightMatchmaker {
 
     function getNftsPromptsFromFightId(bytes32 _fightId) external view returns (string memory, string memory);
 
+    function getNftsOwnersFromFightId(bytes32 _fightId) external view returns (address, address);
+
     function getFightExecutorContract() external view returns (address);
 
     function getBetsVault() external view returns (address);

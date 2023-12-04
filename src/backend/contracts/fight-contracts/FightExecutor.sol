@@ -100,7 +100,7 @@ contract FightExecutor is
      * If not then reverts.
      */
     modifier onlyFightMatchmaker() {
-        require(msg.sender == address(i_FIGHT_MATCHMAKER_CONTRACT), "Only FightExecutor can call this.");
+        require(msg.sender == address(i_FIGHT_MATCHMAKER_CONTRACT), "Only FightMatchmaker can call this.");
         _;
     }
 
@@ -128,7 +128,8 @@ contract FightExecutor is
 
         s_requestsIdToFightId[lastRequestId] = _fightId;
         s_reqIsValid[lastRequestId] = true;
-        s_requestsIdToUser[lastRequestId] = msg.sender;
+        (address requester,) = i_FIGHT_MATCHMAKER_CONTRACT.getNftsOwnersFromFightId(_fightId);
+        s_requestsIdToUser[lastRequestId] = requester;
         emit FightExecutor__FightStarted(_fightId, lastRequestId, nftRequesterPrompt, nftAcceptorPrompt);
     }
 

@@ -44,7 +44,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             address[] memory referencedContracts = new address[](3);
             referencedContracts[0] = address(fightExecutor);
             referencedContracts[1] = address(betsVault);
-            referencedContracts[2] = address(DEPLOYED_SEPOLIA_COLLECTION);
+            referencedContracts[2] = address(address(promptFighters));
             // Fund automation registration with LINK
             link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
             fightMatchmaker.initializeReferencesAndAutomation(

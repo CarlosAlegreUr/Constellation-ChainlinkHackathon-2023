@@ -23,7 +23,7 @@ import "forge-std/console.sol";
 
 // All capital letter variable come from Utils.t.sol.
 contract FightMatchmakerTest is UtilsValues {
-    function test() public {
+    function test() public view {
         console.log("Test are not adapted to the new contrat's code! TODO: adapt them");
     }
     // FightMatchmaker public fightMatchmaker;

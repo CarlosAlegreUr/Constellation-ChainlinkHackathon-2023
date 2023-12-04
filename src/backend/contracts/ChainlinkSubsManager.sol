@@ -27,6 +27,9 @@ import "./Utils.sol";
  * @notice As this is a simple PoC, in the real life code proper testing should be made to create
  * fitting prices for different chainlink services and pronably even remove the idea of a minimum
  * required balance and a "pay as you use" schema.
+ *
+ * NOTE: There is most likely a more composable and cleaner way of managing the subscriptions
+ * to Chainlink Services of all the contracts. But time is cathing up and we need to ship the project.
  */
 contract ChainlinkSubsManager is IChainlinkSubsManager {
     //******************** */
