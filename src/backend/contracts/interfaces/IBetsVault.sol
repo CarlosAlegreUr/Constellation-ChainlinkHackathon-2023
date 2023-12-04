@@ -58,20 +58,19 @@ interface IBetsVault {
     function distributeBetsPrize(bytes32 _fightId, address _winner) external payable;
 
     /**
-     * @dev Anyone can call this function to claim their bets in case the
-     * conditions for unloking them are met:
+     * @dev Callable by Matchmaker when:
      *
      * 1.- No-one accepted fight in time.
-     * 2.- Chainlink services failed.
+     * 2.- Chainlink services failed for too long.
      *
-     * @notice This func doesn't expect sanity of input either state.
-     * @notice Checks for msg.sender being involved in the fight.
-     * @notice Checks for fight state and acceptance deadline from
-     * `FightMatchamker` getters.
+     * @return Indicates to Matchmaker if it should delete the fight data or not.
+     * It only should if both players already retrieved the bet from a fight.
      */
-    function unlockAndRetrieveBet(bytes32 fightId) external;
+    function unlockAndRetrieveBet(bytes32 fightId, address to) external returns (bool);
 
     // Getters
 
     function getBetsState(bytes32 fightId) external view returns (BetsState memory);
+
+    function getMatchmakerAddress() external view returns (address);
 }

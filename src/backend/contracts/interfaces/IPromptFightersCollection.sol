@@ -3,7 +3,7 @@ pragma solidity ^0.8.20;
 
 /**
  * @title IPromptFightersCollection
- * @author PromtFighters team: Carlos
+ * @author PromtFighters team: @CarlosAlegreUr
  * @dev Interface for interacting with the NFT collection.
  */
 interface IPromptFightersCollection {
@@ -25,5 +25,19 @@ interface IPromptFightersCollection {
      */
     function safeMint(address to, string calldata nftDescriptionPrompt) external;
 
-    function getPromptOf(uint256 nftId) external returns (string memory);
+    // Getters
+
+    function getPromptOf(uint256 nftId) external view returns (string memory);
+
+    function getNftIdToPrompt(uint256 nftId) external view returns (bytes memory);
+
+    function getLinkTokenInterface() external view returns (address);
+
+    function getFuncsSubsId() external view returns (uint64);
+
+    function getDonId() external view returns (bytes32);
+
+    function getReqIdToUser(bytes32 reqId) external view returns (address);
+
+    function getCcipReceiverContract() external view returns (address);
 }

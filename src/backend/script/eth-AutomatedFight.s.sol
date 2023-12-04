@@ -38,16 +38,16 @@ contract Fight is Script {
         vm.startBroadcast();
 
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            // Automate NFT 2
-            
+            // Automating NFT 2
             // Fund LINK for automation upkeeps
-            linkToken.approve(address(matchmaker), 1 ether);
-
-                // Fund Chainlink Subscriptions
-            console.log("Funding LINK consumption from fight contracts...");
+            console.log("Funding LINK services for fight contracts...");
+            uint256 automationFunds = 3 ether;
+            // Fund Chainlink Automation in matchcmaker
+            linkToken.approve(address(matchmaker), automationFunds);
+            // Fund Chainlink Subscriptions in executor
             linkToken.approve(address(executor), 1 ether);
             executor.fundMySubscription(1 ether);
-            matchmaker.setNftAutomated(2, 0.001 ether, 0.001 ether, 1 ether);
+            matchmaker.setNftAutomated(2, 0.001 ether, 0.001 ether, automationFunds);
 
             IFightMatchmaker.FightRequest memory fr = IFightMatchmaker.FightRequest({
                 challengerNftId: 1,
@@ -61,29 +61,28 @@ contract Fight is Script {
 
             console.log("Fight should be accepted by upkeep in later block...");
             console.log("Check state on block explorer...");
-           
         }
 
         vm.stopBroadcast();
     }
 
     // TODO: delete when finish tensting
-    function change() public {
-        vm.startBroadcast();
+    // function change() public {
+    //     vm.startBroadcast();
 
-        address add = mtch;
-        collectionContract.setMatchmaker(add);
-        vm.stopBroadcast();
-    }
+    //     address add = mtch;
+    //     collectionContract.setMatchmaker(add);
+    //     vm.stopBroadcast();
+    // }
 
     // TODO: delete when finish tensting
-    function settle() public {
-        vm.startBroadcast();
-        FightMatchmaker m = FightMatchmaker(mtch);
-        m.settleFight(
-            0x5c5f8cdc3d63547e35825fe0c326cd2224f7dcbd7e0b734a6fffa131e4f98643,
-            IFightMatchmaker.WinningAction.REQUESTER_WIN
-        );
-        vm.stopBroadcast();
-    }
+    // function settle() public {
+    //     vm.startBroadcast();
+    //     FightMatchmaker m = FightMatchmaker(mtch);
+    //     m.settleFight(
+    //         0x5c5f8cdc3d63547e35825fe0c326cd2224f7dcbd7e0b734a6fffa131e4f98643,
+    //         IFightMatchmaker.WinningAction.REQUESTER_WIN
+    //     );
+    //     vm.stopBroadcast();
+    // }
 }

@@ -12,12 +12,13 @@ import "./Utils.sol";
 
 /**
  * @title ChainlinkSubsManager
- * @author PromptFighters team: Carlos
+ * @author PromptFighters team: @CarlosAlegreUr
  * @dev This contract manages the subscriptions funds on contracts that
- * use different Chainlink Services which require subscriptions.
+ * use different Chainlink Services which require multiple subscriptions.
+ * In this case only VRF and Functions.
  *
  * @notice This is a simplified subscriptions funds management. Each user
- * must have a minimum of 10 LINK sent to the contract in order to use its services and
+ * must have a minimum of 0.8 LINK sent to the contract in order to use its services and
  * guarantee that the contract will always have enough LINK to execute the services.
  *
  * For each services called the user spends 0.5 LINK. If the funds provided go below 10 LINK
@@ -32,18 +33,16 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
     // CONTRACT'S STATE
     //******************** */
 
-    uint256 constant MIN_LINK_IN_SUBS = 0.8 ether;
+    uint256 private constant MIN_LINK_IN_SUBS = 0.8 ether;
     LinkTokenInterface private immutable i_LINK_TOKEN;
 
-    mapping(address => uint256) s_userToSubsBalance;
+    mapping(address => uint256) private s_userToSubsBalance;
 
-    uint64 public immutable i_funcsSubsId;
+    uint64 internal immutable i_funcsSubsId;
+    address private immutable i_funcsSubsAccess;
 
-    // Chainlink VRF related
-    uint64 public immutable i_vrfSubsId;
-
-    address immutable i_funcsSubsAccess;
-    address immutable i_vrfSubsAccess;
+    uint64 internal immutable i_vrfSubsId;
+    address private immutable i_vrfSubsAccess;
 
     constructor(address _funcsRouter, uint64 _funcSubsId, address _vrfCoordinator) {
         i_LINK_TOKEN = block.chainid == ETH_SEPOLIA_CHAIN_ID
@@ -75,6 +74,8 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
 
         i_LINK_TOKEN.transferAndCall(i_funcsSubsAccess, amount / 2, abi.encode(i_funcsSubsId));
         i_LINK_TOKEN.transferAndCall(i_vrfSubsAccess, amount / 2, abi.encode(i_vrfSubsId));
+
+        emit ChainlinkSubsManager__SubsFunded(msg.sender, amount);
     }
 
     // @notice Not implemented for PoC
@@ -84,19 +85,48 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
     //     require(success, "Faild to transfer LINK.");
     // }
 
-    /**
-     * @dev Called every time a user consumes a Chainlink service and it substracts
-     * 0.5 LINK from its balance.
-     */
-    function _userConsumesFunds(address _user) internal {
-        s_userToSubsBalance[_user] -= 0.5 ether;
-    }
+    //******************** */
+    // PUBLIC FUNCTIONS
+    //******************** */
 
     function canPlay(address _user) public view returns (bool) {
         return s_userToSubsBalance[_user] >= MIN_LINK_IN_SUBS ? true : false;
     }
 
+    //******************** */
+    // INTERNAL FUNCTIONS
+    //******************** */
+
+    /**
+     * @dev Called every time a user consumes a Chainlink service and it substracts
+     * 0.5 LINK from its balance.
+     *
+     * @notice In tests so far functions consumes ~0.25 LINK and VRF nodes
+     * are not available so we don't know.
+     */
+    function _userConsumesFunds(address _user) internal {
+        s_userToSubsBalance[_user] -= 0.5 ether;
+    }
+
+    //************************ */
+    // VIEW / PURE FUNCTIONS
+    //************************ */
+
+    // Getters
+
     function getUserSubsBalance(address _user) external view returns (uint256) {
         return s_userToSubsBalance[_user];
+    }
+
+    function getLinkTokenInterface() public view returns (address) {
+        return address(i_LINK_TOKEN);
+    }
+
+    function getVrfSubsId() public view returns (uint64) {
+        return i_vrfSubsId;
+    }
+
+    function getFuncsSubsId() public view returns (uint64) {
+        return i_funcsSubsId;
     }
 }

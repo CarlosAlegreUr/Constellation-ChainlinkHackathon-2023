@@ -13,42 +13,62 @@ import {FunctionsClient} from "@chainlink/functions/dev/v1_0_0/FunctionsClient.s
 import {FunctionsRequest} from "@chainlink/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
 import {IFunctionsSubscriptions} from "@chainlink/functions/dev/v1_0_0/interfaces/IFunctionsSubscriptions.sol";
 
-import "forge-std/console.sol";
-
 /**
  * @title PromptFightersNFT
- * @author PromtFighters team: Carlos
+ * @author PromtFighters team: @CarlosAlegreUr
  * @dev Holds the main NFT collection intended to be only be available
- * for trading only in the ETHEREUM mainnnet and testnets.
+ * for trading only in the Sepolia testnet.
  *
  * @notice This is a POC version with public NFT generation prompts,
- * allowing potential duplication.
+ * allowing potential duplication. See the main README for more details
+ * on how prompt could be made private as Chainlink Functions improve their features.
  *
- * @notice Minting an NFT requires passing an AI filter trhough Chainlink Functions
- * and this contract also implements CCIP to use your nfts to fight on other chains.
- * In this case only Fuji Avalanche testnet is allowed.
+ * @notice Minting an NFT requires passing an AI filter trhough Chainlink Functions.
+ * This contract also implements CCIP to use your nfts on other chains.
  */
 contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, FunctionsClient {
     using FunctionsRequest for FunctionsRequest.Request;
 
+    //******************************* */
+    // CONTRACT'S STATE && CONSTANTS
+    //******************************* */
+
     // Initialized at 1 as nftId is used as the empty value in some systems' logic.
-    uint256 public _nextTokenId = 1;
+    uint256 private _nextTokenId = 1;
 
     // On-chain traits
     // Prompt is in bytes, to get human readable do hex-to-string
     // prompt format: descrpition traits separated by "-"
-    mapping(uint256 => bytes) public s_nftIdToPrompt;
+    // desciption is: "name-race-weapon-special skill-fear"
+    mapping(uint256 => bytes) private s_nftIdToPrompt;
 
     // Chainlink Functions Management
     LinkTokenInterface private immutable i_LINK_TOKEN;
     uint64 private immutable i_funcsSubsId;
     bytes32 private immutable i_DON_ID;
-    mapping(bytes32 => address) public s_reqIdToUser;
+    mapping(bytes32 => address) private s_reqIdToUser;
 
     // CCIP reciever address initialization
-    // to connect the briged contracts one must be deployed first and the other one
-    // later, for safer deployment we add this state variables.
-    address CCIP_RECEIVER_CONTRACT;
+    // After the receiver contract is intialized call initReceiverAddress()
+    address private CCIP_RECEIVER_CONTRACT;
+
+    //******************** */
+    // MODIFIERS
+    //******************** */
+
+    /**
+     * @dev Makes sure NFTs are not transfered between accounts when
+     * they are fighting or not on the chain.
+     */
+    modifier nftCanBeTraded(uint256 nftId) {
+        require(!s_isFighting[nftId], "You cant transfer a fighting NFT.");
+        require(s_isOnChain[nftId], "You cant transfer an NFT that is not on this chain.");
+        _;
+    }
+
+    //******************** */
+    // CONSTRUCTOR
+    //******************** */
 
     constructor(address _functionsRouter, uint64 _funcSubsId, address _ccipRouter, IFightMatchmaker _fightMatchmaker)
         ERC721("PromptFightersNFT", "PFT")
@@ -70,17 +90,6 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         // IFunctionsSubscriptions(_functionsRouter).addConsumer(i_funcsSubsId, address(this));
     }
 
-    /**
-     * @dev Makes sure NFTs are not transfered between accounts when
-     * they are fighting or not in the chain. This is for simpler ownership
-     * tracking accross chains and avoid sending bets bugs.
-     */
-    modifier nftCanBeTraded(uint256 nftId) {
-        require(!s_isFighting[nftId], "You cant transfer a fighting NFT.");
-        require(s_isOnChain[nftId], "You cant transfer an NFT that is not on this chain.");
-        _;
-    }
-
     //******************** */
     // PUBLIC FUNCTIONS
     //******************** */
@@ -92,7 +101,8 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         require(bytes(_nftDescriptionPrompt).length <= 256, "Prompt too large.");
         require(msg.sender == _to, "You can't mint to others.");
 
-        // Call LINK contract transferFrom
+        // Call LINK contract transferFrom to fund the Chainlink Functions call.
+        // Amount is arbitrary now but on Sepolia tests so far it costs around 0.25 LINK.
         uint256 amount = 0.5 ether;
         bool success = i_LINK_TOKEN.transferFrom(msg.sender, address(this), amount);
         require(success, "Fail funding LINK");
@@ -102,8 +112,7 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         _validateAndMintNft(_nftDescriptionPrompt);
     }
 
-    // The following functions are only overriden to make sure that when an NFT is
-    // fighting or not in the chain, that NFT can't be traded between addresses.
+    // @dev The following functions are only overriden to add the nfCanBeTraded modifier.
 
     function transferFrom(address _from, address _to, uint256 _tokenId)
         public
@@ -133,15 +142,21 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
     }
 
     /**
-     * @dev It finally mints the NFT after calling ChainlinkFunctions.
+     * @dev It finally mints the NFT after calling ChainlinkFunctions which deems
+     * the promt's validity trhough OpenAI's API.
      *
-     * @param response If its a success the prompt the user wrote is saved here as a string.
-     * @param err If ther is an error it means ChatGPT deemd the NFT invalid.
+     * @param response If its a success the prompt the user wrote is saved here as a string
+     * if not its just an empty string.
+     * @param err If ther is an exeution error it will be sent here.
      */
-
     function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
         // For some reason when there is an error err.length > 0. TODO: figure out how to no enter
         // this "if" when error ocures
+        // This should work: TODO test it, as of now all promts are minted
+        // if(keccak256(response) == keccak256("")){
+        // INVALID PROMPT
+        // }
+
         if (s_reqIdToUser[requestId] != address(0)) {
             uint256 tokenId = _nextTokenId;
             _nextTokenId++;
@@ -160,15 +175,18 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
     // PRIVATE FUNCTIONS
     //******************** */
 
+    /**
+     * @dev Calls Chainlink Functions to validate the prompt and mint the NFT.
+     */
     function _validateAndMintNft(string calldata _nftPrompt) private {
         string[] memory arg = new string[](1);
         arg[0] = _nftPrompt;
 
         FunctionsRequest.Request memory req;
         req.initializeRequestForInlineJavaScript(NFT_GENERATION_SCRIPT_MOCK);
-        req.setArgs(arg); // Args are NFT prompts.
+        req.setArgs(arg); // Arg is the NFT prompt
 
-        // TODO: Add url for GPT-API
+        // TODO: Add git secrets url for for GPT-API key
 
         bytes32 lastRequestId = _sendRequest(req.encodeCBOR(), i_funcsSubsId, GAS_LIMIT_NFT_GENERATION, i_DON_ID);
 
@@ -179,6 +197,13 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
     // VIEW / PURE FUNCTIONS
     //************************ */
 
+    //************************ */
+    // GETTERS
+    //************************ */
+
+    /**
+     * @dev Docs at ICcipNftBridge.sol
+     */
     function getPromptOf(uint256 _nftId)
         public
         view
@@ -188,9 +213,54 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         return string(s_nftIdToPrompt[_nftId]);
     }
 
+    /**
+     * @dev Docs at ICcipNftBridge.sol
+     */
     function getOwnerOf(uint256 _nftId) public view override returns (address) {
         return ownerOf(_nftId);
     }
+
+    function getNftIdToPrompt(uint256 nftId) public view returns (bytes memory) {
+        return s_nftIdToPrompt[nftId];
+    }
+
+    function getLinkTokenInterface() public view returns (address) {
+        return address(i_LINK_TOKEN);
+    }
+
+    function getFuncsSubsId() public view returns (uint64) {
+        return i_funcsSubsId;
+    }
+
+    function getDonId() public view returns (bytes32) {
+        return i_DON_ID;
+    }
+
+    function getReqIdToUser(bytes32 reqId) public view returns (address) {
+        return s_reqIdToUser[reqId];
+    }
+
+    function getCcipReceiverContract() public view returns (address) {
+        return CCIP_RECEIVER_CONTRACT;
+    }
+
+    //************************************** */
+    // VIRTUAL FUNCS NOT USED IN THIS CHAIN
+    //************************************** */
+
+    // The following functions are inherited from CcipNftBridge and are mainly
+    // needed in chains that don't have the official collection. So in main-chain they
+    // just do nothing.
+
+    function _updateNftStateOnSendChainSpecifics(uint256 _nftId) internal override {}
+
+    function _updateNftStateOnReceiveChainSpecifics(uint256 _nftId, address _owner, string memory _prompt)
+        internal
+        override
+    {}
+
+    function _setOwnerOf(uint256 _nftId, address _owner) internal override {}
+    function _setPromptOf(uint256 _nftId, string memory _prompt) internal override {}
 
     //**************************** */
     // INHERITANCE TREE AMBIGUITIES
@@ -207,22 +277,4 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
     {
         return ERC721.supportsInterface(interfaceId) || CcipNftBridge.supportsInterface(interfaceId);
     }
-
-    // The following functions are inherited from CcipNftBridge and are mainly
-    // needed in chains that don't have the official collection. So in main-chain they
-    // just emit an event or do nothing.
-
-    function _updateNftStateOnSendChainSpecifics(uint256 _nftId) internal override {
-        emit ICCIPNftBridge__NftSent(msg.sender, ETH_SEPOLIA_CHAIN_ID, _nftId, block.timestamp);
-    }
-
-    function _updateNftStateOnReceiveChainSpecifics(uint256 _nftId, address _owner, string memory /*_prompt*/ )
-        internal
-        override
-    {
-        emit ICCIPNftBridge__NftReceived(_owner, ETH_SEPOLIA_CHAIN_ID, _nftId, block.timestamp);
-    }
-
-    function setOwnerOf(uint256 _nftId, address _owner) internal override {}
-    function setPromptOf(uint256 _nftId, string memory _prompt) internal override {}
 }

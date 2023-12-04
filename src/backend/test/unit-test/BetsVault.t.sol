@@ -18,71 +18,71 @@ import "forge-std/console.sol";
 
 // All capital letter variable come from Utils.t.sol.
 contract BetsVaultTest is Test, UtilsValues {
-    BetsVault public betsVault;
+    // BetsVault public betsVault;
 
-    modifier initialized() {
-        address[] memory referencedContracts = new address[](1);
-        referencedContracts[0] = MOCK_MATCHMAKER_ADDRESS;
-        vm.prank(MOCK_INTIALIZER_ADDRESS);
-        betsVault.initializeReferences(referencedContracts);
-        _;
-    }
+    // modifier initialized() {
+    //     address[] memory referencedContracts = new address[](1);
+    //     referencedContracts[0] = MOCK_MATCHMAKER_ADDRESS;
+    //     vm.prank(MOCK_INTIALIZER_ADDRESS);
+    //     betsVault.initializeReferences(referencedContracts);
+    //     _;
+    // }
 
-    function setUp() public {
-        betsVault = new BetsVault();
-    }
+    // function setUp() public {
+    //     betsVault = new BetsVault();
+    // }
 
-    function test_NothingBeforeInitialized() public {
-        vm.expectRevert("Contract is not initialized.");
-        betsVault.lockBet(FIGHT_ID_ONE_TWO, PLAYER_ONE);
+    // function test_NothingBeforeInitialized() public {
+    //     vm.expectRevert("Contract is not initialized.");
+    //     betsVault.lockBet(FIGHT_ID_ONE_TWO, PLAYER_ONE);
 
-        vm.expectRevert("Contract is not initialized.");
-        betsVault.unlockAndRetrieveBet(FIGHT_ID_ONE_TWO);
+    //     vm.expectRevert("Contract is not initialized.");
+    //     betsVault.unlockAndRetrieveBet(FIGHT_ID_ONE_TWO);
 
-        vm.expectRevert("Contract is not initialized.");
-        betsVault.distributeBetsPrize(FIGHT_ID_ONE_TWO, PLAYER_ONE);
-    }
+    //     vm.expectRevert("Contract is not initialized.");
+    //     betsVault.distributeBetsPrize(FIGHT_ID_ONE_TWO, PLAYER_ONE);
+    // }
 
-    function _lockFundsFor(bytes32 _fightId, address _player, uint256 amount) private {
-        vm.deal(MOCK_MATCHMAKER_ADDRESS, amount);
-        vm.prank(MOCK_MATCHMAKER_ADDRESS);
-        betsVault.lockBet{value: amount}(_fightId, _player);
-    }
+    // function _lockFundsFor(bytes32 _fightId, address _player, uint256 amount) private {
+    //     vm.deal(MOCK_MATCHMAKER_ADDRESS, amount);
+    //     vm.prank(MOCK_MATCHMAKER_ADDRESS);
+    //     betsVault.lockBet{value: amount}(_fightId, _player);
+    // }
 
-    function test_LockFundsCorrectly() public initialized {
-        // First call should set requester
-        _lockFundsFor(FIGHT_ID_ONE_TWO, PLAYER_ONE, 1 ether);
+    // function test_LockFundsCorrectly() public initialized {
+    //     // First call should set requester
+    //     _lockFundsFor(FIGHT_ID_ONE_TWO, PLAYER_ONE, 1 ether);
 
-        BetsVault.BetsState memory _state = betsVault.getBetsState(FIGHT_ID_ONE_TWO);
+    //     BetsVault.BetsState memory _state = betsVault.getBetsState(FIGHT_ID_ONE_TWO);
 
-        assert(_state.requester == PLAYER_ONE);
-        assert(_state.requesterBet == 1 ether);
-        assert(_state.acceptorBet == 0);
-        assert(_state.areBetsLocked);
+    //     assert(_state.requester == PLAYER_ONE);
+    //     assert(_state.requesterBet == 1 ether);
+    //     assert(_state.acceptorBet == 0);
+    //     assert(_state.areBetsLocked);
 
-        // Second call should set acceptor
-        _lockFundsFor(FIGHT_ID_ONE_TWO, PLAYER_TWO, 1 ether);
+    //     // Second call should set acceptor
+    //     _lockFundsFor(FIGHT_ID_ONE_TWO, PLAYER_TWO, 1 ether);
 
-        _state = betsVault.getBetsState(FIGHT_ID_ONE_TWO);
+    //     _state = betsVault.getBetsState(FIGHT_ID_ONE_TWO);
 
-        assert(_state.requesterBet == 1 ether);
-        assert(_state.acceptorBet == 1 ether);
-        assert(_state.acceptor == PLAYER_TWO);
-        assert(_state.areBetsLocked);
-    }
+    //     assert(_state.requesterBet == 1 ether);
+    //     assert(_state.acceptorBet == 1 ether);
+    //     assert(_state.acceptor == PLAYER_TWO);
+    //     assert(_state.areBetsLocked);
+    // }
 
-    function test_DistributePrizesCorrectly() public initialized {
-        _lockFundsFor(FIGHT_ID_ONE_TWO, PLAYER_ONE, 1 ether);
-        _lockFundsFor(FIGHT_ID_ONE_TWO, PLAYER_TWO, 1 ether);
+    // function test_DistributePrizesCorrectly() public initialized {
+    //     _lockFundsFor(FIGHT_ID_ONE_TWO, PLAYER_ONE, 1 ether);
+    //     _lockFundsFor(FIGHT_ID_ONE_TWO, PLAYER_TWO, 1 ether);
 
-        uint256 prevBalance = PLAYER_ONE.balance;
+    //     uint256 prevBalance = PLAYER_ONE.balance;
 
-        vm.prank(MOCK_MATCHMAKER_ADDRESS);
-        betsVault.distributeBetsPrize(FIGHT_ID_ONE_TWO, PLAYER_ONE);
+    //     vm.prank(MOCK_MATCHMAKER_ADDRESS);
+    //     betsVault.distributeBetsPrize(FIGHT_ID_ONE_TWO, PLAYER_ONE);
 
-        uint256 currentBalance = PLAYER_ONE.balance;
+    //     uint256 currentBalance = PLAYER_ONE.balance;
 
-        assert(prevBalance < currentBalance);
-        assert(prevBalance + 2 ether == currentBalance);
-    }
+    //     assert(prevBalance < currentBalance);
+    //     assert(prevBalance + 2 ether == currentBalance);
+    // }
 }

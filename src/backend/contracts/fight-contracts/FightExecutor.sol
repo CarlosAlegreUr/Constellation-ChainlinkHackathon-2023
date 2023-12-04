@@ -17,10 +17,11 @@ import "@chainlink/vrf/VRFConsumerBaseV2.sol";
 
 /**
  * @title FightExecutor
- * @author PromptFighters team: Carlos
- * @dev This contract all the logic for executing a fight.
- * Whenever FightMatchmaker calls this contract then it uses Chainlink Functions
- * to generate the fight lore and then uses VRF to generate a fair winner.
+ * @author PromptFighters team: @CarlosAlegreUr
+ * @dev This contract has all the logic for executing a fight.
+ * Whenever FightMatchmaker calls this contracts startFight() it triggers Chainlink Functions
+ * to generate the fight lore and then automatically on its response VRF is triggered to generate a
+ * fair winner.
  *
  * As of now, for simplicity, the chances of winning are 50% for each player.
  * Future plans are to use speific NFT traits to redistribute probability based on
@@ -39,26 +40,31 @@ contract FightExecutor is
     // CONTRACT'S STATE && CONSTANTS
     //******************************* */
 
-    // External contracs interacted with
+    // All addresses are in practice intializable once initializeReferences() is called.
     IFightMatchmaker private i_FIGHT_MATCHMAKER_CONTRACT;
     VRFCoordinatorV2Interface private immutable i_VRF_COORDINATOR;
 
-    // Tracking fightIds to requests
-    // First the ID will be a funcReqId and then a vftReqId
-    mapping(bytes32 => bool) s_reqIsValid;
-    mapping(bytes32 => bytes32) s_requestsIdToFightId;
-    mapping(bytes32 => address) s_requestsIdToUser;
+    // Tracking fightIds to hashes of requestsIds
+    // First the ID will be a funcReqId and then a vrfReqId
+    // As they are different type we hash them keccack256() to have a common bytes32 type.
+    mapping(bytes32 => bool) private s_reqIsValid;
+    mapping(bytes32 => bytes32) private s_requestsIdToFightId;
+    mapping(bytes32 => address) private s_requestsIdToUser;
 
     // Chainlink Functions related
-    bytes32 immutable i_donId;
+    bytes32 private immutable i_donId;
 
     // Chainlink VRF related
-    uint32 constant WINNER_BIT_SIZE = 1;
-    uint256 constant WINNER_IS_REQUESTER = 0;
-    uint256 constant WINNER_IS_ACCEPTOR = 1;
-    bytes32 immutable i_keyHash;
-    uint16 immutable i_requConfirmations;
-    uint32 immutable i_callbackGasLimit;
+    uint32 private constant WINNER_BIT_SIZE = 1;
+    uint256 private constant WINNER_IS_REQUESTER = 0;
+    uint256 private constant WINNER_IS_ACCEPTOR = 1;
+    bytes32 private immutable i_keyHash;
+    uint16 private immutable i_requConfirmations;
+    uint32 private immutable i_callbackGasLimit;
+
+    //*****************/
+    // CONSTRUCTOR
+    //**************** */
 
     constructor(
         address _funcsRouter,
@@ -77,8 +83,12 @@ contract FightExecutor is
         i_callbackGasLimit = _cfiParams.callbackGasLimit;
     }
 
+    /**
+     * @dev Docs at ReferencesInitializer.sol
+     */
     function initializeReferences(address[] calldata _references) external override initializeActions {
         i_FIGHT_MATCHMAKER_CONTRACT = IFightMatchmaker(_references[0]);
+        emit ReferencesInitialized(_references, address(this), block.timestamp);
     }
 
     //******************** */
@@ -87,7 +97,7 @@ contract FightExecutor is
 
     /**
      * @dev Checks if msg.sender is `FightMatchmaker` contract.
-     * If not then revert.
+     * If not then reverts.
      */
     modifier onlyFightMatchmaker() {
         require(msg.sender == address(i_FIGHT_MATCHMAKER_CONTRACT), "Only FightExecutor can call this.");
@@ -99,9 +109,9 @@ contract FightExecutor is
     //******************** */
 
     /**
-     * @notice Send a simple request sendRequest()
+     * @dev Docs at IFightExecutor.sol
      */
-    function startFight(bytes32 _fightId) external onlyFightMatchmaker returns (bytes32 requestId) {
+    function startFight(bytes32 _fightId) external onlyFightMatchmaker {
         FunctionsRequest.Request memory req;
 
         req.initializeRequestForInlineJavaScript(FIGHT_GENERATION_SCRIPT_MOCK);
@@ -119,23 +129,23 @@ contract FightExecutor is
         s_requestsIdToFightId[lastRequestId] = _fightId;
         s_reqIsValid[lastRequestId] = true;
         s_requestsIdToUser[lastRequestId] = msg.sender;
-        return lastRequestId;
+        emit FightExecutor__FightStarted(_fightId, lastRequestId, nftRequesterPrompt, nftAcceptorPrompt);
     }
 
     //******************** */
     // INTERNAL FUNCTIONS
     //******************** */
 
-    // TODO: simulate functions from server because story generations lasts more than 9s
     /**
      * @dev Emits an event with latest result/error from Chainlink Functions.
-     * If not erros given then it calls VFR.
-     * Either response or error parameter will be set, but never both
+     * If not erros given then it calls VRF.
      *
      * @notice The request must exists.
      *
-     * @param requestId The request ID, returned by startFight()
-     * @param response Aggregated response from the user code
+     * @param requestId The request ID, set by startFight() functions request.
+     * @param response Aggregated response from the user code. Now its just 1 general story.
+     * If HTTP-API calls could last > 9s then it would be 2 fight stories with 2 differnet outcomes
+     * and the one showed to the user would be decided upon the VRF generated value.
      * @param err Aggregated error from the user code or from the execution pipeline
      */
     function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
@@ -143,6 +153,8 @@ contract FightExecutor is
         delete s_reqIsValid[requestId];
 
         // @dev TODO: ADD A WAY OF MARKING FALIED RESPONSES
+        // Event emitted on Failure
+        emit FightExecutor__FightStoryFuncsError(requestId, err, block.timestamp);
 
         // Success, call VRF to generate winner
         uint256 newReqId = _requestRandomWinner();
@@ -150,24 +162,21 @@ contract FightExecutor is
         delete s_requestsIdToUser[requestId];
         _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
 
-        // From this event front-end will parse the stories generated.
-        emit FightExecutor__FuncsResponse(requestId, response, block.timestamp);
-        // Failure
-        emit FightExecutor__FuncsError(requestId, err, block.timestamp);
+        // From this event front-end will parse the story generated.
+        emit FightExecutor__FightStoryFuncsResponse(requestId, response, block.timestamp);
     }
 
     /**
-     * @dev This functions decides a winner with module operation to generate a winning bit.
+     * @dev This functions decides a winner with a module operation to generate a winning bit.
      *
-     * Then it calls `FightMatchmaker` setFightState() with the fightId, AVAILABLE fight state,
-     * and the winner bit so `FightMatchmaker` eventually calls BetsVault and distribute the
-     * rewards.
+     * Then it calls `FightMatchmaker` setFightState() that will update properly the fight's state
+     * and eventually call BetsVault to distribute the prize.
      *
      * @notice The request must exists.
      * @notice The amount of random words returns must always be 1.
      *
      * @param _requestId returned by _requestRandomWinner().
-     * @param _randomWords an array with the random numbers generated.
+     * @param _randomWords an array with the random number generated.
      */
     function fulfillRandomWords(uint256 _requestId, uint256[] memory _randomWords) internal override {
         require(_randomWords.length == WINNER_BIT_SIZE, "Vrf amount of words not valid.");
@@ -183,27 +192,31 @@ contract FightExecutor is
 
         i_FIGHT_MATCHMAKER_CONTRACT.settleFight(fightId, IFightMatchmaker.WinningAction(winnerBit));
 
-        emit FightExecutor__VrfWinnerIs(fightId, winnerBit, block.timestamp);
+        emit FightExecutor__FightResultVrfWinnerIs(fightId, winnerBit, block.timestamp);
     }
 
     //******************** */
     // PRIVATE FUNCTIONS
     //******************** */
 
-    // requestRandomWords()
+    /**
+     * @dev Function called by Chainlink Functions fullfilRequest(), it triggers
+     * the VRF process.
+     */
     function _requestRandomWinner() private returns (uint256 requestId) {
         requestId = i_VRF_COORDINATOR.requestRandomWords(
             i_keyHash, i_vrfSubsId, i_requConfirmations, i_callbackGasLimit, WINNER_BIT_SIZE
         );
 
-        emit FightExecutor__VrfReqSent(requestId, block.timestamp);
         bytes32 reqIdHash = keccak256(abi.encode(requestId));
         s_reqIsValid[reqIdHash] = true;
+
+        emit FightExecutor__FightResultVrfReqSent(i_vrfSubsId, requestId, block.timestamp);
         return requestId;
     }
 
     /**
-     * @dev Updates the s_requestsIdToFightId mappnig.
+     * @dev Updates the s_requestsIdToFightId mapping.
      * If newReq == 0 that means it deletes all values.
      */
     function _updateReqIdToFightId(bytes32 _oldReq, bytes32 _newReq) private returns (bytes32 fightId) {
@@ -213,8 +226,48 @@ contract FightExecutor is
         if (_newReq != bytes32(0)) {
             s_requestsIdToFightId[_newReq] = fightId;
         } else {
-            // This else might not be needed. Added as precaution.
+            // This "else" might not be needed. Added as precaution.
             delete s_requestsIdToFightId[_newReq];
         }
+    }
+
+    //************************ */
+    // VIEW / PURE FUNCTIONS
+    //************************ */
+
+    // Getters
+
+    function getReqIsValid(bytes32 req) public view returns (bool) {
+        return s_reqIsValid[req];
+    }
+
+    function getRequestsIdToFightId(bytes32 requestId) public view returns (bytes32) {
+        return s_requestsIdToFightId[requestId];
+    }
+
+    function getRequestsIdToUser(bytes32 requestId) public view returns (address) {
+        return s_requestsIdToUser[requestId];
+    }
+
+    function getChainlinkServicesParams()
+        public
+        view
+        returns (IFightExecutor.FightExecutor__ChainlinkServicesInitParmas memory)
+    {
+        return IFightExecutor.FightExecutor__ChainlinkServicesInitParmas(
+            i_keyHash, i_requConfirmations, i_callbackGasLimit, i_vrfSubsId, i_donId
+        );
+    }
+
+    function getWinnerBitSize() public pure returns (uint32) {
+        return WINNER_BIT_SIZE;
+    }
+
+    function getWinnerIsRequester() public pure returns (uint256) {
+        return WINNER_IS_REQUESTER;
+    }
+
+    function getWinnerIsAcceptor() public pure returns (uint256) {
+        return WINNER_IS_ACCEPTOR;
     }
 }

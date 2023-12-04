@@ -5,15 +5,26 @@ import "./Utils.sol";
 
 /**
  * @title Initializable
- * @author PromtFighters team: Carlos
+ * @author PromtFighters team: @CarlosAlegreUr
  * @dev Used to safely intialize contracts that reference each other
- * but none of them are deployed yet.
+ * but none of them are deployed yet. Only INTIALIZER_ADDRESS which should
+ * be set as your DEPLOYER address will be able to initialize.
  */
 abstract contract ReferencesInitializer {
+    //******************************* */
+    // CONTRACT'S STATE && CONSTANTS
+    //******************************* */
+
     bool s_isInitializedLock;
+
+    event ReferencesInitialized(address[] indexed _references, address indexed contractInitialized, uint256 timestamp);
 
     // @dev: This must be an address owned by the deployer of the system.
     address constant INTIALIZER_ADDRESS = DEPLOYER;
+
+    //******************** */
+    // MODIFIERS
+    //******************** */
 
     /**
      * @dev Add in all functions that shouldn't be used before the other
@@ -33,6 +44,10 @@ abstract contract ReferencesInitializer {
         _;
         s_isInitializedLock = true;
     }
+
+    //******************** */
+    // EXTERNAL FUNCTIONS
+    //******************** */
 
     /**
      * @dev 1 time use function that must have the iniitalizeActions() modifier

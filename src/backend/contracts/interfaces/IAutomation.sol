@@ -7,38 +7,11 @@ import {IAutomationForwarder} from "@chainlink/automation/interfaces/IAutomation
 // AUTOMATION CONFIG //
 ///////////////////////
 
-// TODO: DELETE LATER log trigger struct
-struct LogTriggerConfig {
-    address contractAddress; // must have address that will be emitting the log
-    uint8 filterSelector; // must have filtserSelector, denoting  which topics apply to filter ex 000, 101, 111...only last 3 bits apply
-    bytes32 topic0; // must have signature of the emitted event
-    bytes32 topic1; // optional filter on indexed topic 1
-    bytes32 topic2; // optional filter on indexed topic 2
-    bytes32 topic3; // optional filter on indexed topic 3
-}
-
-// TODO: Delete later Log struct
 /**
- * @member index the index of the log in the block. 0 for the first log
- * @member timestamp the timestamp of the block containing the log
- * @member txHash the hash of the transaction containing the log
- * @member blockNumber the number of the block containing the log
- * @member blockHash the hash of the block containing the log
- * @member source the address of the contract that emitted the log
- * @member topics the indexed topics of the log
- * @member data the data of the log
+ * @title Automation Interfaces
+ * @author @arynyestos
+ * @notice Interfaces to make Automation params more clear.
  */
-struct Log {
-    uint256 index;
-    uint256 timestamp;
-    bytes32 txHash;
-    uint256 blockNumber;
-    bytes32 blockHash;
-    address source;
-    bytes32[] topics;
-    bytes data;
-}
-
 interface IAutomationRegistrar {
     struct RegistrationParams {
         string name; // Name of upkeep that will be displayed in the UI.

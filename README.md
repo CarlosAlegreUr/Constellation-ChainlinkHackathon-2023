@@ -208,7 +208,7 @@ During our project's development, we identified potential enhancements for Chain
 
 Key Features for Consideration:
 
-- Library support in Deno files, especially for hashing (notably keccak256) and asymmetric encryption (ECDSA). Additionally, the addition of a library that simplifies the retrieval of logs from previous blockchain blocks would have helped a lot in optimizing our automated matchmaking and fight system while keeping costs low.
+- Library support in Deno files, especially for hashing (notably keccak256) and asymmetric encryption (ECDSA). Additionally, the addition of a library that simplifies the retrieval of logs from previous blockchain blocks would have helped a lot in optimizing and scaling the automated matchmaking and fight system while keeping costs low.
 
 Practical Application:
 

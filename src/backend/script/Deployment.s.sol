@@ -3,12 +3,20 @@ pragma solidity ^0.8.13;
 
 import {PromptFightersNFT} from "../contracts/nft-contracts/eth-PromptFightersNft.sol";
 import {FightersBarracks} from "../contracts/nft-contracts/avl-FightersBarracks.sol";
-import {FightersBarracksPly} from "../contracts/nft-contracts/ply-FightersBarracks.sol";
 import {DeployFightsContracts} from "./deployment-processes/DeploymentBase.s.sol";
 
 import "../contracts/Utils.sol";
 import "forge-std/console.sol";
 
+/**
+ * @title PromptFightersDeploy
+ * @author @CarlosAlegreUr
+ * @notice Deploys all contracts needed for the PromptFighters system.
+ * As complete initailization of the system is not possible in one transaction
+ * due to the multi-chain nature of the system, you will need to run after
+ * deploying the Barracks on the other chain to run the initSepoliaCollection() function
+ * on ths script.
+ */
 contract PromptFightersDeploy is DeployFightsContracts {
     function setUp() public override {
         super.setUp();
@@ -24,7 +32,6 @@ contract PromptFightersDeploy is DeployFightsContracts {
             super.run();
 
             // Deploy collection
-            // TODO: comment prompt deploy after first deploy when testing in this branch
             console.log("Deploying collection...");
             PromptFightersNFT promptFighters = new PromptFightersNFT(
                 ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
@@ -83,8 +90,8 @@ contract PromptFightersDeploy is DeployFightsContracts {
             super.run();
 
             // Deploy barracks
-            FightersBarracksPly barracks =
-                new FightersBarracksPly(PLY_MUMBAI_CCIP_ROUTER, DEPLOYED_SEPOLIA_COLLECTION, fightMatchmaker);
+            FightersBarracks barracks =
+                new FightersBarracks(PLY_MUMBAI_CCIP_ROUTER, DEPLOYED_SEPOLIA_COLLECTION, fightMatchmaker);
             console.log("COPY THE FOLLOWING ADDRESS IN THE Utils.sol:");
             console.log("Avl barracks deployed at:");
             console.log(address(barracks));

@@ -11,7 +11,7 @@ pragma solidity ^0.8.20;
 //******************** */
 
 //******************** */
-// 🟢🟢🟢🟢 WHEN LOCAL SET-UP CHANGE THIS VALUES!!! 🟢🟢🟢🟢🟢
+// 🟢🟢🟢🟢 WHEN LOCAL SET-UP CHANGE ALONG THIS VALUES!!! 🟢🟢🟢🟢🟢
 //******************** */
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c;
@@ -25,9 +25,8 @@ uint64 constant PLY_MUMBAI_SUBS_ID = 1027;
 
 ///////////////////////////////////////////////
 
-string constant NFT_VALID_PROMPT = "athirdnftnastasio-your mother-she is cool, very chill-im a joker";
-
-// "anabel-A flying glass bottle-Golden swiss clock-She can fly at 233km/h-She is afraid of cans with mafioso attitude";
+string constant NFT_VALID_PROMPT =
+    "ausacio-A very distinguished gentleman-A cocktail molotov-He is verry distinguished-Pigeons";
 
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 

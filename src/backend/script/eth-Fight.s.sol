@@ -45,8 +45,8 @@ contract Fight is Script {
                 challengee: DEPLOYER,
                 challengeeNftId: 2
             });
-            console.log("Trying to request fight...");
-            matchmaker.requestFight{value: 0.005 ether}(fr);
+            // console.log("Trying to request fight...");
+            // matchmaker.requestFight{value: 0.005 ether}(fr);
 
             // Fund Chainlink Subscriptions
             console.log("Funding LINK consumption from fight contracts...");
@@ -62,22 +62,22 @@ contract Fight is Script {
     }
 
     // TODO: delete when finish tensting
-    function change() public {
-        vm.startBroadcast();
+    // function change() public {
+    //     vm.startBroadcast();
 
-        address add = mtch;
-        collectionContract.setMatchmaker(add);
-        vm.stopBroadcast();
-    }
+    //     address add = mtch;
+    //     collectionContract.setMatchmaker(add);
+    //     vm.stopBroadcast();
+    // }
 
     // TODO: delete when finish tensting
-    function settle() public {
-        vm.startBroadcast();
-        FightMatchmaker m = FightMatchmaker(mtch);
-        m.settleFight(
-            0x5c5f8cdc3d63547e35825fe0c326cd2224f7dcbd7e0b734a6fffa131e4f98643,
-            IFightMatchmaker.WinningAction.REQUESTER_WIN
-        );
-        vm.stopBroadcast();
-    }
+    // function settle() public {
+    //     vm.startBroadcast();
+    //     FightMatchmaker m = FightMatchmaker(mtch);
+    //     m.settleFight(
+    //         0x5c5f8cdc3d63547e35825fe0c326cd2224f7dcbd7e0b734a6fffa131e4f98643,
+    //         IFightMatchmaker.WinningAction.REQUESTER_WIN
+    //     );
+    //     vm.stopBroadcast();
+    // }
 }

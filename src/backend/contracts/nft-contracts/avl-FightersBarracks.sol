@@ -8,19 +8,37 @@ import "../Utils.sol";
 
 /**
  * @title FightersBarracks
- * @author PromtFighters team: Carlos
- * @dev Tracks ownership and NFTs' prompts for NFTs on chains
- * that are not the Ethereum one which has the official collection.
+ * @author PromtFighters team: @CarlosAlegreUr
+ * @dev Tracks ownership and NFTs' prompts for NFTs on any EVM compatible chain.
+ *
+ * @notice This implementation allows for FUJI Avalanche testnet.
+ * @notice To change it to other blockchain change the require statement in the constructor
+ * that checks teh router for safety to the desired chain's router and pass it as
+ * _router parameter.
  */
 contract FightersBarracks is CcipNftBridge {
+    //******************************* */
+    // CONTRACT'S STATE && CONSTANTS
+    //******************************* */
+
     mapping(uint256 => address) private s_nftIdToOwner;
     mapping(uint256 => string) private s_nftIdToPrompt;
+
+    //******************** */
+    // CONSTRUCTOR
+    //******************** */
 
     constructor(address _router, address _receiverContract, IFightMatchmaker _fightMatchmaker)
         CcipNftBridge(ETH_SEPOLIA_SELECTOR, _receiverContract, _router, _fightMatchmaker)
     {
         require(_router == AVL_FUJI_CCIP_ROUTER, "Not allowed router.");
     }
+
+    // // todo: delete after testing
+    // function setOnChain(uint256 nftid) external {
+    //     require(msg.sender == DEPLOYER);
+    //     s_isOnChain[nftid] = true;
+    // }
 
     //******************** */
     // INTERNAL FUNCTIONS
@@ -30,18 +48,22 @@ contract FightersBarracks is CcipNftBridge {
         // Maybe delete if not needed, kept just in case.
         delete s_nftIdToOwner[_nftId];
         delete s_nftIdToPrompt[_nftId];
-        emit ICCIPNftBridge__NftSent(msg.sender, AVL_FUJI_CHAIN_ID, _nftId, block.timestamp);
     }
 
-    function _updateNftStateOnReceiveChainSpecifics(uint256 _nftId, address _owner, string memory _prompt) internal override {
+    function _updateNftStateOnReceiveChainSpecifics(uint256 _nftId, address _owner, string memory _prompt)
+        internal
+        override
+    {
         s_nftIdToOwner[_nftId] = _owner;
         s_nftIdToPrompt[_nftId] = _prompt;
-        emit ICCIPNftBridge__NftReceived(_owner, AVL_FUJI_CHAIN_ID, _nftId, block.timestamp);
     }
 
     // Setters
 
-    function setOwnerOf(uint256 _nftId, address _owner) internal override {
+    /**
+     * @dev Docs at CcipNftBridge.sol
+     */
+    function _setOwnerOf(uint256 _nftId, address _owner) internal override {
         if (_owner == address(0)) {
             delete s_nftIdToOwner[_nftId];
         } else {
@@ -49,7 +71,10 @@ contract FightersBarracks is CcipNftBridge {
         }
     }
 
-    function setPromptOf(uint256 _nftId, string memory _prompt) internal override {
+    /**
+     * @dev Docs at CcipNftBridge.sol
+     */
+    function _setPromptOf(uint256 _nftId, string memory _prompt) internal override {
         if (bytes(_prompt).length == 0) {
             delete s_nftIdToPrompt[_nftId];
         } else {
@@ -61,10 +86,16 @@ contract FightersBarracks is CcipNftBridge {
     // VIEW / PURE FUNCTIONS
     //************************ */
 
+    /**
+     * @dev Docs at ICcipNftBridge.sol
+     */
     function getOwnerOf(uint256 _nftId) public view override returns (address) {
         return s_nftIdToOwner[_nftId];
     }
 
+    /**
+     * @dev Docs at ICcipNftBridge.sol
+     */
     function getPromptOf(uint256 _nftId) public view override returns (string memory) {
         return s_nftIdToPrompt[_nftId];
     }
