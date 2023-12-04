@@ -1,17 +1,4 @@
-# Contribution guidelines 🚧👷⚠️
-
-## (delete this section before dev branch is merged to main)
-
-Just` create branches` for any work you do `that originate from` this `dev branch`.
-
-`Never commit to main` branch, always commit to dev (development) branch.
-There will be just **1 final commit to the main branch after all is coded and all docs are revised**.
-
----
-
----
-
-# PROMPT FIGHTERS❗🤯
+# PROMPT FIGHTERS❗❗❗🤯
 
 Do you remember when you were a kid and you were using your toys to **_`create legendary fights`_**?
 
@@ -168,7 +155,9 @@ Run tests' instructions in here: [tests](./src/backend/test).
 
 ## `A Message for Chainlink` 💌
 
-During our project's development, we identified potential enhancements for Chainlink Services, particularly Chainlink Functions and Chainlink CCIP.
+During our project's development, we identified potential enhancements and problems using Chainlink Services, particularly Chainlink Functions and Chainlink CCIP.
+
+<details> <summary> 💌 </summary>
 
 #### Key Features for Consideration:
 
@@ -178,7 +167,7 @@ During our project's development, we identified potential enhancements for Chain
 
    - In our project, implementing hashing would enable private, unique NFT prompts. Currently, NFT prompts are public, allowing duplication. Hashing prompts in Function scripts would allow on-chain storage of hashes and off-chain verification of prompt ownership by the DON, improving privacy and reducing NFT creation costs.
 
-2. Allow for longer HTTP-API calls. AIs that generate images or a bit long outputs like stores take more than the current limit of 9s. Thus we had to mock in Funtions a response simulating an actual AI-API call. Regardless of this the code that would be used if this restriction didn't exist is added in the project.
+2. Allow for longer HTTP-API calls. AIs that generate images or a bit long outputs like stories take more than the current limit of 9s. Thus we had to mock in Funtions a response simulating an actual AI-API call. Regardless of this the code that would be used if this restriction didn't exist is added in the project.
 
 3. A tool for simulating DONs reponses in local with forked Chainlink contracts would be very helpful for easier debugging and testing.
    We don't know if this tool already exists, but we think it would be very useful.
@@ -206,3 +195,20 @@ With **`VRF`**:
 
 1. For some reason nodes in Sepolia don't respond to VRF
    requests. Thus in this project we allowed the DEPLOYER to finish fights too in case VRF doesn't respond.
+
+</details>
+
+> 📘**Note**ℹ️: The whole team met in the **SmartCon 2023**, thanks for the great event! 😄
+
+---
+
+# `Spam ;D` 📧
+
+3 of us are seeking for job opportunities inside the blockchain world. If you have any for us we would be very happy to hear from you.
+
+- **`Carlos Alegre`**: Full-stack developer and auditor
+  [Github](https://github.com/CarlosAlegreUr) | [Linked-In](https://www.linkedin.com/in/carlos-alegre-urquiz%C3%BA-0b19701b3/)
+
+- **`Antonio`** (COMPLETE)
+
+- **`Ethan`** (COMPLETE)
