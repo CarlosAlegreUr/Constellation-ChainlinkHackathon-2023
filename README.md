@@ -101,22 +101,21 @@ mv ./node_modules_ccip ./lib
 # if you want.
 ```
 
-***The /lib directory should now look like this:***
+**_The /lib directory should now look like this:_**
 
 <img src="./repo-images/lib-example.png">
 
 <br/>
 
-3. **Run the Backend and forge scripts**
+3. **Prepare Wallet to use the contracts**
 
-Deploy the contracts, but for that you will need to:
+To use the contracts you will need to have an account with funds in the following chains:
 
-1. Fill up the [.env](./src/backend/.env.example) secret values with your own.
 2. Set your addrees value in the [Utils.sol](./src/backend/src/Utils.sol) file. It's very visible just enter the file.
 3. Fund your metamask wallet with funds:
 
    3.1. Native coin in in Fuji-Avalanche and Sepolia-Ethereum.
-   3.2. Get LINK token for future usecases, not needed in deployment though.
+   3.2. Get LINK token on both chains.
 
    - An [ETH-Faucet](https://sepoliafaucet.com/).
    - [LINK-Official-Faucet](https://faucets.chain.link/) that also provides AVL if connected to AVL chains like Fuji.
@@ -124,50 +123,9 @@ Deploy the contracts, but for that you will need to:
 ```solidity
 // Utils.sol
 
-// For now change just this one below
+// For now change just this one below, its marked in Utils wth 🟢.
 address constant DEPLOYER = YOUR_METAMASK_ADDRESS; //🟢 <--
-address constant DEPLOYED_SEPOLIA_COLLECTION = YOU WILL GET THIS VALUE FROM THE LOGS OF THE DEPLOY SCRIPT, PASTE IT HERE;
-address constant DEPLOYED_FUJI_BARRACKS = YOU WILL GET THIS VALUE FROM THE LOGS OF THE DEPLOY SCRIPT, PASTE IT HERE;
 ```
-
-Once all values you know (but contract addresses) are set deploy the contracts with:
-
-> 📘 **Note** ℹ️: Write, `--etherscan-api-key $S_ETHERSCAN_API_KEY_VERIFY --verify`, if you wanna verify the contracts on SEPOLIA. Not needed for proper functionality though.
-
-> 📘 **Note 2** ℹ️: We don't use `--ffi` functionality just in case there are some shell commands that are not available in your machine. Thus you will have to manually copy 3 values in a Utils file.
-
-```bash
-source .env
-
-forge script script/00-Deployment.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
-```
-
-Now in the [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION` address value to the one you will se printed onto the screen and after run:
-
-```bash
-forge script script/00-Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast
-```
-
-Now change in [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_FUJI_BARRACKS` address value to the one you will se printed onto the screen and after run:
-
-```bash
-forge script script/00-Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
-```
-
-**TODO**: if we have time automate this process with chainlink tool-kit
-Now go to the [Chanlink Functions UI](https://functions.chain.link/) and create subscriptions for the Fuji testnet and for the Sepolia testnet, then change the its value in [Utils.sol](./src/backend/src/Utils.sol)
-
-```solidity
-// Utils.sol
-
-uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = YOUR_ID;
-uint64 constant AVL_FUJI_FUNCS_SUBS_ID = YOUR_ID;
-```
-
-You must add as consumers:
-
-- In sepolia the collection address.
-- `FightExecutor.sol` in both chains (not really in current implementation as we are mocking a DON)
 
 > **Note ⚠️** Current Chainlink Functions only allows for 9s long HTTP-API calls. Our fight generation requires more than 9s thus we have mocked in the backend a node from a DON executing Chainlink Functions. Functions for NFT validation does work and is implemented interacting with the real DON.
 
@@ -192,9 +150,15 @@ locally:
 
 ---
 
+## Run Scripts locally and Deploy contracts 🏗️🏛️
+
+Run scripts' instructions in here: [scripts](./src/backend/script).
+
+---
+
 ## Run Tests 🤖
 
-Run tests' instructions in here [tests](./src/backend/test).
+Run tests' instructions in here: [tests](./src/backend/test).
 
 ---
 
@@ -206,16 +170,39 @@ Run tests' instructions in here [tests](./src/backend/test).
 
 During our project's development, we identified potential enhancements for Chainlink Services, particularly Chainlink Functions and Chainlink CCIP.
 
-Key Features for Consideration:
+#### Key Features for Consideration:
 
-- Library support in Deno files, especially for hashing (notably keccak256) and asymmetric encryption (ECDSA). Additionally, the addition of a library that simplifies the retrieval of logs from previous blockchain blocks would have helped a lot in optimizing and scaling the automated matchmaking and fight system while keeping costs low.
+1. Library support in Deno files, especially for hashing (notably keccak256) and asymmetric encryption (ECDSA). Additionally, the addition of a library that simplifies the retrieval of logs from previous blocks would have helped a lot in optimizing and scaling the automated matchmaking and fight system while keeping costs low.
 
-Practical Application:
+   Practical Application:
 
-- In our project, implementing hashing would enable private, unique NFT battles. Currently, NFT prompts are public, allowing duplication. Hashing prompts in Function scripts would allow on-chain storage of hashes and off-chain verification of prompt ownership, improving privacy and reducing NFT creation costs.
+   - In our project, implementing hashing would enable private, unique NFT prompts. Currently, NFT prompts are public, allowing duplication. Hashing prompts in Function scripts would allow on-chain storage of hashes and off-chain verification of prompt ownership by the DON, improving privacy and reducing NFT creation costs.
 
-Challenges Encountered with CCIP:
+2. Allow for longer HTTP-API calls. AIs that generate images or a bit long outputs like stores take more than the current limit of 9s. Thus we had to mock in Funtions a response simulating an actual AI-API call. Regardless of this the code that would be used if this restriction didn't exist is added in the project.
+
+3. A tool for simulating DONs reponses in local with forked Chainlink contracts would be very helpful for easier debugging and testing.
+   We don't know if this tool already exists, but we think it would be very useful.
+
+#### Challenges and errors encountered:
+
+With **_`CCIP`_**:
 
 1. Difficulty integrating CCIP with `forge`-based projects.
 2. Variable clash (`i_router`) when using Functions and CCIP concurrently.
-3. Non-virtual `supportsInterface()` function in `CCIPReceiver.sol`, creating inheritance conflicts in contrats that inherit different contracts using the EIP-165. (e.g., [eth-PromptFightersNFT.sol](./src/backend/src/nft-contracts/eth-PromptFightersNft.sol)).
+3. Non-virtual `supportsInterface()` function in `CCIPReceiver.sol`, creating inheritance conflicts in contrats that inherit different contracts using the EIP-165. (e.g., [eth-PromptFightersNFT.sol](./src/backend/contracts/nft-contracts/eth-PromptFightersNft.sol)).
+
+With **`Automation`**:
+
+1. Registration is only working on Sepolia. On Fuji the
+   code reverts due to `evm Error` in the deployed `KeeperRegistryLogicB2_1`. On Mumbai it doen't run.
+
+2. Additionally there is an error in your docs for Fuji, registry and registrar are the same address. We tried
+   to find the real registrar address on Snowflake and we think we did but the error still persists. This is the address we used: `0x5Cb7B29e621810Ce9a04Bee137F8427935795d00`.
+
+For this reasons automation code of our project only wokrs
+on Sepolia.
+
+With **`VRF`**:
+
+1. For some reason nodes in Sepolia don't respond to VRF
+   requests. Thus in this project we allowed the DEPLOYER to finish fights too in case VRF doesn't respond.
