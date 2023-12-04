@@ -15,6 +15,11 @@ import {Script, console2} from "../../lib/forge-std/src/Script.sol";
 import "../../contracts/Utils.sol";
 import "../../lib/forge-std/src/console.sol";
 
+/**
+ * @title DeploymentConfig
+ * @author @CarlosAlegreUr
+ * @notice Sets all the chain specific variables for the deployment process.
+ */
 contract DeploymentConfig is Script {
     bool public isValidConfig;
 

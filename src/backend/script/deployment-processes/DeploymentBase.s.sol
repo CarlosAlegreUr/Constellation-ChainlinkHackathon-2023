@@ -9,6 +9,12 @@ import "../../contracts/Utils.sol";
 import {DeploymentConfig} from "./DeploymentConfig.s.sol";
 import "../../lib/forge-std/src/console.sol";
 
+/**
+ * @title DeployFightsContracts
+ * @author @CarlosAlegreUr
+ * @notice Deploys and initializes all contracts needed for the fight system but the ones
+ * managing the NFTs. Doenst intialize Matchmaker that is done in Deployment.s.sol.
+ */
 contract DeployFightsContracts is DeploymentConfig {
     function setUp() public virtual override {
         super.setUp();

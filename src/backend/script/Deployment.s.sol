@@ -76,7 +76,9 @@ contract PromptFightersDeploy is DeployFightsContracts {
             referencedContracts[0] = address(fightExecutor);
             referencedContracts[1] = address(betsVault);
             referencedContracts[2] = address(barracks);
-            // TODO: registering automation in Fuji not working, check why
+            // TODO: registering automation in Fuji not working, revert message says its a direct EVM error
+            // in Chainlinks Register Logic B2_1 contract
+
             // Fund automation registration with LINK
             link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
             fightMatchmaker.initializeReferencesAndAutomation(
@@ -107,7 +109,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             referencedContracts[0] = address(fightExecutor);
             referencedContracts[1] = address(betsVault);
             referencedContracts[2] = address(barracks);
-            // TODO: registering automation in Fuji not working, check why
+            // TODO: registering automation in Mumbai not working, provides no reason
             // Fund automation registration with LINK
             link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
             fightMatchmaker.initializeReferencesAndAutomation(

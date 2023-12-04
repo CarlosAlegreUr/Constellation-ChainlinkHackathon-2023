@@ -10,7 +10,7 @@ import {Script, console2} from "forge-std/Script.sol";
 import "forge-std/console.sol";
 
 /**
- * @dev Executes mintng and NFT process in Ethereum.
+ * @dev Executes mintng and NFT process in Sepolia.
  */
 contract MintNft is Script {
     PromptFightersNFT public collectionContract;
@@ -22,7 +22,7 @@ contract MintNft is Script {
 
     function run() public virtual {
         vm.startBroadcast();
-        i_LINK_TOKEN.approve(DEPLOYED_SEPOLIA_COLLECTION, 3 ether);
+        i_LINK_TOKEN.approve(DEPLOYED_SEPOLIA_COLLECTION, 1 ether);
         collectionContract.safeMint(DEPLOYER, NFT_VALID_PROMPT);
         vm.stopBroadcast();
     }

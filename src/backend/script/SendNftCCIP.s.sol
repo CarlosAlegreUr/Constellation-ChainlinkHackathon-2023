@@ -1,10 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-// Executes sending an NFT from 1 chain to another..
-// Addresse must posses enough LINK and ETH to execute the transactions.
-// 10 LINK and 0.1 ETH should be enough.
-
 import {PromptFightersNFT} from "../contracts/nft-contracts/eth-PromptFightersNft.sol";
 import {FightersBarracks} from "../contracts/nft-contracts/avl-FightersBarracks.sol";
 
@@ -14,7 +10,7 @@ import {Script, console2} from "forge-std/Script.sol";
 import "forge-std/console.sol";
 
 /**
- * @dev Executes mintng and NFT process in Ethereum.
+ * @dev Sends NFTs from Sepolia to Avalanche Fuji
  */
 contract SendNftCcip is Script {
     PromptFightersNFT public collectionContract;

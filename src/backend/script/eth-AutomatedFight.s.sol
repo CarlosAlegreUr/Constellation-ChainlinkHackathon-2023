@@ -14,16 +14,19 @@ import "forge-std/console.sol";
 import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
 
 /**
- * @dev Executes a fight agains yourself in Sepolia. You must have minted 2 NFTS.
- * Nft id 1 and 2 must be yours.
+ * @dev Sets NFt 2 to be automated and requests a fight with NFT 1
+ * This script is meant to be run on the Sepolia testnet
+ * It will fund the matchmaker and executor contracts with LINK
+ * and then request a fight wth NFT 1 expecting to be automatically
+ * accepted by the upkeep in the matchmaker contract with NFT 2.
  */
-contract Fight is Script {
+contract AutomatedFight is Script {
     PromptFightersNFT public collectionContract;
     FightMatchmaker public matchmaker;
     FightExecutor public executor;
     LinkTokenInterface public linkToken = LinkTokenInterface(ETH_SEPOLIA_LINK);
 
-    // TODO: delete when finish tensting
+    // TODO: delete when finish tensting, add them to Utils.sol
     address constant mtch = 0x464526fb0634c10B749DB17d735bB189f7FEFa2a;
     address constant exec = 0x74CB670f9E92bDA0371848c2a8f52b248053C9c3;
 
