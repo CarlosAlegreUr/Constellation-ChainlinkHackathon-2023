@@ -74,7 +74,7 @@ forge script script/Deployment.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key 
 
 > 🚧**Note 2**⚠️ : Press save on Utils.sol every time you change a value.
 
-Now in the [Utils.sol](../contracts/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION`, `SEPOLIA_FIGHT_MATCHMAKER`, `DEPLOYED_SEPOLIA_COLLECTION` and `SEPOLIA_FIGHT_EXECUTOR` addresses values to the ones you will see logged at the beggining of the command execution in the terminal. Check the contracts on [Etherscan](https://sepolia.etherscan.io/).
+Now in the [Utils.sol](../contracts/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION`, `SEPOLIA_FIGHT_MATCHMAKER`, and `SEPOLIA_FIGHT_EXECUTOR` addresses values to the ones you will see logged at the beggining of the command execution in the terminal. Check the contracts on [Etherscan](https://sepolia.etherscan.io/).
 
 Now run:
 
