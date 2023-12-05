@@ -36,8 +36,12 @@ contract PromptFightersDeploy is DeployFightsContracts {
             PromptFightersNFT promptFighters = new PromptFightersNFT(
                 ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
             );
+            console.log("+++++++++++++++++++++++++++++++++++++++");
+            console.log("+++++++++++++++++++++++++++++++++++++++");
             console.log("PromptFighters deployed at:");
             console.log(address(promptFighters));
+            console.log("+++++++++++++++++++++++++++++++++++++++");
+            console.log("+++++++++++++++++++++++++++++++++++++++");
 
             // Intialize FightMatchmaker as it required frist the collection address.
             // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
@@ -61,9 +65,12 @@ contract PromptFightersDeploy is DeployFightsContracts {
             // Deploy barracks
             FightersBarracks barracks =
                 new FightersBarracks(AVL_FUJI_CCIP_ROUTER, DEPLOYED_SEPOLIA_COLLECTION, fightMatchmaker);
-            console.log("COPY THE FOLLOWING ADDRESS IN THE Utils.sol:");
+            console.log("+++++++++++++++++++++++++++++++++++++++");
+            console.log("+++++++++++++++++++++++++++++++++++++++");
             console.log("Avl barracks deployed at:");
             console.log(address(barracks));
+            console.log("+++++++++++++++++++++++++++++++++++++++");
+            console.log("+++++++++++++++++++++++++++++++++++++++");
 
             // Initialize barracks
             console.log("Initializing CCIP on barrracks...");

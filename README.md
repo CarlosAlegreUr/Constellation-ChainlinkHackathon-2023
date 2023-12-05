@@ -10,146 +10,37 @@ Well say no more, we present... **_`PROMPT FIGHTERS`_** ❗
 
 ---
 
-## `Deep dive details` 💻
+## Quick view on technlogies code for judges 🧑‍⚖️👩‍⚖️
 
-<details> <summary> Mechanics 📜 </summary>
+#### (we recommend to read this entire README though :D)
 
-#### Read the details of all mechanics and its reason why at [whitepaper](./docs/whitepaper.md).
+Technologies implemented here, links go directly to code line on files:
 
-#### **_`Mechanics Implemented`_**
+- **`Chainlink Functions`**: [eth-PromptFighters.sol](./src/backend/contracts/nft-contracts/eth-PromptFightersNft.sol#L181), [FightExecutor.sol](./src/backend/contracts/fight-contracts/FightExecutor.sol#L114)
+- **`Chainlink CCIP`**: [CcipNftBridge.sol](./src/backend/contracts/CcipNftBridge.sol#L97)
+- **`Chainlink Automation`**: [FightMatchmaker.sol](./src/backend/contracts/fight-contracts/FightMatchmaker.sol#L321)
+- **`Chainlink VRF`**: [FightExecutor.sol](./src/backend/contracts/fight-contracts/FightExecutor.sol#L161)
+- **`The Graph`**: TO ADD
+- **`AI related`**: [mintFighter.js](./src/backend/script/chainlinkFunctionsScripts/mintFigther.js#L56), [fightings.js](./src/backend/script/chainlinkFunctionsScripts/figthings.js#L43), [validateNftPrompt](./src/prompts/nft-generation.txt), [fightGenerationPrompt](./src/prompts/fight-generation.txt)
 
-- **Personalized NFTs** : describe your NFT as you want over a template.
-- **NFT creation AI filtered** : so there are no too powerful or copyright infringement prompts.
-- **Fight and bet against other NFTs**.
-- **Automated Fighting** : send some funds and enjoy the fight automation.
+<details> <summary> What each technology brings to the table 🧑‍💻 🆕 </summary>
 
-</details>
+#### Read technical details and see architecture diagrams at [docs](./docs).
 
-<details> <summary> Technical details 🧑‍💻 </summary>
+#### **_`Tech's Utility`_**
 
-#### Read technical details at [docs](./docs).
+- **Chainlink VRF**: deciding fair winners
+- **Chainlink CCIP**: automating process in cheaper chains. (**_Like Avalanche_**)
+- **Chainlink Functions**: Calling APIs to generate NFTs and make them fight in amazing scenarios.
+- **Chainlink Automation** (up-keeps): Automating the fight process for those who have no time to play but some time in the night to read the amazing fight stories before sleep.
+- **OpenAI - APIs**: To generate interesting fight stories and NFT images.
+- **The Graph Indexer**: for cheaper, faster matchmaking and events tracking in website.
 
 #### Check the full-stack source code at [src](./src)
 
-#### **_`Tech Used`_**
-
-- **Chainlink VRF**: deciding fair winners
-- **Chainlink CCIP**: automating process in cheaper chains. (**_Avalanche_**)
-- **Chainlink Functions**: Calling APIs to generate NFTs and make them fight in amazing scenarios.
-- **Chainlink Automation** (up-keeps): Automating the fight process for those who have no time to play but some time in the night to read the amazing fight stories before sleep.
-- **ENS**: for easily challenging friends (on the front-end)
-- **OpenAI - APIs**
-- **The Graph Indexer**: for matchmaking, events tracking in website...
-
 </details>
 
 ---
-
----
-
-## `LOCAL SET-UP` 🌐-⚙️
-
-<details> <summary> Local set-up ⚙️ </summary>
-
-<br/>
-
-1. **Clone the Repository**
-
-```bash
-git clone https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023.git
-```
-
-2. **Initialize foundry, forge and dependencies**
-
-```bash
-cd ./ConstellationChainlinkHackathon2023/src/backend
-foundryup
-forge init --force --no-commit
-forge install --no-commit OpenZeppelin/openzeppelin-contracts@932fddf69a699a9a80fd2396fd1a2ab91cdda123
-
-forge install --no-commit smartcontractkit/chainlink@cdb0c6a6089d3a69dd09a9b0a9fbdd070eaeb442
-
-# Chainlink ccip contracts cant be installed with forge
-
-# Use this to isntall CCIP contracts in "./src/backend" (you should already be here)
-
-# Just leave everythin empty and press enter
-npm init
-npm install @chainlink/contracts-ccip --save
-
-# Change the name to node_modules_ccip
-mv ./node_modules ./node_modules_ccip
-
-# Move it inside the /lib diretory
-mv ./node_modules_ccip ./lib
-# ⚠️ Wait until all has moved correctly
-# ⚠️ node_modules_ccip should be now ONLY inside ./lib
-# Notice ℹ️ you can remove package.jon and package-lock.json
-# if you want.
-```
-
-**_The /lib directory should now look like this:_**
-
-<img src="./repo-images/lib-example.png">
-
-<br/>
-
-3. **Prepare Wallet to use the contracts**
-
-To use the contracts you will need to have an account with funds in the following chains:
-
-2. Set your addrees value in the [Utils.sol](./src/backend/src/Utils.sol) file. It's very visible just enter the file.
-3. Fund your metamask wallet with funds:
-
-   3.1. Native coin in in Fuji-Avalanche and Sepolia-Ethereum.
-   3.2. Get LINK token on both chains.
-
-   - An [ETH-Faucet](https://sepoliafaucet.com/).
-   - [LINK-Official-Faucet](https://faucets.chain.link/) that also provides AVL if connected to AVL chains like Fuji.
-
-```solidity
-// Utils.sol
-
-// For now change just this one below, its marked in Utils wth 🟢.
-address constant DEPLOYER = YOUR_METAMASK_ADDRESS; //🟢 <--
-```
-
-> **Note ⚠️** Current Chainlink Functions only allows for 9s long HTTP-API calls. Our fight generation requires more than 9s thus we have mocked in the backend a node from a DON executing Chainlink Functions. Functions for NFT validation does work and is implemented interacting with the real DON.
-
-Run the DON mock:
-
-```bash
-# Node script for mocking a listening DON.
-```
-
-4. **Running the Frontend**
-
-All the backend is ready to so now execute the front-end
-locally:
-
-```bash
-# cd to the front end directory
-```
-
-```bash
-# NextJs commands etc etc...
-```
-
----
-
-## Run Scripts locally and Deploy contracts 🏗️🏛️
-
-Run scripts' instructions in here: [scripts](./src/backend/script).
-
----
-
-## Run Tests 🤖
-
-Run tests' instructions in here: [tests](./src/backend/test).
-
----
-
-</details>
 
 ---
 
@@ -196,8 +87,6 @@ With **`VRF`**:
 1. For some reason nodes in Sepolia don't respond to VRF
    requests. Thus in this project we allowed the DEPLOYER to finish fights too in case VRF doesn't respond.
 
-</details>
-
 > 📘**Note**ℹ️: The whole team met in the **SmartCon 2023**, thanks for the great event! 😄
 
 ---
@@ -212,3 +101,114 @@ With **`VRF`**:
 - **`Antonio`** (COMPLETE)
 
 - **`Ethan`** (COMPLETE)
+
+</details>
+
+---
+
+---
+
+## `Deep dive details` 💻
+
+<details> <summary> Mechanics 📜 </summary>
+
+#### Read the details of all mechanics, future scenarios, and its reason why at [whitepaper](./docs/whitepaper.md).
+
+#### **_`Mechanics Implemented`_**
+
+- **Personalized NFTs** : describe your NFT as you want over a template.
+- **NFT creation AI filtered** : so there are no too powerful or copyright infringement prompts.
+- **Fight and bet against other NFTs**.
+- **Automated Fighting** : send some funds and enjoy the fight automation.
+
+</details>
+
+---
+
+---
+
+## `USING THE FINAL DEPLOYED CONTRACTS` 🌐-⚙️
+
+<details> <summary> Local set-up ⚙️ </summary>
+
+<br/>
+
+1. **Clone the Repository**
+
+```bash
+git clone https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023.git
+```
+
+2. **Initialize foundry, forge and dependencies**
+
+```bash
+cd ./ConstellationChainlinkHackathon2023/src/backend
+foundryup
+forge init --force --no-commit
+forge install --no-commit OpenZeppelin/openzeppelin-contracts@932fddf69a699a9a80fd2396fd1a2ab91cdda123
+
+forge install --no-commit smartcontractkit/chainlink@cdb0c6a6089d3a69dd09a9b0a9fbdd070eaeb442
+
+# Chainlink ccip contracts cant be installed with forge
+
+# Use this to isntall CCIP contracts in "./src/backend" (you should already be here)
+
+# Just leave everythin empty and press enter
+npm init
+npm install @chainlink/contracts-ccip --save
+
+# Change the name to node_modules_ccip
+mv ./node_modules ./node_modules_ccip
+
+# Move it inside the /lib diretory
+mv ./node_modules_ccip ./lib
+# ⚠️ Wait until all has moved correctly
+# ⚠️ node_modules_ccip should be now ONLY inside ./lib
+# Notice ℹ️ you can remove package.jon and package-lock.json
+# if you want.
+```
+
+**_The /lib directory should now look like this:_**
+
+<img src="./repo-images/lib-example.png">
+
+<br/>
+
+> **Note ⚠️** Current Chainlink Functions only allows for 9s long HTTP-API calls. Our fight generation requires more than 9s thus we have mocked in the backend a node from a DON executing Chainlink Functions. Functions for NFT validation does work and is implemented interacting with the real DON.
+
+Run the DON mock:
+
+```bash
+# Node script for mocking a listening DON.
+```
+
+4. **Running the Frontend**
+
+All the backend is ready to so now execute the front-end
+locally:
+
+```bash
+# cd to the front end directory
+```
+
+```bash
+# NextJs commands etc etc...
+```
+
+---
+
+## Run Scripts locally to see how all interact iteratively 🏗️🏛️
+
+Run scripts' instructions in here: [scripts](./src/backend/script).
+
+---
+
+## Run Tests 🤖
+
+Run tests' instructions in here: [tests](./src/backend/test).
+
+---
+
+</details>
+
+---

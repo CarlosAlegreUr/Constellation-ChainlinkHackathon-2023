@@ -11,7 +11,7 @@ pragma solidity ^0.8.20;
 //******************** */
 
 //******************** */
-// 🟢🟢🟢🟢 WHEN LOCAL SET-UP CHANGE ALONG THIS VALUES!!! 🟢🟢🟢🟢🟢
+// 🟢🟢🟢🟢 WHEN LOCAL SET-UP CHANGE ALONG THE VALUES WITH GREEN DOTS 🟢🟢🟢🟢🟢
 //******************** */
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
@@ -19,31 +19,46 @@ address constant PLAYER_FOR_FIGHTS = 0x108d618c5baFFb6AE2b84094da4C8314BAD16D71;
 
 address constant DEPLOYED_SEPOLIA_COLLECTION = 0xfbE503f5D15387abc1f85718EF3Cd4A380f8A57A;
 address constant DEPLOYED_FUJI_BARRACKS = 0xBEd50d7556A402294A4Dc643c8eC5aade43AE61D;
-address constant DEPLOYED_MUMBAI_BARRACKS = address(0);
+
+address constant SEPOLIA_FIGHT_MATCHMAKER = 0x032d411865FBa68d5211Ce94ceaa73064AB02B7f; // 🟢
+address constant SEPOLIA_FIGHT_EXECUTOR = 0x16A059F4655AF3A413e519C2C5176cE0446B9302; // 🟢
+
+// TODO: This chain contracts are not tested yet
+address constant FUJI_FIGHT_MATCHMAKER = 0xB3687ca8f511C4015734E5F5bc511C7d4DC48D79; // 🟢
+address constant FUJI_FIGHT_EXECUTOR = 0x139DCf671A79F611E4E5f1b6C872364AE151a96B; // 🟢
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739; // 🟢
 uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378; // 🟢
-uint64 constant PLY_MUMBAI_SUBS_ID = 1027;
 
-///////////////////////////////////////////////
-
-string constant NFT_VALID_PROMPT = "anuelAA-An AA batery-DVD-Flow to spin up a party-Existential poetry";
+// For a promt to be valid in the POC it must be short and start with lower-case "a"
+// There must be 5 fields separated by "-"
+string constant NFT_VALID_PROMPT = "anuelAA-An AA batery-DVD-Flow to spin up a party-Existential poetry"; // 🟢
 
 // "anastasio-A cool falcon-Flies-He is distinguished-Pigeons";
 
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
+
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
 
 //******************** */
 // OFFICIAL CONTRACTS
 //******************** */
 
 // TODO: This addresses mints and fights well
-address constant SEPOLIA_FIGHT_MATCHMAKER_OFFICIAL = 0x032d411865FBa68d5211Ce94ceaa73064AB02B7f; // 🟢
-address constant SEPOLIA_FIGHT_EXECUTOR_OFFICIAL = 0x16A059F4655AF3A413e519C2C5176cE0446B9302; // 🟢
+address constant SEPOLIA_FIGHT_MATCHMAKER_OFFICIAL = 0x032d411865FBa68d5211Ce94ceaa73064AB02B7f;
+address constant SEPOLIA_FIGHT_EXECUTOR_OFFICIAL = 0x16A059F4655AF3A413e519C2C5176cE0446B9302;
 
 // TODO: This address dont work yet, it is just for testing
 address constant FUJI_FIGHT_MATCHMAKER_OFFICIAL = 0xB3687ca8f511C4015734E5F5bc511C7d4DC48D79;
 address constant FUJI_FIGHT_EXECUTOR_OFFICIAL = 0x139DCf671A79F611E4E5f1b6C872364AE151a96B;
+
+address constant DEPLOYED_MUMBAI_BARRACKS = address(0);
+uint64 constant PLY_MUMBAI_SUBS_ID = 1027;
 
 //******************** */
 // CHAIN IDS

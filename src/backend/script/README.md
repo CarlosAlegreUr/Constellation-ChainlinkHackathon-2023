@@ -1,87 +1,99 @@
 # 🏗️ USE CONTRACTS' SCRIPTS TO CHECK CHAINLINK FUNCTIONALITIES 🏗️
 
-### This is a `walkthrough` on how to execute the contracts' code with the scripts so as to `check in action all Chainlink Services implemented`.
+### This is a `walkthrough` on how to execute the contracts' code with the scripts so as to `check in action all Chainlink Services implemented`. Follow the steps in order.
 
 ---
 
 ---
 
-## Setp 1: Prepare 2 wallets and `.env` 💰💰
+## Setp 1: Prepare 2 wallets, `.env` and a functions subscription 💰💰
 
-<details><summary> Setp 1: Prepare 2 wallets 💰💰 </summary>
+<details><summary> Setp 1: Prepare 2 wallets, .env and a functions subscription 💰💰 </summary>
 
-1. Create and fill up an [.env](./src/backend/.env.example) file with your secret values. Check [.env.example](../.env.example).
+### Settning up `.env` 🔏
 
-   To use the contracts you will need to have 2 accounts with funds in the following chains:
+1. Create and fill up an [.env](../.env.example) file with your secret values. Check [.env.example](../.env.example).
+
+   - Get yout EtherScan API key from [here](https://etherscan.io/apis).
+   - Get a Sepolia RPC_URL node provider from [here](https://www.alchemy.com/).
+   - Get an OpenAI API key. (Not needed in this PoC yet)
+
+### Settning up wallets 💰
 
 2. Set your addreeses value in the [Utils.sol](../contracts/Utils.sol) file. It's very visible just enter the file.
-3. Fund your metamask wallet with funds:
 
-   3.1. Native coin in in Fuji-Avalanche and Sepolia-Ethereum.
+```solidity
+// Utils.sol
+
+// For now change just the parameters below
+address constant DEPLOYER = YOUR_METAMASK_ADDRESS; //🟢 <--
+address constant PLAYER_FOR_FIGHTS = YOUR_OTHER_ADDRESS; // 🟢
+```
+
+3. Fund your metamask wallet with funds. To use the contracts you will need to have 2 accounts with funds in the following chains: Sepolia and Fuji:
+
+   3.1. Native coin in Fuji-Avalanche and Sepolia-Ethereum.
 
    3.2. Get LINK token too.
 
    - An [ETH-Faucet](https://sepoliafaucet.com/).
    - [LINK-Official-Faucet](https://faucets.chain.link/) that also provides AVL if connected to AVL chains like Fuji.
 
-```solidity
-// Utils.sol
+### Settning up Functions Subscriptions 🔢
 
-// For now change just this one below, its marked in Utils wth 🟢.
-address constant DEPLOYER = YOUR_METAMASK_ADDRESS; //🟢 <--
-address constant PLAYER_FOR_FIGHTS = YOUR_OTHER_ADDRESS; // 🟢
-```
+1. In this example we won't fight in Fuji so you will only need a subscription
+   to Sepolia --> [Chainlink Functions Sepolia Subs UI](https://functions.chain.link/)
+
+2. Fund the subscription with at least 0.7 LINK. (Recomended 1.5 LINK)
+
+3. Change the `ETH_SEPOLIA_FUNCS_SUBS_ID` 🟢 in the [Utils.sol](../contracts/Utils.sol) to
+   the one you just got.
 
 ---
 
 </details>
+<br/>
 
 ## Setp 2: Deploy the contracts 📜📜📜📜
 
 <details><summary> Setp 2: Deploy the contracts 📜📜📜📜  </summary>
 
-Once all values you know (but contract addresses) are set deploy the contracts with:
+Now its time to deploy the contracts. We will deploy the contracts in the following order:
 
-> 📘 **Note** ℹ️: Write, `--etherscan-api-key $S_ETHERSCAN_API_KEY_VERIFY --verify`, if you wanna verify the contracts on SEPOLIA. Not needed for proper functionality though.
+> 📘 **Note** ℹ️: Delete `--etherscan-api-key $S_ETHERSCAN_API_KEY_VERIFY --verify` if you don't wanna verify the contracts.
 
 > 📘 **Note 2** ℹ️: We don't use `--ffi` functionality just in case there are some shell commands that are not available in your machine. Thus you will have to manually copy 3 values in a Utils file.
 
 ```bash
+cd src/backend/
+
 source .env
 
-forge script script/Deployment.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
+forge script script/Deployment.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --etherscan-api-key $S_ETHERSCAN_API_KEY_VERIFY --verify
 ```
 
-Now in the [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION` address value to the one you will see logged to the terminal and then run:
+> 🚧**Note 2**⚠️ : Press save on Utils.sol every time you change a value.
+
+Now in the [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION`, `SEPOLIA_FIGHT_MATCHMAKER` and `SEPOLIA_FIGHT_EXECUTOR` addresses values to the ones you will see logged at the beggining of the command execution in the terminal. Then run:
 
 ```bash
-forge script script/Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast
+forge script script/Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast --etherscan-api-key $S_ETHERSCAN_API_KEY_VERIFY --verify
 ```
 
-Now change in [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_FUJI_BARRACKS` address value to the one you will se printed onto the screen and then run:
+Now change in [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_FUJI_BARRACKS` address value to the one you will se printed onto the screen again and then run:
 
 ```bash
 forge script script/Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
 ```
 
 **TODO**: if we have time automate this process with chainlink tool-kit
-Now go to the [Chanlink Functions UI](https://functions.chain.link/) and create subscriptions for the Fuji testnet and for the Sepolia testnet, then change the its value in [Utils.sol](./src/backend/src/Utils.sol)
 
-```solidity
-// Utils.sol
-
-uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = YOUR_ID;
-uint64 constant AVL_FUJI_FUNCS_SUBS_ID = YOUR_ID;
-```
-
-You must add as consumers:
-
-- In sepolia the collection address and the FightExecutor address.
-- `FightExecutor.sol` in both chains (not really in current implementation as we are mocking a DON)
+Now add a consumers from the UI in your Functions Subscription the address `DEPLOYED_SEPOLIA_COLLECTION` and `SEPOLIA_FIGHT_EXECUTOR`.
 
 ---
 
 </details>
+<br/>
 
 ## Setp 3: Mint Nfts 👨‍👨‍👧
 
@@ -104,6 +116,7 @@ forge script script/eth-MintNft.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key
 ---
 
 </details>
+<br/>
 
 ## Setp 4: Send one to `Fuji` through `CCIP` 🏣📮
 
@@ -117,7 +130,7 @@ We will send NFT with ID == 3 from `Sepolia` to `Fuji`. This will take around 15
 forge script script/SendNftCCIP.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
 ```
 
-If you want to send it back just run after 15min have passed. It will a bit less time to come back as Fuji finalization time is shorter:
+If you want to send it back just run after 15-20min have passed the following command. It will take a bit less time to come back as Fuji finalization time is shorter:
 
 ```bash
 forge script script/SendNftCCIP.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast
@@ -128,6 +141,7 @@ forge script script/SendNftCCIP.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key
 ---
 
 </details>
+<br/>
 
 ## Step 5: Make them fight! 👊🤯
 
@@ -138,20 +152,49 @@ forge script script/SendNftCCIP.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key
 First we will request a fight with `DPELOYER` using NFT1,
 then we will accept it with `PLAYER_FOR_FIGHTS` using NFT2.
 
-> 📘 **Note** ℹ️: `DEPLOYER` owns NFT2 but the scripts transfers it to `PLAYER_FOR_FIGHTS`.
+> 📘 **Note** ℹ️: `DEPLOYER` owns NFT2 but the script we are gonna run transfers it to `PLAYER_FOR_FIGHTS`.
 
 ```bash
 # Request a fight
 forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
-
-# Accept the fight
-forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --etherscan-api-key $S_ETHERSCAN_API_KEY_VERIFY --verify --sig "accept()"
 ```
 
-Now you should see in your `Chainlink Functions` subscription the request going on. When functions fulfill its request then you will see in your `VRF` subscripton a request pending.
+```bash
+# Accept the fight
+forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "accept()"
+```
 
->  **Note** ⚠️: If you want to see the fight in action you can change the `FIGHT_DURATION` value in [Utils.sol](../contract/Utils.sol) to 10 seconds. Then you will see the fight in action.
+Now you should see in your `Chainlink Functions` subscription the request going on. When functions fulfill its request then you will see in your `VRF` subscripton a request pending. You should be able to see the `VRF` subscription at [https://vrf.chain.link/sepolia/YOUR_VRF_SUBS_ID](https://vrf.chain.link/sepolia/) You can consult the VRF ID in Etherscan from the `FightExecutor` contract. Or run this command in the terminal:
+
+```bash
+forge script script/CheckVrfSubsIs.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER
+```
+
+> 🚧 **Note** ⚠️: When we were testing all it seems like there are no nodes
+> fulfilling VRF request on Sepolia as it remains pending for hours and never answered. In that case run the following command to decide a winner:
+
+```bash
+forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "settle()"
+```
 
 ---
 
 </details>
+<br/>
+
+## Step 6: Accept a fight with automation 🤖
+
+#### `Chainlink Automation`
+
+<details><summary> Use Automation to execute fights 🤖 </summary>
+
+TODO:
+
+```bash
+
+```
+
+---
+
+</details>
+<br/>
