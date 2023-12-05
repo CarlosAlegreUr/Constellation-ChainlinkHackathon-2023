@@ -74,13 +74,15 @@ forge script script/Deployment.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key 
 
 > 🚧**Note 2**⚠️ : Press save on Utils.sol every time you change a value.
 
-Now in the [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION`, `SEPOLIA_FIGHT_MATCHMAKER` and `SEPOLIA_FIGHT_EXECUTOR` addresses values to the ones you will see logged at the beggining of the command execution in the terminal. Then run:
+Now in the [Utils.sol](../contracts/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION`, `SEPOLIA_FIGHT_MATCHMAKER` and `SEPOLIA_FIGHT_EXECUTOR` addresses values to the ones you will see logged at the beggining of the command execution in the terminal. Check the contracts on [Etherscan](https://sepolia.etherscan.io/).
+
+Now run:
 
 ```bash
 forge script script/Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast --etherscan-api-key $S_ETHERSCAN_API_KEY_VERIFY --verify
 ```
 
-Now change in [Utils.sol](./src/backend/src/Utils.sol) change the `DEPLOYED_FUJI_BARRACKS` address value to the one you will se printed onto the screen again and then run:
+Now change in [Utils.sol](../contracts/Utils.sol) change the `DEPLOYED_FUJI_BARRACKS` address value to the one you will se printed onto the screen again and then run:
 
 ```bash
 forge script script/Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
