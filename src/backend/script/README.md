@@ -18,9 +18,9 @@
    - Get a Sepolia RPC_URL node provider from [here](https://www.alchemy.com/).
    - Get an OpenAI API key. (Not needed in this PoC yet)
 
-### Settning up wallets 💰
+### Setting up wallets 💰
 
-2. Set your addreeses value in the [Utils.sol](../contracts/Utils.sol) file. It's very visible just enter the file.
+2. Set your addresses value in the [Utils.sol](../contracts/Utils.sol) file. It's very visible just enter the file.
 
 ```solidity
 // Utils.sol
