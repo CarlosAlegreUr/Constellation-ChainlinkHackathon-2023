@@ -10,7 +10,7 @@
 
 4️⃣ Chainlink Automation will keep checking if the automated NFTs are currently fighting and if not it will check to see if there is a fight available for them.
 
-[Back to main workflow page](./)
+[Next: Sending NFTs cross-chains](./sendNftCrossCahins.md)
 
 ---
 
