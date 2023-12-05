@@ -151,7 +151,7 @@ forge install --no-commit smartcontractkit/chainlink@cdb0c6a6089d3a69dd09a9b0a9f
 
 # Chainlink ccip contracts cant be installed with forge
 
-# Use this to isntall CCIP contracts in "./src/backend" (you should already be here)
+# Use this to install CCIP contracts in "./src/backend" (you should already be here)
 
 # Just leave everythin empty and press enter
 npm init
