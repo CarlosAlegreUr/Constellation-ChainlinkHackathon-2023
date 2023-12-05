@@ -9,7 +9,7 @@ import { getPublicClient } from "@wagmi/core";
 import { useBlockNumber } from "wagmi";
 import { useEffect } from "react";
 
-export default function YourFighters() {
+export default function BattlesHistory() {
   const [fighters, setFighters] = useState([]);
   const account = getAccount();
   const publicClient = getPublicClient();
@@ -43,10 +43,24 @@ export default function YourFighters() {
     });
     const name = prompt.split("-")[0];
     return (
-      <div className="shadow appearance-none border rounded w-full py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        <h1 className="block text-gray-700 text-xs font-bold m-1">Id: {Number(nftId)}</h1>
-        <h1 className="block text-gray-700 text-xs font-bold m-1">Name: {name}</h1>
-        <h1 className="block text-gray-700 text-xs font-bold m-1 ">Prompt: {prompt}</h1>
+      <div className=" flex flex-row gap-3 justify-center items-center">
+        <div className="shadow appearance-none border rounded w-80 py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <h1 className="block text-gray-700 text-xs font-bold m-1">
+            Name: {name}
+          </h1>
+          <h1 className="block text-gray-700 text-xs font-bold m-1">
+            Id: {Number(nftId)}
+          </h1>
+        </div>
+        <h1 className="text-gray-700 font-bold "> VS </h1>
+        <div className="shadow appearance-none border rounded w-80 py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <h1 className="block text-gray-700 text-xs font-bold m-1">
+            Name: {name}
+          </h1>
+          <h1 className="block text-gray-700 text-xs font-bold m-1">
+            Id: {Number(nftId)}
+          </h1>
+        </div>
       </div>
     );
   }
@@ -59,8 +73,8 @@ export default function YourFighters() {
   }, [contract]);
 
   return (
-    <div className="h-[650px] w-full">
-      <h1>YourFighters</h1>
+    <div className="h-[650px] w-1/2">
+      <h1>Battle history</h1>
       <div className=" w-full h-full  overflow-y-scroll bg-white shadow-md rounded px-8 pt-6 py-6">
         {fighters.map((fighter) => fighter)}
       </div>
