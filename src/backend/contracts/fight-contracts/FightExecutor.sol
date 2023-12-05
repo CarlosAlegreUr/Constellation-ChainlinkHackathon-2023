@@ -91,6 +91,18 @@ contract FightExecutor is
         emit ReferencesInitialized(_references, address(this), block.timestamp);
     }
 
+    /**
+     * @dev Checks if msg.sender is `Backend` DON.
+     * If not then reverts. This is needed to mock Functions. We are mocking it
+     * because to genereate stories we need HTTP-API calls longer than 9s to the AI.
+     * The function fullfilRequestMock() is exactly the same as fullfilRequest() from
+     * Chainlink Functions, its just answered by a BACKEND address.
+     */
+    modifier onlyBackend() {
+        require(msg.sender == BACKEND_DON_MOCK, "Only MOCK DON can call this.");
+        _;
+    }
+
     //******************** */
     // MODIFIERS
     //******************** */
@@ -165,6 +177,26 @@ contract FightExecutor is
 
         // From this event front-end will parse the story generated.
         emit FightExecutor__FightStoryFuncsResponse(requestId, response, block.timestamp);
+    }
+
+    event FightExecutor__FightStoryFuncsResponseMock(bytes32 requestId, bytes response, uint256 timestamp);
+
+    function fulfillRequestMock(bytes32 requestId, bytes memory response, bytes memory err) external onlyBackend {
+        require(s_reqIsValid[requestId], "Unexpected funcs request ID.");
+        delete s_reqIsValid[requestId];
+
+        // @dev TODO: ADD A WAY OF MARKING FALIED RESPONSES
+        // Event emitted on Failure
+        emit FightExecutor__FightStoryFuncsError(requestId, err, block.timestamp);
+
+        // Success, call VRF to generate winner
+        uint256 newReqId = _requestRandomWinner();
+        _userConsumesFunds(s_requestsIdToUser[requestId]);
+        delete s_requestsIdToUser[requestId];
+        _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
+
+        // From this event front-end will parse the story generated.
+        emit FightExecutor__FightStoryFuncsResponseMock(requestId, response, block.timestamp);
     }
 
     /**

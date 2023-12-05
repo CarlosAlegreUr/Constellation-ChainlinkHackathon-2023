@@ -12,6 +12,7 @@ import {Script, console2} from "forge-std/Script.sol";
 import "forge-std/console.sol";
 
 import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
+import {IAutomationRegistrar} from "../contracts/interfaces/IAutomation.sol";
 
 /**
  * @dev Sets NFt 2 to be automated and requests a fight with NFT 1
@@ -27,12 +28,11 @@ contract AutomatedFight is Script {
     LinkTokenInterface public linkToken = LinkTokenInterface(ETH_SEPOLIA_LINK);
 
     // TODO: delete when finish tensting, add them to Utils.sol
-    address constant mtch = 0x464526fb0634c10B749DB17d735bB189f7FEFa2a;
-    address constant exec = 0x74CB670f9E92bDA0371848c2a8f52b248053C9c3;
+    address constant mtch = SEPOLIA_FIGHT_MATCHMAKER;
+    address constant exec = SEPOLIA_FIGHT_EXECUTOR;
 
     function setUp() public virtual {
         collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
-        // TODO: get matchmaker address add
         matchmaker = FightMatchmaker(mtch);
         executor = FightExecutor(exec);
     }
@@ -50,22 +50,59 @@ contract AutomatedFight is Script {
             // Fund Chainlink Subscriptions in executor
             linkToken.approve(address(executor), 1 ether);
             executor.fundMySubscription(1 ether);
+
+            // Set NFT 2 to be automated
             matchmaker.setNftAutomated(2, 0.001 ether, 0.001 ether, automationFunds);
 
-            IFightMatchmaker.FightRequest memory fr = IFightMatchmaker.FightRequest({
-                challengerNftId: 1,
-                minBet: 0.001 ether,
-                acceptanceDeadline: block.timestamp + 1 days,
-                challengee: DEPLOYER,
-                challengeeNftId: 2
-            });
-            console.log("Trying to request fight...");
-            matchmaker.requestFight{value: 0.005 ether}(fr);
-
-            console.log("Fight should be accepted by upkeep in later block...");
+            console.log("NFT 2 is now automated...");
+            console.log("Fight should be accepted by upkeep in later block after detecting a request...");
             console.log("Check state on block explorer...");
         }
 
+        vm.stopBroadcast();
+    }
+
+    function request() public {
+        vm.startBroadcast();
+        IFightMatchmaker.FightRequest memory fr = IFightMatchmaker.FightRequest({
+            challengerNftId: 1,
+            minBet: 0.001 ether,
+            acceptanceDeadline: block.timestamp + 1 days,
+            challengee: PLAYER_FOR_FIGHTS,
+            challengeeNftId: 2
+        });
+
+        console.log("Trying to request fight...");
+        matchmaker.requestFight{value: 0.005 ether}(fr);
+        vm.stopBroadcast();
+    }
+
+    function regiterAutomation() public {
+        vm.startBroadcast();
+
+        // Automation registration complete params that require address(this)
+        IAutomationRegistrar _registrar = IAutomationRegistrar(ETH_SEPOLIA_REGISTRAR);
+        IAutomationRegistrar.RegistrationParams memory _params;
+        _params.name = "Sepolia Automation PromptFighters";
+        _params.encryptedEmail = new bytes(0);
+        _params.gasLimit = GAS_LIMIT_SEPOLIA_AUTOMATION;
+        _params.triggerType = 1;
+        _params.checkData = new bytes(0);
+        _params.offchainConfig = new bytes(0);
+        _params.amount = LINK_AMOUNT_FOR_REGISTRATION;
+        _params.upkeepContract = SEPOLIA_FIGHT_MATCHMAKER;
+        _params.adminAddress = msg.sender;
+        _params.triggerConfig = abi.encode(
+            SEPOLIA_FIGHT_MATCHMAKER, // Listen to this contract
+            2, // Binary 010, considering only topic2 (fightId)
+            keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
+            0x0, // If you don't want to filter on a specific nftId
+            0x0, // If you don't want to filter on a specific fightId
+            0x0 // If you don't want to filter on a specific bet
+        );
+        LinkTokenInterface(ETH_SEPOLIA_LINK).approve(address(_registrar), _params.amount);
+        uint256 upkeepID = _registrar.registerUpkeep(_params);
+        console.log(upkeepID);
         vm.stopBroadcast();
     }
 

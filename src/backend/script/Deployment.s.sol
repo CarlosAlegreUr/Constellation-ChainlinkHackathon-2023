@@ -5,6 +5,9 @@ import {PromptFightersNFT} from "../contracts/nft-contracts/eth-PromptFightersNf
 import {FightersBarracks} from "../contracts/nft-contracts/avl-FightersBarracks.sol";
 import {DeployFightsContracts} from "./deployment-processes/DeploymentBase.s.sol";
 
+import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
+import {FightMatchmaker} from "../contracts/fight-contracts/FightMatchmaker.sol";
+
 import "../contracts/Utils.sol";
 import "forge-std/console.sol";
 
@@ -49,7 +52,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             referencedContracts[0] = address(fightExecutor);
             referencedContracts[1] = address(betsVault);
             referencedContracts[2] = address(address(promptFighters));
-            // Fund automation registration with LINK
+            // // Fund automation registration with LINK
             link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
             fightMatchmaker.initializeReferencesAndAutomation(
                 referencedContracts, automationRegistry, automationRegistrar, automationRegistration
@@ -93,6 +96,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             );
         }
 
+        // NOTE: not tested
         if (block.chainid == PLY_MUMBAI_CHAIN_ID) {
             console.log("We are in MUMBAI");
             // Deploys all contracts that are shared accross chans.
@@ -111,17 +115,17 @@ contract PromptFightersDeploy is DeployFightsContracts {
             referencedContracts[0] = DEPLOYED_SEPOLIA_COLLECTION;
             barracks.initializeReferences(referencedContracts);
 
-            // Intialize FightMatchmaker as it required frist the barracks address.
-            // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
-            referencedContracts[0] = address(fightExecutor);
-            referencedContracts[1] = address(betsVault);
-            referencedContracts[2] = address(barracks);
-            // TODO: registering automation in Mumbai not working, provides no reason
-            // Fund automation registration with LINK
-            link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
-            fightMatchmaker.initializeReferencesAndAutomation(
-                referencedContracts, automationRegistry, automationRegistrar, automationRegistration
-            );
+            // // Intialize FightMatchmaker as it required frist the barracks address.
+            // // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
+            // referencedContracts[0] = address(fightExecutor);
+            // referencedContracts[1] = address(betsVault);
+            // referencedContracts[2] = address(barracks);
+            // // TODO: registering automation in Mumbai not working, provides no reason
+            // // Fund automation registration with LINK
+            // link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
+            // fightMatchmaker.initializeReferencesAndAutomation(
+            //     referencedContracts, automationRegistry, automationRegistrar, automationRegistration
+            // );
         }
 
         vm.stopBroadcast();
@@ -141,4 +145,31 @@ contract PromptFightersDeploy is DeployFightsContracts {
             revert("MUST BE SEPOLIA");
         }
     }
+
+    // NOTE: says auto-approved disabled
+    /*
+    function initSepoliaMatchmaker() public {
+        if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
+            // Initialize collection contract.
+            vm.startBroadcast();
+            // // Intialize FightMatchmaker as it required frist the collection address.
+            // // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
+            address[] memory referencedContracts = new address[](3);
+            referencedContracts[0] = SEPOLIA_FIGHT_EXECUTOR;
+            referencedContracts[1] = SEPOLIA_BETS_OFFICIAL;
+            referencedContracts[2] = DEPLOYED_SEPOLIA_COLLECTION;
+            // Fund automation registration with LINK
+            LinkTokenInterface(ETH_SEPOLIA_LINK).transfer(SEPOLIA_FIGHT_MATCHMAKER, LINK_AMOUNT_FOR_REGISTRATION);
+            FightMatchmaker(SEPOLIA_FIGHT_MATCHMAKER).initializeReferencesAndAutomation(
+                referencedContracts,
+                automationRegistry,
+                automationRegistrar,
+                automationRegistration,
+                ETH_SEPOLIA_UPKEEP_ID
+            );
+            vm.stopBroadcast();
+        } else {
+            revert("MUST BE SEPOLIA");
+        }
+    }*/
 }

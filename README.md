@@ -197,7 +197,7 @@ locally:
 
 ---
 
-## Run Scripts locally to see how all interact iteratively 🏗️🏛️
+## Run Scripts locally to see how all interacts iteratively 🏗️🏛️
 
 Run scripts' instructions in here: [scripts](./src/backend/script).
 

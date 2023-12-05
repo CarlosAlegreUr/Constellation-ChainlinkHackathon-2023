@@ -139,6 +139,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         IAutomationRegistry _registry,
         IAutomationRegistrar _registrar,
         IAutomationRegistrar.RegistrationParams memory _params
+        // uint256 upkeepId NOTE: tried to register from other account but says auto-approve disabled
     ) external initializeActions {
         /*SP_MARK_START*/
         // @dev For some reason initializing the Automation with auto-approval has been disabled

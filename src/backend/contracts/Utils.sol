@@ -16,12 +16,13 @@ pragma solidity ^0.8.20;
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 address constant PLAYER_FOR_FIGHTS = 0x108d618c5baFFb6AE2b84094da4C8314BAD16D71; // 🟢
+address constant BACKEND_DON_MOCK = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0xfbE503f5D15387abc1f85718EF3Cd4A380f8A57A;
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0xe0cBAe959964a73f37f19Bc342c9b19680A34C87;
 address constant DEPLOYED_FUJI_BARRACKS = 0xBEd50d7556A402294A4Dc643c8eC5aade43AE61D;
 
-address constant SEPOLIA_FIGHT_MATCHMAKER = 0x032d411865FBa68d5211Ce94ceaa73064AB02B7f; // 🟢
-address constant SEPOLIA_FIGHT_EXECUTOR = 0x16A059F4655AF3A413e519C2C5176cE0446B9302; // 🟢
+address constant SEPOLIA_FIGHT_MATCHMAKER = 0xd10F033D278e7135A44a86432B08A9a39cf521bB; // 🟢
+address constant SEPOLIA_FIGHT_EXECUTOR = 0xabD081C830edf59d3F431EB617627e8075a44782; // 🟢
 
 // TODO: This chain contracts are not tested yet
 address constant FUJI_FIGHT_MATCHMAKER = 0xB3687ca8f511C4015734E5F5bc511C7d4DC48D79; // 🟢
@@ -44,6 +45,8 @@ string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
+///////////////////////////////////////////////
+///////////////////////////////////////////////
 
 //******************** */
 // OFFICIAL CONTRACTS
@@ -52,6 +55,7 @@ string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 // TODO: This addresses mints and fights well
 address constant SEPOLIA_FIGHT_MATCHMAKER_OFFICIAL = 0x032d411865FBa68d5211Ce94ceaa73064AB02B7f;
 address constant SEPOLIA_FIGHT_EXECUTOR_OFFICIAL = 0x16A059F4655AF3A413e519C2C5176cE0446B9302;
+address constant SEPOLIA_BETS_OFFICIAL = 0x9AB0248057B8E59e71ae216F865a16d60d0f51Dc;
 
 // TODO: This address dont work yet, it is just for testing
 address constant FUJI_FIGHT_MATCHMAKER_OFFICIAL = 0xB3687ca8f511C4015734E5F5bc511C7d4DC48D79;
@@ -135,6 +139,8 @@ uint32 constant PLY_MUMBAI_CALLBACK_GAS_LIMIT_VRF = 2_000_000;
 //********************** */
 // Chainlink AUTOMATION
 //********************** */
+
+uint256 constant ETH_SEPOLIA_UPKEEP_ID = 0;
 
 address constant ETH_SEPOLIA_REGISTRY = 0x86EFBD0b6736Bed994962f9797049422A3A8E8Ad;
 address constant ETH_SEPOLIA_REGISTRAR = 0xb0E49c5D0d05cbc241d68c05BC5BA1d1B7B72976;

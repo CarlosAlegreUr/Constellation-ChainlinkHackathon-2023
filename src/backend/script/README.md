@@ -190,10 +190,24 @@ forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $
 
 <details><summary> Use Automation to execute fights 🤖 </summary>
 
-TODO:
+I couldn't test the automation code but its written in the contracts. Reasons why:
+
+- In Sepolia testnet: One day I could deploy register automation but the other days I was getting: auto-approved disabled. I tried registring the upkeep with Chainlinks UI but it said `Pending approval...` and never changed.
+
+- In Fuji: It was just failing with rever reason `evm error` from the `KeeperRegistryLogicB2_1.sol` contract.
+
+Whenever we manage to create a succesfull regstration this commands should
+request a fight and that fight would be later accepted by the Keeper.
 
 ```bash
+# Automates nft id 2.
+forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_PLAYER --broadcast
 
+```
+
+```bash
+# Nft id 1 requests a fight, as nftid 2 is automated it should be accepted in the next block.
+forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "request()"
 ```
 
 ---
