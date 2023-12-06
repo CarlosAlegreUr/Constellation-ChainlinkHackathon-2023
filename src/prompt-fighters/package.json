@@ -14,7 +14,8 @@
     "react": "^18",
     "react-dom": "^18",
     "sharp": "^0.32.6",
-    "viem": "^1.19.11"
+    "viem": "^1.19.11",
+    "@rainbow-me/rainbowkit": "1.3.0"
   },
   "devDependencies": {
     "@types/react": "18.2.39",
