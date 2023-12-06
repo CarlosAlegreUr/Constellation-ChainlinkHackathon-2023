@@ -1,7 +1,7 @@
 const { ethers } = require("ethers");
 const {
   THE_GRAPH_URL,
-  FIGTH_EXECUITION_ABI,
+  FIGTH_EXECUTION_ABI,
   FIGTH_EXECUTOR_ADDRESS,
 } = require("./constants");
 require('dotenv').config();
@@ -12,40 +12,39 @@ const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 // Create a contract instance
 const figthExecutor = new ethers.Contract(FIGTH_EXECUTOR_ADDRESS, FIGTH_EXECUITION_ABI, signer);
 
-// Event listener for FightMatchmaker__FightAccepted
-// figthExecutor.on(
-//   "FightMatchmaker__FightAccepted",
-//   async (
-//     _,
-//     _,
-//     _,
-//     nftIdChallenger,
-//     nftIdChallengee,
-//     _,
-//     _,
-//     _
-//   ) => {
-//
-//     submitTransaction(nftIdChallenger.toString(), nftIdChallengee.toString());
-//   
-//   }
-// );
+Event listener for FightMatchmaker__FightAccepted
+figthExecutor.on(
+  "FightExecutor__started",
+  async (
+    figthId,
+    requestId,
+    nftChallengerPrompt,
+    nftChallengeePrompt,
+    _event
+  ) => {
+
+    submitTransaction(nftChallengerPrompt.toString(), nftChallengeePrompt.toString());
+  
+  }
+);
 
 console.log("Listening for FightMatchmaker__FightAccepted events...");
 console.log("\n");
 
-async function submitTransaction(id1, id2) {
+async function submitTransaction(prompt1, prompt2, resquestId) {
   try {
 
     // get prompts
-    const prompt1 = await getPromptNftById(id1); 
-    const prompt2 = await getPromptNftById(id2);
+    // const prompt1 = await getPromptNftById(id1); 
+    // const prompt2 = await getPromptNftById(id2);
 
     // get stories from GPT
-    resp = await fetchOpenAIResponse(prompt1, prompt2);
+    let resp = await fetchOpenAIResponse(prompt1, prompt2);
+
+    resp = resp[0] + "\n---\n" + resp[1];
 
     // submit stories to smart contract
-    // figthExecutor.fulfillRequestMock(resp.requestId, res.body, resp.err);
+    figthExecutor.fulfillRequestMock(requestId, resp, "");
 
     console.log("The transaction was sent succesfully!");
 
@@ -55,42 +54,11 @@ async function submitTransaction(id1, id2) {
 }
 
 
-async function getPromptNftById(id) {
-  const query = `
-    query($idx: String) {
-      figther(id: $idx) {
-        funcResponse
-      }
-    }
-  `
-  let response = await fetch(THE_GRAPH_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-    },
-    body: JSON.stringify({
-      query,
-      variables: {
-        idx: id
-      }
-    })
-  })
-
-  response = await response.json();
-
-
-  // funcResponse corresponds with the prompt of the NFT
-  return response.data.figther.funcResponse
-
-}
-
 
 // Function to make the HTTP call to OpenAI
-async function fetchOpenAIResponse(prompt1, _) {
+async function fetchOpenAIResponse(prompt1, prompt2) {
 
   // prompt format: <Name>-<Race>-<Weapon>-<Special hability>-<Fear>
-  const prompt2 = "Patrick-Star fish-Giant Rock-He can eat tonnes of anything in one go-reading"
 
   const content = prompt1 + '-' + prompt2;
   const args = content.split("-");
@@ -156,7 +124,6 @@ I DON'T WANT ANY VARIATION OF IT RESPECT THE TEMPLATE
 
     let result = openAIResponse.choices[0].message.content;
 
-    // chatGPT doesn't want to split the strings with "---" but it already divided the stories
     result = result.split("---")
 
     // trim the spaces for unnecesary bytes
@@ -174,14 +141,32 @@ I DON'T WANT ANY VARIATION OF IT RESPECT THE TEMPLATE
   }
 }
 
+// async function getPromptNftById(id) {
+//   const query = `
+//     query($idx: String) {
+//       figther(id: $idx) {
+//         funcResponse
+//       }
+//     }
+//   `
+//   let response = await fetch(THE_GRAPH_URL, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Accept": "application/json",
+//     },
+//     body: JSON.stringify({
+//       query,
+//       variables: {
+//         idx: id
+//       }
+//     })
+//   })
+//
+//   response = await response.json();
+//
+//   // funcResponse corresponds with the prompt of the NFT
+//   return response.data.figther.funcResponse
+//
+// }
 
-function test() {
-  try {
-    submitTransaction("1", "2");
-  } catch (e) {
-    console.log(e)
-  }
-}
-
-
-test()
