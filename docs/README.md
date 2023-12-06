@@ -6,7 +6,7 @@
 
 ## Technical Docs 🧑‍💻
 
-- [Architercure Diagrams](./architechture.md)
+- [Architecture Diagrams](./architechture.md)
 
 - [Features' Workflows](./backend-workflows/)
 
