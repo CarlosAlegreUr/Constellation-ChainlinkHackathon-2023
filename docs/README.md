@@ -1,6 +1,6 @@
 # 📖 Docs 📖
 
-## Whitepaer 📜
+## Whitepaper 📜
 
 - [Whitepaper](./whitepaper.md)
 
