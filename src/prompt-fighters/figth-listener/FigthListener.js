@@ -87,9 +87,10 @@ async function getPromptNftById(id) {
 
 
 // Function to make the HTTP call to OpenAI
-async function fetchOpenAIResponse(prompt1, prompt2) {
+async function fetchOpenAIResponse(prompt1, _) {
 
   // prompt format: <Name>-<Race>-<Weapon>-<Special hability>-<Fear>
+  const prompt2 = "Patrick-Star fish-Giant Rock-He can eat tonnes of anything in one go-reading"
 
   const content = prompt1 + '-' + prompt2;
   const args = content.split("-");
@@ -116,10 +117,19 @@ These 2 stories describe a duel involving this 2 characters.
 In 1 of the fights CHARACTER 1 wins and in the other CHARACTER 2 wins.
 The stories musts be at most 6 lines of length. 
 
+I want this exact template (any element with these brackets "<>" it means that it's a placeholder is not meant to be in the response):
+
+
+<story> 
+---
+<story>
+
 
 Between the stories as a way to sparate them you will put this string: "---",
 Your response will be use for a script and this is the only way that can be used by the script to 
 separate the two stories.
+
+I DON'T WANT ANY VARIATION OF IT RESPECT THE TEMPLATE
 
 `;
 
@@ -139,15 +149,22 @@ separate the two stories.
       body: JSON.stringify(postData),
     });
 
-    const openAIResponse = response.json();
+    const openAIResponse = await response.json();
+  
+    // console.log("openAIResponse: ", openAIResponse);
+
+
     let result = openAIResponse.choices[0].message.content;
 
+    // chatGPT doesn't want to split the strings with "---" but it already divided the stories
     result = result.split("---")
 
     // trim the spaces for unnecesary bytes
     for (let i = 0; i < result.length ;i++) {
       result[i] = result[i].trim()
     }
+
+    console.log(result);
 
     return result;
 
