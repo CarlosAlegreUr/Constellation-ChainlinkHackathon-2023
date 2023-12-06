@@ -161,10 +161,6 @@ npm install @chainlink/contracts-ccip --save
 # Change the name to node_modules_ccip
 mv ./node_modules ./node_modules_ccip
 
-# Move it inside the /lib diretory
-mv ./node_modules_ccip ./lib
-# ⚠️ Wait until all has moved correctly
-# ⚠️ node_modules_ccip should be now ONLY inside ./lib
 # Notice ℹ️ you can remove package.jon and package-lock.json
 # if you want.
 ```
