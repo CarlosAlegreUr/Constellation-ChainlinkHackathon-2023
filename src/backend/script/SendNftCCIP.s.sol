@@ -68,6 +68,8 @@ contract SendNftCcip is Script {
 
             console.log(barracks.getMatchmaker());
 
+            console.log(fm.getContractUpkeepId());
+
             vm.stopBroadcast();
         } else {
             console.log("Thi script function runs only on Avalanche Fuji");

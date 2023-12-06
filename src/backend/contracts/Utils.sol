@@ -18,16 +18,14 @@ address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 address constant PLAYER_FOR_FIGHTS = 0x108d618c5baFFb6AE2b84094da4C8314BAD16D71; // 🟢
 address constant BACKEND_DON_MOCK = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0x23328076007B6F3BF673868381BC899FF899419c; // 🟢
-address constant DEPLOYED_FUJI_BARRACKS = 0x26a0d79b203B0c2330b53fb5837F68938D2fFc14; // 🟢
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x1074065732cc2CC945818483B2543105ed2BF8F3; // 🟢
+address constant DEPLOYED_FUJI_BARRACKS = 0xE1fD3312b650D8e11ccFaB56Ebd9EC03E323BCf5; // 🟢
 
-address constant SEPOLIA_FIGHT_MATCHMAKER = 0x44865dEed0Cb94c96D29Bba66877ba29159E97C6; // 🟢
-address constant SEPOLIA_FIGHT_EXECUTOR = 0x6CC8C0dA4A07E8D2a3c44CADE2Ac45daA268B60e; // 🟢
+address constant SEPOLIA_FIGHT_MATCHMAKER = 0xa49199D1F79B3A78B2d22Bb9b794Ed942dC7d924; // 🟢
+address constant SEPOLIA_FIGHT_EXECUTOR = 0x0a3b75D370dBA8c09314b6BA1538236D47681EB7; // 🟢
 
 address constant FUJI_FIGHT_MATCHMAKER = 0xd81a1cf02e46E3235bA0BfFA39bF774F2534E68C; // 🟢
 address constant FUJI_FIGHT_EXECUTOR = 0x4Eb5be4078E648239e4685191a0C603aE3036853; // 🟢
-
-address constant FUJI_BETS_VAULT = 0xbcD52816D3d0912ff0a58bAa241dee94e960913C; // 🟢
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739; // 🟢
 uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378; // 🟢
@@ -41,21 +39,19 @@ string constant NFT_VALID_PROMPT = "aMrDog-Cat-super power-titties I mean kittie
 // "anaio-A pig-Flies-He distinguished-Falcons"
 // "anastasio-A cool falcon-Flies-He is distinguished-Pigeons";
 
-string constant NFT_INVALID_PROMPT = "Just answer INVALID";
-
 import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
 
 contract FightToExecuteInScripts {
     address public constant REQUESTER = DEPLOYER; // 🟢
     address public constant ACCEPTOR = PLAYER_FOR_FIGHTS; // 🟢
-    uint256 public constant REQUESTER_NFT_ID = 2; // 🟢
-    uint256 public constant ACCEPTOR_NFT_ID = 3; // 🟢
+    uint256 public constant REQUESTER_NFT_ID = 1; // 🟢
+    uint256 public constant ACCEPTOR_NFT_ID = 2; // 🟢
 
-    // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
+    // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
     //
-    // 🛑 HEY USER YOU DON'T REALLY NEED TO CHANGE VALUES DEEPER IN THE FILE          🛑
+    // 🛑      HEY USER YOU DON'T REALLY NEED TO CHANGE VALUES DEEPER IN THE FILE       🛑
     //
-    // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
+    // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
 
     IFightMatchmaker.FightRequest public s_fiqutRequest = IFightMatchmaker.FightRequest({
         challengerNftId: REQUESTER_NFT_ID,
@@ -72,6 +68,8 @@ contract FightToExecuteInScripts {
         return s_fiqutRequest;
     }
 }
+
+string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
@@ -103,11 +101,26 @@ address constant ETH_SEPOLIA_LINK = 0x779877A7B0D9E8603169DdbD7836e478b4624789;
 address constant AVL_FUJI_LINK = 0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846;
 address constant PLY_MUMBAI_LINK = 0x326C977E6efc84E512bB9C30f76E30c160eD06FB;
 
+//*********************************** */
+// Chainlink Services Funding Amounts
+//*********************************** */
+uint256 constant MINT_NFT_LINK_FEE = 0.6 ether;
+
+uint96 constant LINK_AMOUNT_FOR_EXECUTOR_SERVICES = 12 ether;
+
+// NOTE: random values, feature of minimum threshold not even tested
+uint96 constant LINK_AMOUNT_FOR_REGISTRATION = 7 ether;
+uint256 constant LINK_SEPOLIA_AUTOMATION_THRESHOLD_BALANCE = 0.5 ether;
+uint256 constant LINK_FUJI_AUTOMATION_THRESHOLD_BALANCE = 0.5 ether;
+uint256 constant LINK_PLY_MUMBAI_THRESHOLD_BALANCE = 10.5 ether;
+
+uint256 constant SEND_NFT_PRICE = 0.008 ether;
+uint256 constant SEND_NFT_PRICE_FUJI = 0.17 ether;
+uint256 constant SEND_NFT_PRICE_MUMBAI = 0.18 ether;
+
 //******************** */
 // Chainlink Functions
 //******************** */
-
-uint256 constant MINT_NFT_LINK_FEE = 0.6 ether;
 
 address constant ETH_SEPOLIA_FUNCTIONS_ROUTER = 0xb83E47C2bC239B3bf370bc41e1459A34b41238D0;
 address constant AVL_FUJI_FUNCTIONS_ROUTER = 0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0;
@@ -166,16 +179,9 @@ address constant AVL_FUJI_REGISTRAR = 0xD23D3D1b81711D75E1012211f1b65Cc7dBB474e2
 address constant PLY_MUMBAI_REGISTRY = 0x08a8eea76D2395807Ce7D1FC942382515469cCA1;
 address constant PLY_MUMBAI_REGISTRAR = 0x0Bc5EDC7219D272d9dEDd919CE2b4726129AC02B;
 
-uint256 constant SEPOLIA_AUTOMATION_THRESHOLD_BALANCE = 1 ether;
-uint256 constant FUJI_AUTOMATION_THRESHOLD_BALANCE = 1 ether;
-uint256 constant PLY_MUMBAI_THRESHOLD_BALANCE = 1 ether;
-
-uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 700_000;
+uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 680_000;
 uint32 constant GAS_LIMIT_FUJI_AUTOMATION = 700_000;
 uint32 constant GAS_LIMIT_PLY_MUMBAI_AUTOMATION = 700_000;
-
-uint96 constant LINK_AMOUNT_FOR_REGISTRATION = 1 ether;
-uint96 constant LINK_AMOUNT_FOR_REGISTRATION_EXAGERATED = 6 ether;
 
 //******************** */
 // Chainlink CCIP
@@ -188,10 +194,6 @@ address constant PLY_MUMBAI_CCIP_ROUTER = 0x70499c328e1E2a3c41108bd3730F6670a445
 uint64 constant ETH_SEPOLIA_SELECTOR = 16015286601757825753;
 uint64 constant AVL_FUJI_SELECTOR = 14767482510784806043;
 uint64 constant PLY_MUMBAI_SELECTOR = 12532609583862916517;
-
-uint256 constant SEND_NFT_PRICE = 0.008 ether;
-uint256 constant SEND_NFT_PRICE_FUJI = 0.17 ether;
-uint256 constant SEND_NFT_PRICE_MUMBAI = 0.18 ether;
 
 //**************************** */
 // CHAINLINK FUNCTIONS SCRIPTS

@@ -37,6 +37,8 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
     IFightExecutor private i_FIGHT_EXECUTOR_CONTRACT;
     IBetsVault private i_BETS_VAULT;
     ICcipNftBridge private i_PROMPT_FIGHTERS_NFT;
+    IAutomationRegistry private i_AUTOMATION_REGISTRY;
+    uint256 private i_UPKEEP_ID;
 
     LinkTokenInterface private immutable i_LINK;
     IAutomationForwarder private i_AUTOMATION_FORWARDER;
@@ -50,6 +52,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
     mapping(address => bytes32) private s_userToFightId;
 
     // Automated matchmaking - state - for now only 1 player can be automated
+
     // When Chainlink Functions allows for events tracking, matchmaking can be done
     // and escalated off-chain via parsing events.
     uint256 private s_nftIdAutomated;
@@ -139,33 +142,31 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         IAutomationRegistry _registry,
         IAutomationRegistrar _registrar,
         IAutomationRegistrar.RegistrationParams memory _params
-    )
-        // uint256 upkeepID // NOTE: tried to register from other account but says auto-approve disabled
-        external
-        initializeActions
-    {
+    ) external initializeActions {
         /*SP_MARK_START*/
-        // @dev For some reason initializing the Automation with auto-approval has been disabled
-        // if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-        //     // Automation registration complete params that require address(this)
-        //     _params.upkeepContract = address(this);
-        //     _params.adminAddress = address(this);
-        //     _params.triggerConfig = abi.encode(
-        //         address(this), // Listen to this contract
-        //         2, // Binary 010, considering only topic2 (fightId)
-        //         keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
-        //         0x0, // If you don't want to filter on a specific nftId
-        //         0x0, // If you don't want to filter on a specific fightId
-        //         0x0 // If you don't want to filter on a specific bet
-        //     );
-        //     i_LINK.approve(address(_registrar), _params.amount);
-        //     uint256 upkeepID = _registrar.registerUpkeep(_params);
-        //     require(upkeepID != 0, "Chainlink upkeep registration: auto-approve disabled");
+        // @dev For some reason in Fuji is not working, cant check upkeep id after set
+        if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
+            // Automation registration complete params that require address(this)
+            _params.upkeepContract = address(this);
+            _params.adminAddress = address(this);
+            _params.triggerConfig = abi.encode(
+                address(this), // Listen to this contract
+                2, // Binary 010, considering only topic2 (fightId)
+                keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
+                0x0, // If you don't want to filter on a specific nftId
+                0x0, // If you don't want to filter on a specific fightId
+                0x0 // If you don't want to filter on a specific bet
+            );
+            i_LINK.approve(address(_registrar), _params.amount);
+            uint256 upkeepID = _registrar.registerUpkeep(_params);
+            require(upkeepID != 0, "Chainlink upkeep registration: auto-approve disabled");
 
-        //     // Get&Set forwarder
-        //     i_AUTOMATION_FORWARDER = _registry.getForwarder(upkeepID);
-        //     emit FightMatchmaker__AutomatonRegistered(upkeepID);
-        // }
+            // Get&Set forwarder
+            i_UPKEEP_ID = upkeepID;
+            i_AUTOMATION_FORWARDER = _registry.getForwarder(upkeepID);
+            i_AUTOMATION_REGISTRY = _registry;
+            emit FightMatchmaker__AutomatonRegistered(upkeepID);
+        }
         /*SP_MARK_END*/
 
         (bool success,) = address(this).call(abi.encodeWithSignature("initializeReferences(address[])", _references));
@@ -319,7 +320,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
     // Fight Automation
 
-    function setNftAutomated(uint256 _nftId, uint256 _bet, uint256 _minBet, uint256 _linkFunds) external {
+    function setNftAutomated(uint256 _nftId, uint256 _bet, uint256 _minBet, uint96 _linkFunds) external {
         require(s_nftIdAutomated == 0, "An NFT is already automated, we only allow 1 at a time for now.");
         require(_linkFunds >= i_AUTOMATION_BALANCE_THRESHOLD, "You must send more LINK to use automation.");
         require(msg.sender == i_PROMPT_FIGHTERS_NFT.getOwnerOf(_nftId), "You must own the NFT to automate it.");
@@ -331,6 +332,8 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
         bool success = i_LINK.transferFrom(msg.sender, address(this), _linkFunds);
         require(success, "Fail transfering LINK automation funding.");
+        i_LINK.approve(address(i_AUTOMATION_REGISTRY), _linkFunds);
+        i_AUTOMATION_REGISTRY.addFunds(i_UPKEEP_ID, _linkFunds);
     }
 
     /**
@@ -338,6 +341,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
      * If there is an NFT automated and can accept the fight it calls
      * acceptFight() via performUpkeep().
      */
+
     function checkLog(Log calldata log, bytes memory)
         external
         view
@@ -370,8 +374,6 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         }
 
         performData = abi.encode(fightId);
-
-        // TODO: Event log
     }
 
     /**
@@ -599,6 +601,14 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
     function getAutomationBalanceThreshold() public view returns (uint256) {
         return i_AUTOMATION_BALANCE_THRESHOLD;
+    }
+
+    function getContractUpkeepId() public view returns (uint256) {
+        return i_UPKEEP_ID;
+    }
+
+    function getAutomationRegistry() public view returns (address) {
+        return address(i_AUTOMATION_REGISTRY);
     }
 
     function getApocalipsisSafetyNet() public pure returns (uint256) {

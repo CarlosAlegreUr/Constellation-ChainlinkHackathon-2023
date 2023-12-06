@@ -41,7 +41,6 @@ contract PromptFightersDeploy is DeployFightsContracts {
             super.run();
 
             // Deploy collection
-            // TODO: uncommen when finish testing
             console.log("Deploying collection...");
             PromptFightersNFT promptFighters = new PromptFightersNFT(
                 ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
@@ -57,10 +56,12 @@ contract PromptFightersDeploy is DeployFightsContracts {
             referencedContracts[0] = address(fightExecutor);
             referencedContracts[1] = address(betsVault);
             referencedContracts[2] = address(promptFighters);
-            
+            // referencedContracts[2] = DEPLOYED_SEPOLIA_COLLECTION;
+
             // Fund automation registration with LINK
             console.log("Initializing matchmaker...");
-            link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION_EXAGERATED);
+            link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
+            console.log(automationRegistration.triggerType);
             fightMatchmaker.initializeReferencesAndAutomation(
                 referencedContracts, automationRegistry, automationRegistrar, automationRegistration
             );
@@ -115,6 +116,8 @@ contract PromptFightersDeploy is DeployFightsContracts {
             string memory s = "https://functions.chain.link/fuji/";
             console.log(string(abi.encodePacked(s, intToString(AVL_FUJI_FUNCS_SUBS_ID))));
             console.log("++++++++++++++++++++++++++++++++++++++++++");
+
+            // TODO: add log for upkeepId
         }
 
         // NOTE: not tested
@@ -168,6 +171,14 @@ contract PromptFightersDeploy is DeployFightsContracts {
         }
     }
 
+    // TODO DELETE AFTER TESTING
+    function trans() public {
+        vm.startBroadcast();
+        PromptFightersNFT collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
+        collectionContract.transferFrom(msg.sender, PLAYER_FOR_FIGHTS, 2);
+        vm.stopBroadcast();
+    }
+
     // NOTE: says auto-approved disabled
     /*
     function initSepoliaMatchmaker() public {
@@ -199,7 +210,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
         address[] memory referencedContracts = new address[](3);
 
         referencedContracts[0] = FUJI_FIGHT_EXECUTOR;
-        referencedContracts[1] = FUJI_BETS_VAULT;
+        // referencedContracts[1] = FUJI_BETS_VAULT;//NOTE: needed if testing, delete after
         referencedContracts[2] = DEPLOYED_FUJI_BARRACKS;
 
         // IAutomationRegistry automationRegistry  ; //= IAutomationRegistry(AVL_FUJI_REGISTRY);

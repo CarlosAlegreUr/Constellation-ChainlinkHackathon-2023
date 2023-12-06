@@ -67,13 +67,6 @@ contract Fight is Script {
         executor.fundMySubscription(funds);
         console.log("Funded.");
 
-        console.log(msg.sender);
-        console.log(fr.challengerNftId);
-        console.log(fr.minBet);
-        console.log(fr.acceptanceDeadline);
-        console.log(fr.challengee);
-        console.log(fr.challengeeNftId);
-
         console.log("Trying to request fight...");
         matchmaker.requestFight{value: 0.005 ether}(fr);
         console.log("Fight Requested.");

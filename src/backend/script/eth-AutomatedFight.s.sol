@@ -25,67 +25,69 @@ contract AutomatedFight is Script {
     PromptFightersNFT public collectionContract;
     FightMatchmaker public matchmaker;
     FightExecutor public executor;
-    LinkTokenInterface public linkToken = LinkTokenInterface(ETH_SEPOLIA_LINK);
+    LinkTokenInterface public linkToken;
+    uint256 public AUTOMATION_BALANCE_THRESHOLD;
+    FightToExecuteInScripts public fightToExecute = new FightToExecuteInScripts();
+    IFightMatchmaker.FightRequest public fr = fightToExecute.getFReq();
 
-    // TODO: delete when finish tensting, add them to Utils.sol
-    address constant mtch = SEPOLIA_FIGHT_MATCHMAKER;
-    address constant exec = SEPOLIA_FIGHT_EXECUTOR;
+    uint256 public NFT_TO_AUTOMATE = 2;
 
-    function setUp() public virtual {
-        collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
-        matchmaker = FightMatchmaker(mtch);
-        executor = FightExecutor(exec);
-    }
-
-    function run() public virtual {
-        vm.startBroadcast();
-
+    function setUp() public {
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            // Automating NFT 2
-            // Fund LINK for automation upkeeps
-            console.log("Funding LINK services for fight contracts...");
-            uint256 automationFunds = 3 ether;
-            // Fund Chainlink Automation in matchcmaker
-            linkToken.approve(address(matchmaker), automationFunds);
-            // Fund Chainlink Subscriptions in executor
-            linkToken.approve(address(executor), 1 ether);
-            executor.fundMySubscription(1 ether);
-
-            // Set NFT 2 to be automated
-            matchmaker.setNftAutomated(2, 0.001 ether, 0.001 ether, automationFunds);
-
-            console.log("NFT 2 is now automated...");
-            console.log("Fight should be accepted by upkeep in later block after detecting a request...");
-            console.log("Check state on block explorer...");
+            collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
+            matchmaker = FightMatchmaker(SEPOLIA_FIGHT_MATCHMAKER);
+            executor = FightExecutor(SEPOLIA_FIGHT_EXECUTOR);
+            linkToken = LinkTokenInterface(ETH_SEPOLIA_LINK);
+            AUTOMATION_BALANCE_THRESHOLD = LINK_SEPOLIA_AUTOMATION_THRESHOLD_BALANCE;
         }
-
-        vm.stopBroadcast();
     }
 
-    function trans() public {
+    function run() public {
         vm.startBroadcast();
-        collectionContract.transferFrom(DEPLOYER, PLAYER_FOR_FIGHTS, 2);
+
+        // Automating NFT 1
+        // Fund LINK for automation upkeeps
+        console.log("Funding LINK services for fight contracts...");
+        // Fund Chainlink Automation in matchcmaker
+        linkToken.approve(address(matchmaker), AUTOMATION_BALANCE_THRESHOLD);
+        // Fund Chainlink Subscriptions in executor
+        // linkToken.approve(address(executor), 1 ether);
+        // executor.fundMySubscription(1 ether);
+
+        // Set NFT 2 to be automated
+        matchmaker.setNftAutomated(NFT_TO_AUTOMATE, 0.001 ether, 0.001 ether, uint96(AUTOMATION_BALANCE_THRESHOLD));
+
+        console.log("NFT 2 is now automated...");
+        console.log("Fight should be accepted by upkeep in later block after detecting a request...");
+        console.log("Check state on block explorer...");
+
         vm.stopBroadcast();
     }
 
     function request() public {
         vm.startBroadcast();
-        IFightMatchmaker.FightRequest memory fr = IFightMatchmaker.FightRequest({
-            challengerNftId: 3,
-            minBet: 0.001 ether,
-            acceptanceDeadline: block.timestamp + 1 days,
-            challengee: PLAYER_FOR_FIGHTS,
-            challengeeNftId: 2
-        });
-
+        // TODO: delete after testing
+        // console.log("Funding LINK consumption of executor contract...");
+        // uint256 funds = 12 ether;
+        // linkToken.approve(address(executor), funds);
+        // executor.fundMySubscription(funds);
+        // console.log("Funded.");
         console.log("Trying to request fight...");
         matchmaker.requestFight{value: 0.005 ether}(fr);
+        console.log("DONE");
+        vm.stopBroadcast();
+    }
+
+    function forwarder() public {
+        vm.startBroadcast();
+        console.log("Trying to request fight...");
+        matchmaker.setForwarderDuh(0xe860D194fc6B6078ccc9Aed029B206ffCAEe000E);
+        console.log("DONE");
         vm.stopBroadcast();
     }
 
     function regiterAutomation() public {
         vm.startBroadcast();
-
         // Automation registration complete params that require address(this)
         IAutomationRegistrar _registrar = IAutomationRegistrar(ETH_SEPOLIA_REGISTRAR);
         IAutomationRegistrar.RegistrationParams memory _params;
@@ -112,32 +114,13 @@ contract AutomatedFight is Script {
         vm.stopBroadcast();
     }
 
-    function manualsetup() public {
-        vm.startBroadcast();
-        uint256 uid = 98785675887033837089720433517441719857293902855493994579632517239481229958059;
-        address forwarder = 0xD497BDE78255a86632445d29B2A74d8f2a913aB9;
-        FightMatchmaker(mtch).setForwarderDuh(forwarder);
-        FightMatchmaker(mtch).setUpkeepId(uid);
-        vm.stopBroadcast();
-    }
-
     // TODO: delete when finish tensting
-    // function change() public {
+    // function manualsetup() public {
     //     vm.startBroadcast();
-
-    //     address add = mtch;
-    //     collectionContract.setMatchmaker(add);
-    //     vm.stopBroadcast();
-    // }
-
-    // TODO: delete when finish tensting
-    // function settle() public {
-    //     vm.startBroadcast();
-    //     FightMatchmaker m = FightMatchmaker(mtch);
-    //     m.settleFight(
-    //         0x5c5f8cdc3d63547e35825fe0c326cd2224f7dcbd7e0b734a6fffa131e4f98643,
-    //         IFightMatchmaker.WinningAction.REQUESTER_WIN
-    //     );
+    //     uint256 uid = 98785675887033837089720433517441719857293902855493994579632517239481229958059;
+    //     address forwarder = 0xD497BDE78255a86632445d29B2A74d8f2a913aB9;
+    //     FightMatchmaker(mtch).setForwarderDuh(forwarder);
+    //     FightMatchmaker(mtch).setUpkeepId(uid);
     //     vm.stopBroadcast();
     // }
 }

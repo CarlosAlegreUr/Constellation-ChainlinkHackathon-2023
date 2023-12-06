@@ -75,8 +75,8 @@ contract ChainlinkSubsManager is IChainlinkSubsManager {
         bool success = i_LINK_TOKEN.transferFrom(msg.sender, address(this), amount);
         require(success, "Faild to transfer LINK.");
 
-        i_LINK_TOKEN.transferAndCall(i_funcsSubsAccess, amount / 2, abi.encode(i_funcsSubsId));
-        i_LINK_TOKEN.transferAndCall(i_vrfSubsAccess, amount / 2, abi.encode(i_vrfSubsId));
+        i_LINK_TOKEN.transferAndCall(i_funcsSubsAccess, amount / 3, abi.encode(i_funcsSubsId));
+        i_LINK_TOKEN.transferAndCall(i_vrfSubsAccess, amount * 2 / 3, abi.encode(i_vrfSubsId));
 
         emit ChainlinkSubsManager__SubsFunded(msg.sender, amount);
     }

@@ -31,4 +31,5 @@ interface IAutomationRegistrar {
 
 interface IAutomationRegistry {
     function getForwarder(uint256 upkeepID) external view returns (IAutomationForwarder);
+    function addFunds(uint256 id, uint96 amount) external;
 }

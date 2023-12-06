@@ -59,7 +59,7 @@ contract DeploymentConfig is Script {
             });
             automationRegistry = IAutomationRegistry(ETH_SEPOLIA_REGISTRY);
             automationRegistrar = IAutomationRegistrar(ETH_SEPOLIA_REGISTRAR);
-            automationBalanceThreshold = SEPOLIA_AUTOMATION_THRESHOLD_BALANCE;
+            automationBalanceThreshold = LINK_SEPOLIA_AUTOMATION_THRESHOLD_BALANCE;
             automationRegistration = IAutomationRegistrar.RegistrationParams({
                 name: "Sepolia Automation PromptFighters",
                 encryptedEmail: new bytes(0),
@@ -89,7 +89,7 @@ contract DeploymentConfig is Script {
             });
             automationRegistry = IAutomationRegistry(AVL_FUJI_REGISTRY);
             automationRegistrar = IAutomationRegistrar(AVL_FUJI_REGISTRAR);
-            automationBalanceThreshold = FUJI_AUTOMATION_THRESHOLD_BALANCE;
+            automationBalanceThreshold = LINK_FUJI_AUTOMATION_THRESHOLD_BALANCE;
             automationRegistration = IAutomationRegistrar.RegistrationParams({
                 name: "Fuji Automation PromptFighters",
                 encryptedEmail: new bytes(0),
@@ -104,6 +104,7 @@ contract DeploymentConfig is Script {
             });
         }
 
+        // NOTE: not tested
         if (block.chainid == PLY_MUMBAI_CHAIN_ID) {
             isValidConfig = true;
             link_token = LinkTokenInterface(PLY_MUMBAI_LINK);
@@ -119,7 +120,7 @@ contract DeploymentConfig is Script {
             });
             automationRegistry = IAutomationRegistry(PLY_MUMBAI_REGISTRY);
             automationRegistrar = IAutomationRegistrar(PLY_MUMBAI_REGISTRY);
-            automationBalanceThreshold = PLY_MUMBAI_THRESHOLD_BALANCE;
+            automationBalanceThreshold = LINK_PLY_MUMBAI_THRESHOLD_BALANCE;
             automationRegistration = IAutomationRegistrar.RegistrationParams({
                 name: "Sepolia Automation PromptFighters",
                 encryptedEmail: new bytes(0),

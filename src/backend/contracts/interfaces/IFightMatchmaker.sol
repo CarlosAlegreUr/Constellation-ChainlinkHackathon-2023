@@ -180,7 +180,7 @@ interface IFightMatchmaker {
     /**
      * @dev Yout must approve linkFunds amount of LINK to the contract before calling this function.
      */
-    function setNftAutomated(uint256 nftId, uint256 bet, uint256 minBet, uint256 linkFunds) external;
+    function setNftAutomated(uint256 nftId, uint256 bet, uint256 minBet, uint96 linkFunds) external;
 
     //************* */
     // Getters
@@ -219,6 +219,10 @@ interface IFightMatchmaker {
     function getNftAutomationBalance() external view returns (uint256);
 
     function getApocalipsisSafetyNet() external pure returns (uint256);
+
+    function getContractUpkeepId() external view returns (uint256);
+
+    function getAutomationRegistry() external view returns (address);
 
     function getAutomationBalanceThreshold() external view returns (uint256);
 }

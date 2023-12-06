@@ -30,7 +30,6 @@ interface IFightExecutor is IChainlinkSubsManager {
         bytes32 indexed fightId, bytes32 indexed requId, string promptRequester, string promptAcceptor
     );
 
-    event FightExecutor__FightsStoriesGenerated(bytes indexed firstEnd, bytes indexed secondEnd);
     event FightExecutor__FightStoryFuncsResponse(bytes32 indexed requestId, bytes response, uint256 timestamp);
     event FightExecutor__FightStoryFuncsError(bytes32 indexed requestId, bytes err, uint256 timestamp);
 
