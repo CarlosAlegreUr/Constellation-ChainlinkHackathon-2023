@@ -1,24 +1,27 @@
 "use client";
 import React from "react";
-import { getContract } from "@wagmi/core";
 import SEPOLIA_PROMPT_FIGHTERS_NFT from "../constants";
 import * as IPromptFightersCollection from "../contracts-artifacts/IPromptFightersCollection.sol/IPromptFightersCollection.json";
-import { useState } from "react";
-import { getAccount } from "@wagmi/core";
-import { getPublicClient } from "@wagmi/core";
-import { useBlockNumber } from "wagmi";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { getAccount, getPublicClient } from "@wagmi/core";
+import { useBlockNumber, useContractEvent } from "wagmi";
 
 export default function YourFighters() {
   const [fighters, setFighters] = useState([]);
   const account = getAccount();
   const publicClient = getPublicClient();
-  const { data } = useBlockNumber();
+  const { data: currentBlock } = useBlockNumber();
 
-  const contract = getContract({
+  // Get newly minted NFTs
+  useContractEvent({
     address: SEPOLIA_PROMPT_FIGHTERS_NFT,
     abi: IPromptFightersCollection.abi,
-  });
+    eventName: 'PromptFighters__NftMinted',
+    listener(log) {
+      console.log("New NFT created with ID", log[0].args.nftId);
+      setFighters(prevFighters => [...prevFighters, getFighter(log[0].args.nftId)]);
+    },
+  })
 
   async function getEvents() {
     return await publicClient.getContractEvents({
@@ -29,12 +32,11 @@ export default function YourFighters() {
         owner: account.address,
       },
       fromBlock: 4788494n,
-      toBlock: data,
+      toBlock: currentBlock,
     });
   }
 
   async function getFighter(nftId) {
-    //const prompt
     const prompt = await publicClient.readContract({
       address: SEPOLIA_PROMPT_FIGHTERS_NFT,
       abi: IPromptFightersCollection.abi,
@@ -51,12 +53,14 @@ export default function YourFighters() {
     );
   }
 
+  // Load existent NFTs 
   useEffect(() => {
     getEvents().then(async (logs) => {
       const nftIds = logs.map((log) => log.args.nftId);
+      console.log("NFTs fetched: ", nftIds);
       setFighters(await Promise.all(nftIds.map((nftId) => getFighter(nftId))));
     });
-  }, [contract]);
+  }, []);
 
   return (
     <div className="flex flex-col h-full w-full">
