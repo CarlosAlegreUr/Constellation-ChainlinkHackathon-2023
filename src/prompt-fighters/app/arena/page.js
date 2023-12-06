@@ -15,7 +15,7 @@ export default function Arena() {
       <h2 className=" text-2xl pt-8">
        Fight against other fighters
       </h2>
-      <div className=" px-48 flex flex-row justify-between pt-16 gap-8">
+      <div className=" h-[750px] w-full px-48 flex flex-row justify-between pt-8 gap-8">
         <SearchForBattle />
         <BattlesHistory />
       </div>

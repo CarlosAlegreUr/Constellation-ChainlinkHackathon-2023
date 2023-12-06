@@ -43,24 +43,32 @@ export default function BattlesHistory() {
     });
     const name = prompt.split("-")[0];
     return (
-      <div className=" flex flex-row gap-3 justify-center items-center">
-        <div className="shadow appearance-none border rounded w-80 py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-          <h1 className="block text-gray-700 text-xs font-bold m-1">
-            Name: {name}
-          </h1>
-          <h1 className="block text-gray-700 text-xs font-bold m-1">
-            Id: {Number(nftId)}
-          </h1>
+      <div className=" bg-green-400 flex flex-col justify-center p-2  border border-gray-400 rounded leading-tight focus:outline-none focus:shadow-outline">
+        <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
+          Battle Id: BATTLE ID
+        </h1>
+        <div className=" flex flex-row gap-3 items-center">
+          <div className=" border border-gray-600 rounded w-80 py-1 ">
+            <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
+              {name}
+            </h1>
+            <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
+              Id: {Number(nftId)}
+            </h1>
+          </div>
+          <h1 className="text-gray-700 font-bold "> VS </h1>
+          <div className=" border border-gray-600 rounded  w-80 py-1">
+            <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
+              {name}
+            </h1>
+            <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
+              Id: {Number(nftId)}
+            </h1>
+          </div>
         </div>
-        <h1 className="text-gray-700 font-bold "> VS </h1>
-        <div className="shadow appearance-none border rounded w-80 py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-          <h1 className="block text-gray-700 text-xs font-bold m-1">
-            Name: {name}
-          </h1>
-          <h1 className="block text-gray-700 text-xs font-bold m-1">
-            Id: {Number(nftId)}
-          </h1>
-        </div>
+        <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
+          YOU WON!
+        </h1>
       </div>
     );
   }
@@ -73,9 +81,9 @@ export default function BattlesHistory() {
   }, [contract]);
 
   return (
-    <div className="h-[650px] w-1/2">
+    <div className=" flex flex-col relative h-full w-1/2">
       <h1>Battle history</h1>
-      <div className=" w-full h-full  overflow-y-scroll bg-white shadow-md rounded px-8 pt-6 py-6">
+      <div className=" h-full w-full flex flex-col gap-1 overflow-y-scroll bg-white shadow-md rounded px-8 pt-6 py-6">
         {fighters.map((fighter) => fighter)}
       </div>
     </div>
