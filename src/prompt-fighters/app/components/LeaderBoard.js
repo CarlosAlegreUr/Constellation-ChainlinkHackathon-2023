@@ -40,7 +40,7 @@ export default function LeaderBoard() {
     });
     const name = prompt.split("-")[0];
     return (
-      <div key={nftId} className=" flex flex-col border rounded border-gray-400 w-full p-1">
+      <div key={nftId} className=" flex flex-col border rounded w-full p-1 shadow appearance-none leading-tight focus:outline-none focus:shadow-outline">
         <h1 className=" text-gray-700 text-xs font-bold">
           Id: {Number(nftId)}
         </h1>
@@ -78,8 +78,8 @@ export default function LeaderBoard() {
 
   return (
       <div className=" flex overflow-y-scroll w-full h-full bg-white rounded m-8">
-        <div className=" flex flex-col h-0 w-full m-1 gap-1">
-          {fighters.map((fighter) => fighter)}
+        <div className=" flex flex-col h-0 w-full m-3 gap-1">
+          {fighters}
         </div>
       </div>
   );

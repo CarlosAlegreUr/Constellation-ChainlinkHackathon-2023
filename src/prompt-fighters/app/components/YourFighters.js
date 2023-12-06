@@ -66,7 +66,7 @@ export default function YourFighters() {
     <div className="flex flex-col h-full w-full">
       <h1>YourFighters</h1>
       <div className=" w-full h-full  overflow-y-scroll bg-white shadow-md rounded px-8 pt-6 py-6">
-        {fighters.map((fighter) => fighter)}
+        {fighters}
       </div>
     </div>
   );

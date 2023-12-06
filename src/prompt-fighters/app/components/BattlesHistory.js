@@ -3,6 +3,7 @@ import React from "react";
 import { getContract } from "@wagmi/core";
 import SEPOLIA_PROMPT_FIGHTERS_NFT from "../constants";
 import * as IPromptFightersCollection from "../contracts-artifacts/IPromptFightersCollection.sol/IPromptFightersCollection.json";
+import * as IFightMatchermaker from "../contracts-artifacts/IFightMatchmaker.sol/IFightMatchmaker.json";
 import { useState } from "react";
 import { getAccount } from "@wagmi/core";
 import { getPublicClient } from "@wagmi/core";
@@ -10,36 +11,36 @@ import { useBlockNumber } from "wagmi";
 import { useEffect } from "react";
 
 export default function BattlesHistory() {
-  const [fighters, setFighters] = useState([]);
+  const [battles, setBattles] = useState([]);
   const account = getAccount();
   const publicClient = getPublicClient();
   const { data } = useBlockNumber();
 
   const contract = getContract({
     address: SEPOLIA_PROMPT_FIGHTERS_NFT,
-    abi: IPromptFightersCollection.abi,
+    abi: IFightMatchermaker.abi,
   });
 
   async function getEvents() {
     return await publicClient.getContractEvents({
       address: SEPOLIA_PROMPT_FIGHTERS_NFT,
-      abi: IPromptFightersCollection.abi,
-      eventName: "PromptFighters__NftMinted",
+      abi: IFightMatchermaker.abi,
+      eventName: "FightMatchmaker__FightRequestedTo",
       args: {
-        owner: account.address,
+        challengee: account.address,
       },
       fromBlock: 4788494n,
       toBlock: data,
     });
   }
 
-  async function getFighter(nftId) {
+  async function getBattle(battleId) {
     //const prompt
     const prompt = await publicClient.readContract({
       address: SEPOLIA_PROMPT_FIGHTERS_NFT,
       abi: IPromptFightersCollection.abi,
       functionName: "getPromptOf",
-      args: [nftId],
+      args: [battleId],
     });
     const name = prompt.split("-")[0];
     return (
@@ -73,18 +74,20 @@ export default function BattlesHistory() {
     );
   }
 
+  // EXTRACT FIGHT DATA FROM LOGS AND FOR EACH BATTLE AND SETS THE BATTLES ARRAY STATE
   useEffect(() => {
     getEvents().then(async (logs) => {
-      const nftIds = logs.map((log) => log.args.nftId);
-      setFighters(await Promise.all(nftIds.map((nftId) => getFighter(nftId))));
+      const battleIds = logs.map((log) => log.args.nftId); // replace nftId with battleId
+      console.log(logs)
+      setBattles(await Promise.all(battleIds.map((battleId) => getBattle(battleId))));
     });
-  }, [contract]);
+  }, []);
 
   return (
     <div className=" flex flex-col relative h-full w-1/2">
       <h1>Battle history</h1>
       <div className=" h-full w-full flex flex-col gap-1 overflow-y-scroll bg-white shadow-md rounded px-8 pt-6 py-6">
-        {fighters.map((fighter) => fighter)}
+        {battles}
       </div>
     </div>
   );

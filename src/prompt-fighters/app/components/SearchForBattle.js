@@ -24,7 +24,6 @@ export default function SearchForBattle() {
   });
 
   // FETCH YOUR NFTS FROM BLOCKCHAIN TO FILL OPTION DROPDOWN MENU
-
   async function getNftMintedEvents() {
     return await publicClient.getContractEvents({
       address: SEPOLIA_PROMPT_FIGHTERS_NFT,
@@ -65,7 +64,7 @@ export default function SearchForBattle() {
         await Promise.all(nftIds.map((nftId) => getFighter(nftId)))
       );
     });
-  }, [contract]);
+  }, []);
 
   // SUBMIT FIGHT REQUEST
 
@@ -84,17 +83,26 @@ export default function SearchForBattle() {
     const t = e.target;
     const encodedParams = encodeAbiParameters(
       IFightMatchermaker.abi[29].inputs,
-      [{
-        challengerNftId: e.target[0].value,
-        minBet: e.target[1].value,
-        acceptanceDeadline: e.target[2].value,
-        challengee: e.target[3].value,
-        challengeeNftId: e.target[4].value,
-      }],
-    )
-    console.log(encodedParams)
-    //FIX ERROR HERE
-    requestFightWrite({ args: [encodedParams] });
+      [
+        {
+          challengerNftId: e.target[0].value,
+          minBet: e.target[1].value,
+          acceptanceDeadline: e.target[2].value,
+          challengee: e.target[3].value,
+          challengeeNftId: e.target[4].value,
+        },
+      ]
+    );
+    const FightRequest = {
+      challengerNftId: Number(e.target[0].value),
+      minBet: Number(e.target[1].value),
+      acceptanceDeadline: Number(e.target[2].value),
+      challengee: e.target[3].value,
+      challengeeNftId: Number(e.target[4].value),
+    };
+    // TODO: FIX SUBMIT FIGHT REQUEST
+    console.log(encodedParams);
+    requestFightWrite({ args: [FightRequest] });
   }
 
   return (
@@ -120,7 +128,7 @@ export default function SearchForBattle() {
                   id="challengerNftId"
                   name="challengerNftId"
                 >
-                  {yourFighters.map((fighter) => fighter)}
+                  {yourFighters}
                 </select>
               </div>
               <div>
@@ -193,6 +201,7 @@ export default function SearchForBattle() {
           </div>
         </div>
         <div>
+          {/* TODO: Fight ids requested to connected account and display as option list in Fight Id, */}
           <h1>Accept Fight Request</h1>
           <div className="bg-white shadow-md rounded p-4">
             <form
