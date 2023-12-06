@@ -43,7 +43,7 @@ export default function BattlesHistory() {
     });
     const name = prompt.split("-")[0];
     return (
-      <div className=" bg-green-400 flex flex-col justify-center p-2  border border-gray-400 rounded leading-tight focus:outline-none focus:shadow-outline">
+      <div key={nftId} className=" bg-green-400 flex flex-col justify-center p-2  border border-gray-400 rounded leading-tight focus:outline-none focus:shadow-outline">
         <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
           Battle Id: BATTLE ID
         </h1>

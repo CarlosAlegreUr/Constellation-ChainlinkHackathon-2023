@@ -26,7 +26,7 @@ export default function MintForm() {
 
   return (
     <>
-      <div className="h-[650px] w-3/6">
+      <div className="flex flex-col h-full w-3/6">
         <h1>Create a New Fighter</h1>
         <form
           className="h-full bg-white shadow-md rounded px-8 pt-6 pb-8"

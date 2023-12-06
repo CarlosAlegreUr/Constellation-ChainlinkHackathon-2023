@@ -17,7 +17,7 @@ export default function Create() {
       <h2 className=" text-2xl pt-8">
         Fighters are customized NFTs stored on-chain
       </h2>
-      <div className=" px-48 w-full flex flex-row justify-between pt-16 gap-8">
+      <div className=" h-[750px] px-48 w-full flex flex-row justify-between pt-16 gap-8">
         <MintFrom />
         <YourFighters />
       </div>
