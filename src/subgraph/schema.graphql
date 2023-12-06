@@ -1,0 +1,22 @@
+type FigthAccepted @entity {
+  id: Bytes!
+  challenger: Bytes! # address
+  challengee: Bytes! # address
+  timestamp: BigInt! # uint256
+  fighterChallengerId: BigInt! # Id reference to Fighter
+  fighterChallengeeId: BigInt! # Id reference to Fighter
+  betChallenguer: BigInt! # uint256
+  betChallenguee: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Figther @entity {
+  id: ID!
+  owner: Bytes! # address
+  funcResponse: String! # string
+  funcError: String! # string
+  timestamp: BigInt! # uint256
+  blockNumber: BigInt!
+}

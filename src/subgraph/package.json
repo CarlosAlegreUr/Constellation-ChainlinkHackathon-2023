@@ -1,0 +1,22 @@
+{
+  "name": "PromptFigthers",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ PromptFigthers",
+    "create-local": "graph create --node http://localhost:8020/ PromptFigthers",
+    "remove-local": "graph remove --node http://localhost:8020/ PromptFigthers",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 PromptFigthers",
+    "test": "graph test"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.62.0",
+    "@graphprotocol/graph-ts": "0.30.0",
+    "dotenv": "^16.3.1",
+    "ethers": "^5.7.2"
+  },
+  "devDependencies": {
+    "matchstick-as": "0.5.0"
+  }
+}
