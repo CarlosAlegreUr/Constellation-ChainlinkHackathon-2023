@@ -39,7 +39,7 @@ address constant PLAYER_FOR_FIGHTS = YOUR_OTHER_ADDRESS; // 🟢
    - An [ETH-Faucet](https://sepoliafaucet.com/).
    - [LINK-Official-Faucet](https://faucets.chain.link/) that also provides AVL if connected to AVL chains like Fuji.
 
-### Settning up Functions Subscriptions 🔢
+### Setting up Functions Subscriptions 🔢
 
 1. In this example we won't fight in Fuji so you will only need a subscription
    to Sepolia --> [Chainlink Functions Sepolia Subs UI](https://functions.chain.link/)
@@ -109,7 +109,7 @@ send 1 to Fuji and back.
 Run it 3 times for 3 NFTs.
 
 > 📘 **Note** ℹ️: If you want them to have differnet
-> prompts change the `VALID_PROMPT` value in [Utils.sol](../contract/Utils.sol). Make them short though we don't have length checkers yet. Like 3 words as much in each field.
+> prompts change the `VALID_PROMPT` value in [Utils.sol](../contract/Utils.sol). Make them short though we don't have length checkers yet. Like 3 words at most in each field.
 
 ```bash
 forge script script/eth-MintNft.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
