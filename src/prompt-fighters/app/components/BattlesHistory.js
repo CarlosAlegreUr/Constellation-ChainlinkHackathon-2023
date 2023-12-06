@@ -78,6 +78,7 @@ export default function BattlesHistory() {
   useEffect(() => {
     getEvents().then(async (logs) => {
       const battleIds = logs.map((log) => log.args.nftId); // replace nftId with battleId
+      // battle id is deducted from keccack256(challenger, challengerid, challnengee, challengeeid)
       console.log(logs)
       setBattles(await Promise.all(battleIds.map((battleId) => getBattle(battleId))));
     });

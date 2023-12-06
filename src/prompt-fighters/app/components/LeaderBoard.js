@@ -77,8 +77,8 @@ export default function LeaderBoard() {
   }, [contract]);
 
   return (
-      <div className=" flex overflow-y-scroll w-full h-full bg-white rounded m-8">
-        <div className=" flex flex-col h-0 w-full m-3 gap-1">
+      <div className=" flex overflow-y-scroll w-full h-full bg-white rounded my-8">
+        <div className=" flex flex-col h-0 w-full m-4 gap-1">
           {fighters}
         </div>
       </div>
