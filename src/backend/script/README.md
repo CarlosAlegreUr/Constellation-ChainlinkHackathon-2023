@@ -18,9 +18,9 @@
    - Get a Sepolia RPC_URL node provider from [here](https://www.alchemy.com/).
    - Get an OpenAI API key. (Not needed in this PoC yet)
 
-### Settning up wallets 💰
+### Setting up wallets 💰
 
-2. Set your addreeses value in the [Utils.sol](../contracts/Utils.sol) file. It's very visible just enter the file.
+2. Set your addresses value in the [Utils.sol](../contracts/Utils.sol) file. It's very visible just enter the file.
 
 ```solidity
 // Utils.sol
@@ -39,7 +39,7 @@ address constant PLAYER_FOR_FIGHTS = YOUR_OTHER_ADDRESS; // 🟢 <--
    - An [ETH-Faucet](https://sepoliafaucet.com/).
    - [LINK-Official-Faucet](https://faucets.chain.link/) that also provides AVL if connected to AVL chains like Fuji.
 
-### Settning up Functions Subscriptions 🔢
+### Setting up Functions Subscriptions 🔢
 
 1. In this example we won't fight in Fuji so you will only need a subscription
    to Sepolia --> [Chainlink Functions Sepolia Subs UI](https://functions.chain.link/)
