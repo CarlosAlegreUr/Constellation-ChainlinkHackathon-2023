@@ -139,8 +139,11 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         IAutomationRegistry _registry,
         IAutomationRegistrar _registrar,
         IAutomationRegistrar.RegistrationParams memory _params
-        // uint256 upkeepId NOTE: tried to register from other account but says auto-approve disabled
-    ) external initializeActions {
+    )
+        // uint256 upkeepID // NOTE: tried to register from other account but says auto-approve disabled
+        external
+        initializeActions
+    {
         /*SP_MARK_START*/
         // @dev For some reason initializing the Automation with auto-approval has been disabled
         // if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
@@ -167,6 +170,21 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
         (bool success,) = address(this).call(abi.encodeWithSignature("initializeReferences(address[])", _references));
         require(success, "Failure intializing references");
+    }
+
+    // TODO: delete after testing
+    function setForwarderDuh(address forwarder) external {
+        require(msg.sender == DEPLOYER);
+        i_AUTOMATION_FORWARDER = IAutomationForwarder(forwarder);
+    }
+
+    // TODO: delete after testing
+    uint256 public st_upkeepId;
+
+    // TODO: delete after testing
+    function setUpkeepId(uint256 uid) external {
+        require(msg.sender == DEPLOYER);
+        st_upkeepId = uid;
     }
 
     /**
@@ -210,6 +228,7 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
             });
             s_fightIdToFight[fightId] = f;
 
+            // TODO: use FightRequestedTo event when address or nft specified
             emit FightMatchmaker__FightRequested(
                 msg.sender, _fightReq.challengerNftId, fightId, msg.value, block.timestamp
             );

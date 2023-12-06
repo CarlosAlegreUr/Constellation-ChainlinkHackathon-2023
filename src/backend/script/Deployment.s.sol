@@ -8,6 +8,12 @@ import {DeployFightsContracts} from "./deployment-processes/DeploymentBase.s.sol
 import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
 import {FightMatchmaker} from "../contracts/fight-contracts/FightMatchmaker.sol";
 
+import {IAutomationRegistrar} from "../contracts/interfaces/IAutomation.sol";
+import {IAutomationRegistry} from "../contracts/interfaces/IAutomation.sol";
+import {ILogAutomation} from "@chainlink/automation/interfaces/ILogAutomation.sol";
+import {Log} from "@chainlink/automation/interfaces/ILogAutomation.sol";
+import {IAutomationForwarder} from "@chainlink/automation/interfaces/IAutomationForwarder.sol";
+
 import "../contracts/Utils.sol";
 import "forge-std/console.sol";
 
@@ -35,15 +41,14 @@ contract PromptFightersDeploy is DeployFightsContracts {
             super.run();
 
             // Deploy collection
+            // TODO: uncommen when finish testing
             console.log("Deploying collection...");
             PromptFightersNFT promptFighters = new PromptFightersNFT(
                 ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
             );
             console.log("+++++++++++++++++++++++++++++++++++++++");
-            console.log("+++++++++++++++++++++++++++++++++++++++");
             console.log("PromptFighters deployed at:");
             console.log(address(promptFighters));
-            console.log("+++++++++++++++++++++++++++++++++++++++");
             console.log("+++++++++++++++++++++++++++++++++++++++");
 
             // Intialize FightMatchmaker as it required frist the collection address.
@@ -51,12 +56,21 @@ contract PromptFightersDeploy is DeployFightsContracts {
             address[] memory referencedContracts = new address[](3);
             referencedContracts[0] = address(fightExecutor);
             referencedContracts[1] = address(betsVault);
-            referencedContracts[2] = address(address(promptFighters));
-            // // Fund automation registration with LINK
-            link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
+            referencedContracts[2] = address(promptFighters);
+            
+            // Fund automation registration with LINK
+            console.log("Initializing matchmaker...");
+            link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION_EXAGERATED);
             fightMatchmaker.initializeReferencesAndAutomation(
                 referencedContracts, automationRegistry, automationRegistrar, automationRegistration
             );
+            console.log("Done.");
+
+            console.log("++++++++++++++++++++++++++++++++++++++++++");
+            console.log("Check Functions subscription here:");
+            string memory s = "https://functions.chain.link/sepolia/";
+            console.log(string(abi.encodePacked(s, intToString(ETH_SEPOLIA_FUNCS_SUBS_ID))));
+            console.log("++++++++++++++++++++++++++++++++++++++++++");
         }
 
         // Fuji
@@ -73,13 +87,13 @@ contract PromptFightersDeploy is DeployFightsContracts {
             console.log("Avl barracks deployed at:");
             console.log(address(barracks));
             console.log("+++++++++++++++++++++++++++++++++++++++");
-            console.log("+++++++++++++++++++++++++++++++++++++++");
 
             // Initialize barracks
             console.log("Initializing CCIP on barrracks...");
             address[] memory referencedContracts = new address[](3);
             referencedContracts[0] = DEPLOYED_SEPOLIA_COLLECTION;
             barracks.initializeReferences(referencedContracts);
+            console.log("Done.");
 
             // Intialize FightMatchmaker as it required frist the barracks address.
             // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
@@ -88,12 +102,19 @@ contract PromptFightersDeploy is DeployFightsContracts {
             referencedContracts[2] = address(barracks);
             // TODO: registering automation in Fuji not working, revert message says its a direct EVM error
             // in Chainlinks Register Logic B2_1 contract
-
             // Fund automation registration with LINK
             link_token.transfer(address(fightMatchmaker), LINK_AMOUNT_FOR_REGISTRATION);
+            console.log("Initializing matchmaker...");
             fightMatchmaker.initializeReferencesAndAutomation(
                 referencedContracts, automationRegistry, automationRegistrar, automationRegistration
             );
+            console.log("Done.");
+
+            console.log("++++++++++++++++++++++++++++++++++++++++++");
+            console.log("Check Functions subscription here:");
+            string memory s = "https://functions.chain.link/fuji/";
+            console.log(string(abi.encodePacked(s, intToString(AVL_FUJI_FUNCS_SUBS_ID))));
+            console.log("++++++++++++++++++++++++++++++++++++++++++");
         }
 
         // NOTE: not tested
@@ -140,6 +161,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             address[] memory referencedContracts = new address[](1);
             referencedContracts[0] = DEPLOYED_FUJI_BARRACKS;
             collectionContract.initializeReferences(referencedContracts);
+            console.log("Done.");
             vm.stopBroadcast();
         } else {
             revert("MUST BE SEPOLIA");
@@ -170,6 +192,39 @@ contract PromptFightersDeploy is DeployFightsContracts {
             vm.stopBroadcast();
         } else {
             revert("MUST BE SEPOLIA");
-        }
-    }*/
+        }*/
+
+    function initFujiMatchmaker() public {
+        // NOTE: code to register automation
+        address[] memory referencedContracts = new address[](3);
+
+        referencedContracts[0] = FUJI_FIGHT_EXECUTOR;
+        referencedContracts[1] = FUJI_BETS_VAULT;
+        referencedContracts[2] = DEPLOYED_FUJI_BARRACKS;
+
+        // IAutomationRegistry automationRegistry  ; //= IAutomationRegistry(AVL_FUJI_REGISTRY);
+        // IAutomationRegistrar automationRegistrar; //= IAutomationRegistrar(AVL_FUJI_REGISTRAR);
+        // uint256 automationBalanceThreshold = FUJI_AUTOMATION_THRESHOLD_BALANCE;
+        // IAutomationRegistrar.RegistrationParams memory automationRegistration;
+        //  = IAutomationRegistrar.RegistrationParams({
+        // name: "Fuji Automation PromptFighters",
+        // encryptedEmail: new bytes(0),
+        // upkeepContract: address(0), // Set at construction time address(this)
+        // gasLimit: GAS_LIMIT_FUJI_AUTOMATION,
+        // adminAddress: address(0), // Set at construction time address(this)
+        // triggerType: 1,
+        // checkData: new bytes(0),
+        // triggerConfig: new bytes(0), // Set at construction time, requires address(this)
+        // offchainConfig: new bytes(0),
+        // amount: LINK_AMOUNT_FOR_REGISTRATION
+        // });
+
+        vm.startBroadcast();
+        // Fund automation registration with LINK
+        LinkTokenInterface(AVL_FUJI_LINK).transfer(FUJI_FIGHT_MATCHMAKER, LINK_AMOUNT_FOR_REGISTRATION);
+        FightMatchmaker(FUJI_FIGHT_MATCHMAKER).initializeReferencesAndAutomation(
+            referencedContracts, automationRegistry, automationRegistrar, automationRegistration
+        );
+        vm.stopBroadcast();
+    }
 }

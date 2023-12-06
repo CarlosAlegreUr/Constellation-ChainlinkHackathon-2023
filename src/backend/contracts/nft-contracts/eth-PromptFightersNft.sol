@@ -104,7 +104,9 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
         // Call LINK contract transferFrom to fund the Chainlink Functions call.
         // Amount is arbitrary now but on Sepolia tests so far it costs around 0.25 LINK.
         uint256 amount = 0.5 ether;
-        bool success = i_LINK_TOKEN.transferFrom(msg.sender, address(this), amount);
+        // bool success = i_LINK_TOKEN.transferFrom(msg.sender, address(this), amount);
+        bool success =
+            i_LINK_TOKEN.transferAndCall(ETH_SEPOLIA_FUNCTIONS_ROUTER, amount, abi.encode(ETH_SEPOLIA_FUNCS_SUBS_ID));
         require(success, "Fail funding LINK");
 
         // Calls Chainlink Funcs, they call GPT to see if the NFT is not too overpowered
@@ -145,28 +147,29 @@ contract PromptFightersNFT is IPromptFightersCollection, ERC721, CcipNftBridge, 
      * @dev It finally mints the NFT after calling ChainlinkFunctions which deems
      * the promt's validity trhough OpenAI's API.
      *
+     * @notice Deemed invalid prompts are returned as a string with one blank space -> " ".
+     *
      * @param response If its a success the prompt the user wrote is saved here as a string
      * if not its just an empty string.
      * @param err If ther is an exeution error it will be sent here.
      */
     function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
-        // For some reason when there is an error err.length > 0. TODO: figure out how to no enter
-        // this "if" when error ocures
-        // This should work: TODO test it, as of now all promts are minted
-        // if(keccak256(response) == keccak256("")){
-        // INVALID PROMPT
-        // }
+        // NOTE: For some reason when there is not an error err.length > 0.
+        // Thus we make invalid prompts return an empty string.
+        if (keccak256(response) != keccak256(" ")) {
+            if (s_reqIdToUser[requestId] != address(0)) {
+                uint256 tokenId = _nextTokenId;
+                _nextTokenId++;
 
-        if (s_reqIdToUser[requestId] != address(0)) {
-            uint256 tokenId = _nextTokenId;
-            _nextTokenId++;
+                // Special traits on-chain
+                s_isOnChain[tokenId] = true;
+                _safeMint(s_reqIdToUser[requestId], tokenId);
 
-            // Special traits on-chain
-            s_isOnChain[tokenId] = true;
-            _safeMint(s_reqIdToUser[requestId], tokenId);
-
-            s_nftIdToPrompt[tokenId] = response;
-            emit PromptFighters__NftMinted(ownerOf(tokenId), tokenId, response, err, block.timestamp);
+                s_nftIdToPrompt[tokenId] = response;
+                emit PromptFighters__NftMinted(ownerOf(tokenId), tokenId, response, err, block.timestamp);
+            }
+        } else {
+            emit PromptFighters__MintingNftDeemedInvalid(s_reqIdToUser[requestId], requestId, block.timestamp);
         }
         delete s_reqIdToUser[requestId];
     }

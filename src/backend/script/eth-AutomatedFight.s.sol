@@ -62,10 +62,16 @@ contract AutomatedFight is Script {
         vm.stopBroadcast();
     }
 
+    function trans() public {
+        vm.startBroadcast();
+        collectionContract.transferFrom(DEPLOYER, PLAYER_FOR_FIGHTS, 2);
+        vm.stopBroadcast();
+    }
+
     function request() public {
         vm.startBroadcast();
         IFightMatchmaker.FightRequest memory fr = IFightMatchmaker.FightRequest({
-            challengerNftId: 1,
+            challengerNftId: 3,
             minBet: 0.001 ether,
             acceptanceDeadline: block.timestamp + 1 days,
             challengee: PLAYER_FOR_FIGHTS,
@@ -103,6 +109,15 @@ contract AutomatedFight is Script {
         LinkTokenInterface(ETH_SEPOLIA_LINK).approve(address(_registrar), _params.amount);
         uint256 upkeepID = _registrar.registerUpkeep(_params);
         console.log(upkeepID);
+        vm.stopBroadcast();
+    }
+
+    function manualsetup() public {
+        vm.startBroadcast();
+        uint256 uid = 98785675887033837089720433517441719857293902855493994579632517239481229958059;
+        address forwarder = 0xD497BDE78255a86632445d29B2A74d8f2a913aB9;
+        FightMatchmaker(mtch).setForwarderDuh(forwarder);
+        FightMatchmaker(mtch).setUpkeepId(uid);
         vm.stopBroadcast();
     }
 

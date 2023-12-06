@@ -35,16 +35,16 @@ abstract contract CcipNftBridge is ICcipNftBridge, CCIPReceiver, ReferencesIniti
     mapping(uint256 => bool) internal s_isFighting;
     mapping(uint256 => bool) internal s_isOnChain;
 
-    IFightMatchmaker private immutable i_FIGHT_MATCHMAKER;
+    // IFightMatchmaker private immutable i_FIGHT_MATCHMAKER;
 
     // TODO: delete after testing
-    // IFightMatchmaker i_FIGHT_MATCHMAKER;
+    IFightMatchmaker i_FIGHT_MATCHMAKER;
 
     // TODO: delete after testing
-    // function setMatchmaker(address m) external {
-    // require(DEPLOYER == msg.sender);
-    // i_FIGHT_MATCHMAKER = IFightMatchmaker(m);
-    // }
+    function setMatchmaker(address m) external {
+        require(DEPLOYER == msg.sender);
+        i_FIGHT_MATCHMAKER = IFightMatchmaker(m);
+    }
 
     string private constant HANDLE_RECEIVE_NFT_FUNCTION_SIG = "_updateNftStateOnReceive(uint256,address,string)";
 

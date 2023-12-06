@@ -165,38 +165,42 @@ contract FightExecutor is
         require(s_reqIsValid[requestId], "Unexpected funcs request ID.");
         delete s_reqIsValid[requestId];
 
-        // @dev TODO: ADD A WAY OF MARKING FALIED RESPONSES
-        // Event emitted on Failure
-        emit FightExecutor__FightStoryFuncsError(requestId, err, block.timestamp);
+        // NOTE: For some reason when there is not an error err.length > 0.
+        // Thus we make invalid or flawed fights return an empty string.
+        if (keccak256(response) != keccak256(" ")) {
+            // Success, call VRF to generate winner
+            uint256 newReqId = _requestRandomWinner();
+            _userConsumesFunds(s_requestsIdToUser[requestId]);
+            delete s_requestsIdToUser[requestId];
+            _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
 
-        // Success, call VRF to generate winner
-        uint256 newReqId = _requestRandomWinner();
-        _userConsumesFunds(s_requestsIdToUser[requestId]);
-        delete s_requestsIdToUser[requestId];
-        _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
-
-        // From this event front-end will parse the story generated.
-        emit FightExecutor__FightStoryFuncsResponse(requestId, response, block.timestamp);
+            // From this event front-end will parse the story generated.
+            emit FightExecutor__FightStoryFuncsResponse(requestId, response, block.timestamp);
+        } else {
+            // Event emitted on Failure
+            emit FightExecutor__FightStoryFuncsError(requestId, err, block.timestamp);
+        }
     }
 
-    event FightExecutor__FightStoryFuncsResponseMock(bytes32 requestId, bytes response, uint256 timestamp);
+    event FightExecutor__FightStoryFuncsResponseMock(bytes32 indexed requestId, bytes response, uint256 timestamp);
 
     function fulfillRequestMock(bytes32 requestId, bytes memory response, bytes memory err) external onlyBackend {
         require(s_reqIsValid[requestId], "Unexpected funcs request ID.");
         delete s_reqIsValid[requestId];
 
-        // @dev TODO: ADD A WAY OF MARKING FALIED RESPONSES
-        // Event emitted on Failure
-        emit FightExecutor__FightStoryFuncsError(requestId, err, block.timestamp);
+        if (keccak256(response) != keccak256(" ")) {
+            // Success, call VRF to generate winner
+            uint256 newReqId = _requestRandomWinner();
+            _userConsumesFunds(s_requestsIdToUser[requestId]);
+            delete s_requestsIdToUser[requestId];
+            _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
 
-        // Success, call VRF to generate winner
-        uint256 newReqId = _requestRandomWinner();
-        _userConsumesFunds(s_requestsIdToUser[requestId]);
-        delete s_requestsIdToUser[requestId];
-        _updateReqIdToFightId(requestId, keccak256(abi.encode(newReqId)));
-
-        // From this event front-end will parse the story generated.
-        emit FightExecutor__FightStoryFuncsResponseMock(requestId, response, block.timestamp);
+            // From this event front-end will parse the story generated.
+            emit FightExecutor__FightStoryFuncsResponseMock(requestId, response, block.timestamp);
+        } else {
+            // Event emitted on Failure
+            emit FightExecutor__FightStoryFuncsError(requestId, err, block.timestamp);
+        }
     }
 
     /**

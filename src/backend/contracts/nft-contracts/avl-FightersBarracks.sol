@@ -34,11 +34,13 @@ contract FightersBarracks is CcipNftBridge {
         require(_router == AVL_FUJI_CCIP_ROUTER, "Not allowed router.");
     }
 
-    // // todo: delete after testing
-    // function setOnChain(uint256 nftid) external {
-    //     require(msg.sender == DEPLOYER);
-    //     s_isOnChain[nftid] = true;
-    // }
+    //TODO: delete after testing
+    function setIsOnChain(uint256 nftId, bool isOnChain, string memory prompt) external {
+        require(DEPLOYER == msg.sender);
+        s_isOnChain[nftId] = isOnChain;
+        s_nftIdToPrompt[nftId] = prompt;
+        s_nftIdToOwner[nftId] = nftId == 2 ? PLAYER_FOR_FIGHTS : msg.sender;
+    }
 
     //******************** */
     // INTERNAL FUNCTIONS

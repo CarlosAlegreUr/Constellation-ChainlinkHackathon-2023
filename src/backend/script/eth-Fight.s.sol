@@ -1,92 +1,113 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {PromptFightersNFT} from "../contracts/nft-contracts/eth-PromptFightersNft.sol";
+import {CcipNftBridge} from "../contracts/CcipNftBridge.sol";
 import {FightMatchmaker} from "../contracts/fight-contracts/FightMatchmaker.sol";
-import {IFightMatchmaker} from "../contracts/interfaces/IFightMatchmaker.sol";
 import {FightExecutor} from "../contracts/fight-contracts/FightExecutor.sol";
+
+import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
 
 import "../contracts/Utils.sol";
 
 import {Script, console2} from "forge-std/Script.sol";
 import "forge-std/console.sol";
 
-import {LinkTokenInterface} from "@chainlink/shared/interfaces/LinkTokenInterface.sol";
-
 /**
- * @dev Executes a fight agains yourself in Sepolia. You must have minted 2 NFTS.
- * Nft id 1 and 2 must be yours.
+ * @dev Executes a fight on Sepolia or Fuji.
+ *
+ * Call requestF() to request the fight.
+ * Call acceptF() to accept the fight.
+ * The fight is defined in the Utils.sol file.
  */
 contract Fight is Script {
-    PromptFightersNFT public collectionContract;
+    CcipNftBridge public collectionContract;
     FightMatchmaker public matchmaker;
     FightExecutor public executor;
-    LinkTokenInterface public linkToken = LinkTokenInterface(ETH_SEPOLIA_LINK);
-    IFightMatchmaker.FightRequest fr;
 
-    uint256 public CHALLENGER_NFT_ID = 1;
-    uint256 public CHALLENGEE_NFT_ID = 2;
+    LinkTokenInterface public linkToken;
 
-    function setUp() public virtual {
-        collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
-        matchmaker = FightMatchmaker(SEPOLIA_FIGHT_MATCHMAKER_OFFICIAL);
-        executor = FightExecutor(SEPOLIA_FIGHT_EXECUTOR_OFFICIAL);
+    FightToExecuteInScripts public fightToExecute = new FightToExecuteInScripts();
+    IFightMatchmaker.FightRequest public fr = fightToExecute.getFReq();
 
-        fr = IFightMatchmaker.FightRequest({
-            challengerNftId: CHALLENGER_NFT_ID,
-            minBet: 0.001 ether,
-            acceptanceDeadline: block.timestamp + 1 days,
-            challengee: PLAYER_FOR_FIGHTS,
-            challengeeNftId: CHALLENGEE_NFT_ID
-        });
-    }
+    string public CHAIN_ON_NAME;
+    string public CHAIN_ON_SUBID_FUNCTIONS;
+    string public CHAIN_ON_SUBID_VRF;
 
-    function run() public virtual {
-        vm.startBroadcast();
-
+    function setUp() public {
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            // Send NFT2 to player so he can accept fight
-            console.log("Sending NFTid 2 to player so he can fight...");
-            collectionContract.transferFrom(DEPLOYER, PLAYER_FOR_FIGHTS, CHALLENGEE_NFT_ID);
-
-            // Fund Chainlink Subscriptions
-            console.log("Funding LINK consumption from fight contracts...");
-            linkToken.approve(address(executor), 1 ether);
-            executor.fundMySubscription(1 ether);
-
-            console.log("Trying to request fight...");
-            matchmaker.requestFight{value: 0.005 ether}(fr);
+            collectionContract = CcipNftBridge(DEPLOYED_SEPOLIA_COLLECTION);
+            matchmaker = FightMatchmaker(SEPOLIA_FIGHT_MATCHMAKER);
+            linkToken = LinkTokenInterface(ETH_SEPOLIA_LINK);
+            executor = FightExecutor(SEPOLIA_FIGHT_EXECUTOR);
+            CHAIN_ON_NAME = "sepolia";
+            CHAIN_ON_SUBID_FUNCTIONS = intToString(ETH_SEPOLIA_FUNCS_SUBS_ID);
+            CHAIN_ON_SUBID_VRF = intToString(executor.getVrfSubsId());
         }
 
+        if (block.chainid == AVL_FUJI_CHAIN_ID) {
+            collectionContract = CcipNftBridge(DEPLOYED_FUJI_BARRACKS);
+            matchmaker = FightMatchmaker(FUJI_FIGHT_MATCHMAKER);
+            linkToken = LinkTokenInterface(AVL_FUJI_LINK);
+            executor = FightExecutor(FUJI_FIGHT_EXECUTOR);
+            CHAIN_ON_NAME = "fuji";
+            CHAIN_ON_SUBID_FUNCTIONS = intToString(AVL_FUJI_FUNCS_SUBS_ID);
+            CHAIN_ON_SUBID_VRF = intToString(executor.getVrfSubsId());
+        }
+    }
+
+    function run() public {}
+
+    function requestF() public {
+        vm.startBroadcast();
+
+        // Fund Chainlink Subscriptions: Functions and VRF
+        console.log("Funding LINK consumption of executor contract...");
+        uint256 funds = 12 ether;
+        linkToken.approve(address(executor), funds);
+        executor.fundMySubscription(funds);
+        console.log("Funded.");
+
+        console.log(msg.sender);
+        console.log(fr.challengerNftId);
+        console.log(fr.minBet);
+        console.log(fr.acceptanceDeadline);
+        console.log(fr.challengee);
+        console.log(fr.challengeeNftId);
+
+        console.log("Trying to request fight...");
+        matchmaker.requestFight{value: 0.005 ether}(fr);
+        console.log("Fight Requested.");
+        console.log("FightID:");
+        console.logBytes32(fightToExecute.s_fighReqFightID());
+
         vm.stopBroadcast();
     }
 
-    function accept() public {
+    function acceptF() public {
         vm.startBroadcast();
 
-        bytes32 fightId = matchmaker.getFightId(DEPLOYER, fr.challengerNftId, fr.challengee, fr.challengeeNftId);
+        bytes32 fightId = fightToExecute.s_fighReqFightID();
         console.log("Trying to accept fight...");
-        matchmaker.acceptFight{value: 0.005 ether}(fightId, CHALLENGEE_NFT_ID);
+        matchmaker.acceptFight{value: 0.005 ether}(fightId, fightToExecute.ACCEPTOR_NFT_ID());
+        console.log("Fight accepted. Wait till Functions and VRF are executed.");
+        console.log("++++++++++++++++++++++++++++++++++++++++++");
+        console.log("Check Functions request status at:");
+        console.log("https://functions.chain.link/", CHAIN_ON_NAME, "/", CHAIN_ON_SUBID_FUNCTIONS);
+        console.log("++++++++++++++++++++++++++++++++++++++++++");
+        console.log("Check VRF request status at:");
+        console.log("https://vrf.chain.link/", CHAIN_ON_NAME, "/", CHAIN_ON_SUBID_VRF);
+        console.log("++++++++++++++++++++++++++++++++++++++++++");
 
         vm.stopBroadcast();
     }
 
     // TODO: delete when finish tensting
-    // function change() public {
-    //     vm.startBroadcast();
-
-    //     address add = mtch;
-    //     collectionContract.setMatchmaker(add);
-    //     vm.stopBroadcast();
-    // }
-
-    // TODO: delete when finish tensting
-    function settle() public {
+    function change() public {
         vm.startBroadcast();
-        matchmaker.settleFight(
-            0xeefa5ba8b831d9208f3fdbe74caa31a6fd8dddf340aed5e97a8c6bea81237cc1,
-            IFightMatchmaker.WinningAction.REQUESTER_WIN
-        );
+
+        address add = SEPOLIA_FIGHT_MATCHMAKER;
+        collectionContract.setMatchmaker(add);
+
         vm.stopBroadcast();
     }
 }

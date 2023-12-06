@@ -31,8 +31,8 @@ interface IFightExecutor is IChainlinkSubsManager {
     );
 
     event FightExecutor__FightsStoriesGenerated(bytes indexed firstEnd, bytes indexed secondEnd);
-    event FightExecutor__FightStoryFuncsResponse(bytes32 indexed requestId, bytes indexed response, uint256 timestamp);
-    event FightExecutor__FightStoryFuncsError(bytes32 indexed requestId, bytes indexed err, uint256 timestamp);
+    event FightExecutor__FightStoryFuncsResponse(bytes32 indexed requestId, bytes response, uint256 timestamp);
+    event FightExecutor__FightStoryFuncsError(bytes32 indexed requestId, bytes err, uint256 timestamp);
 
     event FightExecutor__FightResultVrfReqSent(uint64 indexed vrfSubId, uint256 indexed requestId, uint256 timestamp);
     event FightExecutor__FightResultVrfWinnerIs(bytes32 indexed fightId, uint256 indexed winnerBit, uint256 timestamp);
@@ -51,10 +51,7 @@ interface IFightExecutor is IChainlinkSubsManager {
 
     function getRequestsIdToUser(bytes32 requestId) external view returns (address);
 
-    function getChainlinkServicesParams()
-        external
-        view
-        returns (FightExecutor__ChainlinkServicesInitParmas memory);
+    function getChainlinkServicesParams() external view returns (FightExecutor__ChainlinkServicesInitParmas memory);
 
     function getWinnerBitSize() external pure returns (uint32);
 

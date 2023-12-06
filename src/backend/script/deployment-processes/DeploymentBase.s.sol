@@ -25,28 +25,22 @@ contract DeployFightsContracts is DeploymentConfig {
         // Deploy Executor
         fightExecutor = new FightExecutor(funcs_router, vrf_router, fexecServicesInit);
         console.log("+++++++++++++++++++++++++++++++++++++++");
-        console.log("+++++++++++++++++++++++++++++++++++++++");
         console.log("FightExecutor deployed at:");
         console.log(address(fightExecutor));
-        console.log("+++++++++++++++++++++++++++++++++++++++");
         console.log("+++++++++++++++++++++++++++++++++++++++");
 
         // Deploy BetsVault
         betsVault = new BetsVault();
         console.log("+++++++++++++++++++++++++++++++++++++++");
-        console.log("+++++++++++++++++++++++++++++++++++++++");
         console.log("BetsVault deployed at:");
         console.log(address(betsVault));
-        console.log("+++++++++++++++++++++++++++++++++++++++");
         console.log("+++++++++++++++++++++++++++++++++++++++");
 
         // Deploy Matchmaker
         fightMatchmaker = new FightMatchmaker(link_token, automationBalanceThreshold);
         console.log("+++++++++++++++++++++++++++++++++++++++");
-        console.log("+++++++++++++++++++++++++++++++++++++++");
         console.log("FightMatchmaker deployed at:");
         console.log(address(fightMatchmaker));
-        console.log("+++++++++++++++++++++++++++++++++++++++");
         console.log("+++++++++++++++++++++++++++++++++++++++");
 
         // Initialize contracts

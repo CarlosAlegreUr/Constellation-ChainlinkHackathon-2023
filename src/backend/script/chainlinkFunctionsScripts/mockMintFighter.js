@@ -11,7 +11,7 @@ let result;
 if (parts[0][0] == "a") {
   result = args[0];
 } else {
-  result = "INVALID";
+  result = " ";
 }
 console.log(result);
 return Functions.encodeString(result);

@@ -10,30 +10,32 @@ import {Script, console2} from "forge-std/Script.sol";
 import "forge-std/console.sol";
 
 /**
- * @dev Settles a fight which:
- * Challenger: DEPLOYER
- * Nft Challenger: 1
- * Chanllengee: DEPLOYER
- * Challengee Nft: 2
+ * @dev Settles a fight in Sepolia as so far VRF request
+ * remain in pending state forever.
+ *
+ * @notice Makess REQUESTER win the fight.
+ *
+ * Interestingly enough, in Fuji VRF requests actually work.
  */
-contract AutomatedFight is Script {
-    FightMatchmaker public matchmaker;
+contract SettleFightWhenVRFNotReponding is Script {
+    FightMatchmaker public matchmaker = FightMatchmaker(SEPOLIA_FIGHT_MATCHMAKER);
+    FightToExecuteInScripts public fightToExecute = new FightToExecuteInScripts();
+    IFightMatchmaker.WinningAction public winner = IFightMatchmaker.WinningAction.REQUESTER_WIN;
 
-    // TODO: delete when finish tensting, add them to Utils.sol
-    address constant mtch = 0x464526fb0634c10B749DB17d735bB189f7FEFa2a;
+    function setUp() public {}
 
-    function setUp() public virtual {
-        // TODO: get matchmaker address add
-        matchmaker = FightMatchmaker(mtch);
-    }
-
-    function run() public virtual {
+    function run() public {
         vm.startBroadcast();
 
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            bytes32 fightId = matchmaker.getFightId(DEPLOYER, 1, DEPLOYER, 2);
-            console.log("Trying to request fight...");
-            matchmaker.settleFight(fightId, IFightMatchmaker.WinningAction.REQUESTER_WIN);
+            bytes32 fightId = fightToExecute.s_fighReqFightID();
+            console.log("Trying to settle fight...");
+            matchmaker.settleFight(fightId, winner);
+            console.log("Fight settled...");
+            console.log("Fight ID: ");
+            console.logBytes32(fightId);
+        } else {
+            console.log("This script is only for Sepolia");
         }
 
         vm.stopBroadcast();

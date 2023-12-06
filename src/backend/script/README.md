@@ -12,7 +12,7 @@
 
 ### Settning up `.env` 🔏
 
-1. Create and fill up an [.env](../.env.example) file with your secret values. Check [.env.example](../.env.example).
+1. Create and fill up an .env file with your secret values. Check [.env.example](../.env.example).
 
    - Get yout EtherScan API key from [here](https://etherscan.io/apis).
    - Get a Sepolia RPC_URL node provider from [here](https://www.alchemy.com/).
@@ -27,7 +27,7 @@
 
 // For now change just the parameters below
 address constant DEPLOYER = YOUR_METAMASK_ADDRESS; //🟢 <--
-address constant PLAYER_FOR_FIGHTS = YOUR_OTHER_ADDRESS; // 🟢
+address constant PLAYER_FOR_FIGHTS = YOUR_OTHER_ADDRESS; // 🟢 <--
 ```
 
 3. Fund your metamask wallet with funds. To use the contracts you will need to have 2 accounts with funds in the following chains: Sepolia and Fuji:
@@ -44,10 +44,13 @@ address constant PLAYER_FOR_FIGHTS = YOUR_OTHER_ADDRESS; // 🟢
 1. In this example we won't fight in Fuji so you will only need a subscription
    to Sepolia --> [Chainlink Functions Sepolia Subs UI](https://functions.chain.link/)
 
-2. Fund the subscription with at least 0.7 LINK. (Recomended 1.5 LINK)
+2. Fund the subscription with at least 1.5 LINK.
 
-3. Change the `ETH_SEPOLIA_FUNCS_SUBS_ID` 🟢 in the [Utils.sol](../contracts/Utils.sol) to
+3. Change the `ETH_SEPOLIA_FUNCS_SUBS_ID` 🟢 in the [Utils.sol](../contracts/Utils.sol#L33) to
    the one you just got.
+
+4. Switch the network and do the same for Fuji if you want to fight
+   in Fuji too. Thus time change `AVL_FUJI_FUNCS_SUBS_ID` [here](../contracts/Utils.sol#L34).
 
 ---
 
@@ -74,15 +77,18 @@ forge script script/Deployment.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key 
 
 > 🚧**Note 2**⚠️ : Press save on Utils.sol every time you change a value.
 
-Now in the [Utils.sol](../contracts/Utils.sol) change the `DEPLOYED_SEPOLIA_COLLECTION`, `SEPOLIA_FIGHT_MATCHMAKER` and `SEPOLIA_FIGHT_EXECUTOR` addresses values to the ones you will see logged at the beggining of the command execution in the terminal. Check the contracts on [Etherscan](https://sepolia.etherscan.io/).
+Now in the `Utils.sol` change to the value you will see logged in the console the addresses `DEPLOYED_SEPOLIA_COLLECTION` [here](../contracts/Utils.sol#L21), `SEPOLIA_FIGHT_MATCHMAKER` [here](../contracts/Utils.sol#L24) and `SEPOLIA_FIGHT_EXECUTOR` [here](../contracts/Utils.sol#L25). Check the contracts addreses and future interactions on [Etherscan](https://sepolia.etherscan.io/) if you like.
 
-Now run:
+Now lets deploy the `Fuji` contracts. Run:
 
 ```bash
 forge script script/Deployment.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast --etherscan-api-key $S_ETHERSCAN_API_KEY_VERIFY --verify
 ```
 
-Now change in [Utils.sol](../contracts/Utils.sol) change the `DEPLOYED_FUJI_BARRACKS` address value to the one you will se printed onto the screen again and then run:
+Now change in `Utils.sol` the `DEPLOYED_FUJI_BARRACKS` [here](../contracts/Utils.sol#L22) to the address you will se printed onto the screen again. Also change with the other vlaues printed the values:
+`FUJI_FIGHT_MATCHMAKER` [here](../contracts/Utils.sol#L27) and `FUJI_FIGHT_EXECUTOR` [here](../contracts/Utils.sol#L28).
+
+Then run:
 
 ```bash
 forge script script/Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
@@ -90,7 +96,7 @@ forge script script/Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $
 
 **TODO**: if we have time automate this process with chainlink tool-kit
 
-Now add a consumers from the UI in your Functions Subscription the address `DEPLOYED_SEPOLIA_COLLECTION` and `SEPOLIA_FIGHT_EXECUTOR`.
+Now add as consumers, [from the UI](https://functions.chain.link/sepolia/1739), to your Functions' subscription the addresses `DEPLOYED_SEPOLIA_COLLECTION` and `SEPOLIA_FIGHT_EXECUTOR` in the Sepolia subscription and only `FUJI_FIGHT_EXECUTOR` in the Fuji subscription.
 
 ---
 
@@ -103,16 +109,22 @@ Now add a consumers from the UI in your Functions Subscription the address `DEPL
 
 <details><summary> Mint Nfts 👨‍👨‍👧   </summary>
 
-Mint 3 NFTs, 2 of them will fight and we will
-send 1 to Fuji and back.
+Mint 4 NFTs, 2 of them will fight on Sepolia and we will
+send 2 to Fuji to make them fight and then bring them back.
 
-Run it 3 times for 3 NFTs.
+Run this command 2 times to mint NFTs to `DEPLOYER` address.
 
 > 📘 **Note** ℹ️: If you want them to have differnet
-> prompts change the `VALID_PROMPT` value in [Utils.sol](../contract/Utils.sol). Make them short though we don't have length checkers yet. Like 3 words as much in each field.
+> prompts change the `VALID_PROMPT` value in [Utils.sol](../contract/Utils.sol#L37). Make them short though we don't have length checkers yet. Like 3 words as much in each field. You have examples of valid prompts in Utils.sol.
 
 ```bash
 forge script script/eth-MintNft.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
+```
+
+Now mint 2 more NFTs to PLAYER_FOR_FIGHTS address.
+
+```bash
+forge script script/eth-MintNft.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_PLAYER --broadcast
 ```
 
 ---
@@ -126,19 +138,37 @@ forge script script/eth-MintNft.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key
 
 <details><summary> Send Nft 🏣📮 </summary>
 
-We will send NFT with ID == 3 from `Sepolia` to `Fuji`. This will take around 15min as Sepolia finalization time is 15min.
+We will send NFT with ID == 1 and 4 from `Sepolia` to `Fuji`. This will take around 15min as Sepolia finalization time is 15min.
+
+Run:
 
 ```bash
 forge script script/SendNftCCIP.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
 ```
 
+Change the `NFT_ID_TO_SEND` value to 4 in [SendNftCCIP.sol](./SendNftCCIP.s.sol#L20) to `4` and run:
+
+```bash
+forge script script/SendNftCCIP.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_PLAYER --broadcast
+```
+
 If you want to send it back just run after 15-20min have passed the following command. It will take a bit less time to come back as Fuji finalization time is shorter:
 
 ```bash
+# For NFT id 1 use the key of deployer and change NFT_ID_TO_SEND to 1
 forge script script/SendNftCCIP.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast
+
+# For NFT id 4 use the key of player and change NFT_ID_TO_SEND to 4
+forge script script/SendNftCCIP.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_PLAYER --broadcast
 ```
 
-> 📘 **Note** ℹ️: Check your contract at [SnowTrace](https://testnet.snowtrace.io/) in the `Internal Transactions` section to see if the NFT has arrived. If so there will be more than 2 internal transactions.
+To check if your NFT has arrived on `Fuji` you can run:
+
+```bash
+forge script script/SendNftCCIP.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key $S_SK_DEPLOYER --broadcast --sig "checkBarracksNftState()"
+```
+
+> 📘 **Note** ℹ️: You can also check your contract at [SnowTrace - Fuji](https://43113.testnet.snowtrace.io/) in the `Internal Transactions` section to see if the NFT has arrived. If so there will be more than 2 internal transactions.
 
 ---
 
@@ -151,32 +181,28 @@ forge script script/SendNftCCIP.s.sol --rpc-url $AVL_NODE_PROVIDER --private-key
 
 <details><summary> Make them fight! 👊🤯   </summary>
 
-First we will request a fight with `DPELOYER` using NFT1,
-then we will accept it with `PLAYER_FOR_FIGHTS` using NFT2.
-
-> 📘 **Note** ℹ️: `DEPLOYER` owns NFT2 but the script we are gonna run transfers it to `PLAYER_FOR_FIGHTS`.
+First we will request a fight with `DPELOYER` using NFT 2,
+then we will accept it with `PLAYER_FOR_FIGHTS` using NFT 3.
 
 ```bash
 # Request a fight
-forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
+forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "requestF()"
 ```
 
 ```bash
 # Accept the fight
-forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "accept()"
+forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_PLAYER --broadcast --sig "acceptF()"
 ```
 
-Now you should see in your `Chainlink Functions` subscription the request going on. When functions fulfill its request then you will see in your `VRF` subscripton a request pending. You should be able to see the `VRF` subscription at [https://vrf.chain.link/sepolia/YOUR_VRF_SUBS_ID](https://vrf.chain.link/sepolia/) You can consult the VRF ID in Etherscan from the `FightExecutor` contract. Or run this command in the terminal:
+Now you should see in your `Chainlink Functions` subscription the request going on. When functions fulfill its request then you will see in your `VRF` subscripton a request pending. You should be able to see the `VRF` subscription at [https://vrf.chain.link/sepolia/YOUR_VRF_SUBS_ID](https://vrf.chain.link/sepolia/) You can consult the VRF ID in Etherscan from the `FightExecutor` read contract option if you verified it. Also it will be logged onto the console
+when you accept the fight.
+
+> 🚧 **Note** ⚠️: If VRF didnt complete in 5min there might be a
+> gas misconfiguration. We made a small hack on the contract so
+> deployer can settle fights just for this demo. If VRF is not answering fund the VRF subscription more or run this command to make the `REQUESTER` win.
 
 ```bash
-forge script script/CheckVrfSubsIs.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER
-```
-
-> 🚧 **Note** ⚠️: When we were testing all it seems like there are no nodes
-> fulfilling VRF request on Sepolia as it remains pending for hours and never answered. In that case run the following command to decide a winner:
-
-```bash
-forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "settle()"
+forge script script/eth-SettleFightWhenVRFNotReponding.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
 ```
 
 ---
@@ -187,6 +213,8 @@ forge script script/eth-Fight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $
 ## Step 6: Accept a fight with automation 🤖
 
 #### `Chainlink Automation`
+
+# NOT DONE YET, ITS NOT WORKING BUT CODED ⚠️
 
 <details><summary> Use Automation to execute fights 🤖 </summary>
 

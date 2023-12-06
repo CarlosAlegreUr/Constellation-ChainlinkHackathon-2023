@@ -22,8 +22,19 @@ contract MintNft is Script {
 
     function run() public virtual {
         vm.startBroadcast();
-        i_LINK_TOKEN.approve(DEPLOYED_SEPOLIA_COLLECTION, 1 ether);
-        collectionContract.safeMint(DEPLOYER, NFT_VALID_PROMPT);
-        vm.stopBroadcast();
+        if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
+            console.log("We are in SEPOLIA ETH");
+
+            // Send LINK to collection to pay for the NFT Verification Fee with Chainlink Functions
+            i_LINK_TOKEN.transfer(DEPLOYED_SEPOLIA_COLLECTION, MINT_NFT_LINK_FEE);
+            collectionContract.safeMint(msg.sender, NFT_VALID_PROMPT);
+
+            console.log("Minting process started successfully...");
+            console.log("What for Functions response to be actually minted.");
+
+            vm.stopBroadcast();
+        } else {
+            console.log("Mint script can only run in Sepolia.");
+        }
     }
 }

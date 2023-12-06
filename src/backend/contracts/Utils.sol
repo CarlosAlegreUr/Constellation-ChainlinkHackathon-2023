@@ -3,7 +3,7 @@
 pragma solidity ^0.8.20;
 
 /**
- * @dev A file with general data different contracts use,
+ * @dev A file with general data different contracts use.
  */
 
 //******************** */
@@ -11,55 +11,74 @@ pragma solidity ^0.8.20;
 //******************** */
 
 //******************** */
-// 🟢🟢🟢🟢 WHEN LOCAL SET-UP CHANGE ALONG THE VALUES WITH GREEN DOTS 🟢🟢🟢🟢🟢
-//******************** */
+// 🟢🟢 WHEN LOCAL SET-UP CHANGE ALONG THE VALUES WITH GREEN DOTS 🟢🟢
+//******************** *
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 address constant PLAYER_FOR_FIGHTS = 0x108d618c5baFFb6AE2b84094da4C8314BAD16D71; // 🟢
 address constant BACKEND_DON_MOCK = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0xe0cBAe959964a73f37f19Bc342c9b19680A34C87;
-address constant DEPLOYED_FUJI_BARRACKS = 0xBEd50d7556A402294A4Dc643c8eC5aade43AE61D;
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x23328076007B6F3BF673868381BC899FF899419c; // 🟢
+address constant DEPLOYED_FUJI_BARRACKS = 0x26a0d79b203B0c2330b53fb5837F68938D2fFc14; // 🟢
 
-address constant SEPOLIA_FIGHT_MATCHMAKER = 0xd10F033D278e7135A44a86432B08A9a39cf521bB; // 🟢
-address constant SEPOLIA_FIGHT_EXECUTOR = 0xabD081C830edf59d3F431EB617627e8075a44782; // 🟢
+address constant SEPOLIA_FIGHT_MATCHMAKER = 0x44865dEed0Cb94c96D29Bba66877ba29159E97C6; // 🟢
+address constant SEPOLIA_FIGHT_EXECUTOR = 0x6CC8C0dA4A07E8D2a3c44CADE2Ac45daA268B60e; // 🟢
 
-// TODO: This chain contracts are not tested yet
-address constant FUJI_FIGHT_MATCHMAKER = 0xB3687ca8f511C4015734E5F5bc511C7d4DC48D79; // 🟢
-address constant FUJI_FIGHT_EXECUTOR = 0x139DCf671A79F611E4E5f1b6C872364AE151a96B; // 🟢
+address constant FUJI_FIGHT_MATCHMAKER = 0xd81a1cf02e46E3235bA0BfFA39bF774F2534E68C; // 🟢
+address constant FUJI_FIGHT_EXECUTOR = 0x4Eb5be4078E648239e4685191a0C603aE3036853; // 🟢
+
+address constant FUJI_BETS_VAULT = 0xbcD52816D3d0912ff0a58bAa241dee94e960913C; // 🟢
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739; // 🟢
 uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378; // 🟢
 
 // For a promt to be valid in the POC it must be short and start with lower-case "a"
 // There must be 5 fields separated by "-"
-string constant NFT_VALID_PROMPT = "anuelAA-An AA batery-DVD-Flow to spin up a party-Existential poetry"; // 🟢
-
+string constant NFT_VALID_PROMPT = "aMrDog-Cat-super power-titties I mean kitties"; // 🟢
+// "aMrDog-Cat-super power-titties I mean kitties"
+// "aMrPenguin-Penguin-He is depresed-Fish"
+// "anuelAA-An AA batery-DVD-Flow to spin up a party-poetry"
+// "anaio-A pig-Flies-He distinguished-Falcons"
 // "anastasio-A cool falcon-Flies-He is distinguished-Pigeons";
 
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
-///////////////////////////////////////////////
-///////////////////////////////////////////////
-///////////////////////////////////////////////
-///////////////////////////////////////////////
-///////////////////////////////////////////////
-///////////////////////////////////////////////
+import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
+
+contract FightToExecuteInScripts {
+    address public constant REQUESTER = DEPLOYER; // 🟢
+    address public constant ACCEPTOR = PLAYER_FOR_FIGHTS; // 🟢
+    uint256 public constant REQUESTER_NFT_ID = 2; // 🟢
+    uint256 public constant ACCEPTOR_NFT_ID = 3; // 🟢
+
+    // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
+    //
+    // 🛑 HEY USER YOU DON'T REALLY NEED TO CHANGE VALUES DEEPER IN THE FILE          🛑
+    //
+    // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
+
+    IFightMatchmaker.FightRequest public s_fiqutRequest = IFightMatchmaker.FightRequest({
+        challengerNftId: REQUESTER_NFT_ID,
+        minBet: 0.001 ether,
+        acceptanceDeadline: block.timestamp + 1 hours,
+        challengee: ACCEPTOR,
+        challengeeNftId: ACCEPTOR_NFT_ID
+    });
+    bytes32 public s_fighReqFightID = keccak256(
+        abi.encode(REQUESTER, s_fiqutRequest.challengerNftId, s_fiqutRequest.challengee, s_fiqutRequest.challengeeNftId)
+    );
+
+    function getFReq() public view returns (IFightMatchmaker.FightRequest memory) {
+        return s_fiqutRequest;
+    }
+}
+
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 
 //******************** */
 // OFFICIAL CONTRACTS
 //******************** */
-
-// TODO: This addresses mints and fights well
-address constant SEPOLIA_FIGHT_MATCHMAKER_OFFICIAL = 0x032d411865FBa68d5211Ce94ceaa73064AB02B7f;
-address constant SEPOLIA_FIGHT_EXECUTOR_OFFICIAL = 0x16A059F4655AF3A413e519C2C5176cE0446B9302;
-address constant SEPOLIA_BETS_OFFICIAL = 0x9AB0248057B8E59e71ae216F865a16d60d0f51Dc;
-
-// TODO: This address dont work yet, it is just for testing
-address constant FUJI_FIGHT_MATCHMAKER_OFFICIAL = 0xB3687ca8f511C4015734E5F5bc511C7d4DC48D79;
-address constant FUJI_FIGHT_EXECUTOR_OFFICIAL = 0x139DCf671A79F611E4E5f1b6C872364AE151a96B;
 
 address constant DEPLOYED_MUMBAI_BARRACKS = address(0);
 uint64 constant PLY_MUMBAI_SUBS_ID = 1027;
@@ -88,7 +107,7 @@ address constant PLY_MUMBAI_LINK = 0x326C977E6efc84E512bB9C30f76E30c160eD06FB;
 // Chainlink Functions
 //******************** */
 
-uint256 constant MINT_NFT_LINK_FEE = 2 ether;
+uint256 constant MINT_NFT_LINK_FEE = 0.6 ether;
 
 address constant ETH_SEPOLIA_FUNCTIONS_ROUTER = 0xb83E47C2bC239B3bf370bc41e1459A34b41238D0;
 address constant AVL_FUJI_FUNCTIONS_ROUTER = 0xA9d587a00A31A52Ed70D6026794a8FC5E2F5dCb0;
@@ -128,25 +147,21 @@ uint16 constant ETH_SEPOLIA_REQ_CONFIRIMATIONS = 3;
 uint16 constant AVL_FUJI_REQ_CONFIRIMATIONS = 3;
 uint16 constant PLY_MUMBAI_REQ_CONFIRIMATIONS = 3;
 
-// Depends on execution cost of fullfillRandomWords().
-// Estimate is 20.000 gas per word, we distribute bets "within" this function
-// so lets keep it up. Proper testing of gas consumption should be made in order
-// to assert a fitter value.
-uint32 constant ETH_SEPOLIA_CALLBACK_GAS_LIMIT_VRF = 2_000_000;
-uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT_VRF = 2_000_000;
-uint32 constant PLY_MUMBAI_CALLBACK_GAS_LIMIT_VRF = 2_000_000;
+uint32 constant ETH_SEPOLIA_CALLBACK_GAS_LIMIT_VRF = 250_000;
+uint32 constant AVL_FUJI_CALLBACK_GAS_LIMIT_VRF = 300_000;
+uint32 constant PLY_MUMBAI_CALLBACK_GAS_LIMIT_VRF = 350_000;
 
 //********************** */
 // Chainlink AUTOMATION
 //********************** */
 
-uint256 constant ETH_SEPOLIA_UPKEEP_ID = 0;
+uint256 constant ETH_SEPOLIA_UPKEEP_ID = 106402147216017337972960404027226034932094583681968993079028192524993603665983;
 
 address constant ETH_SEPOLIA_REGISTRY = 0x86EFBD0b6736Bed994962f9797049422A3A8E8Ad;
 address constant ETH_SEPOLIA_REGISTRAR = 0xb0E49c5D0d05cbc241d68c05BC5BA1d1B7B72976;
 
 address constant AVL_FUJI_REGISTRY = 0x819B58A646CDd8289275A87653a2aA4902b14fe6;
-address constant AVL_FUJI_REGISTRAR = 0x5Cb7B29e621810Ce9a04Bee137F8427935795d00;
+address constant AVL_FUJI_REGISTRAR = 0xD23D3D1b81711D75E1012211f1b65Cc7dBB474e2;
 
 address constant PLY_MUMBAI_REGISTRY = 0x08a8eea76D2395807Ce7D1FC942382515469cCA1;
 address constant PLY_MUMBAI_REGISTRAR = 0x0Bc5EDC7219D272d9dEDd919CE2b4726129AC02B;
@@ -155,12 +170,12 @@ uint256 constant SEPOLIA_AUTOMATION_THRESHOLD_BALANCE = 1 ether;
 uint256 constant FUJI_AUTOMATION_THRESHOLD_BALANCE = 1 ether;
 uint256 constant PLY_MUMBAI_THRESHOLD_BALANCE = 1 ether;
 
-uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 500_000;
-uint32 constant GAS_LIMIT_FUJI_AUTOMATION = 800_000;
-uint32 constant GAS_LIMIT_PLY_MUMBAI_AUTOMATION = 500_000;
+uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 700_000;
+uint32 constant GAS_LIMIT_FUJI_AUTOMATION = 700_000;
+uint32 constant GAS_LIMIT_PLY_MUMBAI_AUTOMATION = 700_000;
 
 uint96 constant LINK_AMOUNT_FOR_REGISTRATION = 1 ether;
-uint96 constant LINK_AMOUNT_FOR_REGISTRATION_EXAGERATED = 15 ether;
+uint96 constant LINK_AMOUNT_FOR_REGISTRATION_EXAGERATED = 6 ether;
 
 //******************** */
 // Chainlink CCIP
@@ -174,7 +189,7 @@ uint64 constant ETH_SEPOLIA_SELECTOR = 16015286601757825753;
 uint64 constant AVL_FUJI_SELECTOR = 14767482510784806043;
 uint64 constant PLY_MUMBAI_SELECTOR = 12532609583862916517;
 
-uint256 constant SEND_NFT_PRICE = 0.05 ether;
+uint256 constant SEND_NFT_PRICE = 0.008 ether;
 uint256 constant SEND_NFT_PRICE_FUJI = 0.17 ether;
 uint256 constant SEND_NFT_PRICE_MUMBAI = 0.18 ether;
 
@@ -189,7 +204,7 @@ bytes32 constant GENERATE_NFT_SCRIPT_HASH = keccak256(abi.encode(NFT_GENERATION_
 string constant NFT_GENERATION_SCRIPT_MOCK = "console.log(\"date is: \", Date.now());\n\n"
     "function splitString(input) {\n" "  return input.split(\"-\");\n" "}\n\n" "const fullPrompt = args[0];\n"
     "const parts = splitString(fullPrompt);\n\n" "let result;\n" "if (parts[0][0] == \"a\") {\n" "  result = args[0];\n"
-    "} else {\n" "  result = \"INVALID\";\n" "}\n" "console.log(result);\n" "return Functions.encodeString(result);";
+    "} else {\n" "  result = \" \";\n" "}\n" "console.log(result);\n" "return Functions.encodeString(result);";
 
 string constant FIGHT_GENERATION_SCRIPT_MOCK = "function splitString(input) {\n" "  return input.split(\"-\");\n"
     "}\n\n" "const fullPrompt = args[0];\n" "const parts = splitString(fullPrompt);\n\n"
@@ -249,3 +264,31 @@ string constant FIGHT_GENERATION_SCRIPT = "const gptPrompt = `\n" "Here are 2 ch
     "  throw new Error(JSON.stringify(openAIResponse));\n" "}\n\n"
     "const result = openAIResponse.data.choices[0].message.content;\n\n" "// return the two stories\n\n"
     "console.log(result);\n" "return Functions.encodeString(result);";
+
+//**************************** */
+// FUNCTIONS USED IN SCRIPTS
+//**************************** */
+
+function intToString(uint256 _value) pure returns (string memory) {
+    // Initial check for zero is not needed since _value is never zero
+
+    uint256 length;
+    uint256 temp = _value;
+
+    // Calculate length of the string
+    while (temp != 0) {
+        length++;
+        temp /= 10;
+    }
+
+    // Allocate memory for the string
+    bytes memory buffer = new bytes(length);
+
+    // Populate the string
+    for (uint256 i = length; i > 0; i--) {
+        buffer[i - 1] = bytes1(uint8(48 + _value % 10));
+        _value /= 10;
+    }
+
+    return string(buffer);
+}
