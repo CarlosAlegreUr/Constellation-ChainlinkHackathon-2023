@@ -40,20 +40,20 @@ export default function LeaderBoard() {
     });
     const name = prompt.split("-")[0];
     return (
-      <div key={nftId} className="shadow appearance-none border rounded w-full py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        <h1 className="block text-gray-700 text-xs font-bold m-1">
+      <div key={nftId} className=" flex flex-col border rounded border-gray-400 w-full p-1">
+        <h1 className=" text-gray-700 text-xs font-bold">
           Id: {Number(nftId)}
         </h1>
-        <h1 className="block text-gray-700 text-xs font-bold m-1">
+        <h1 className=" text-gray-700 text-xs font-bold">
           Name: {name}
         </h1>
-        <h1 className="block text-gray-700 text-xs font-bold m-1 ">
+        <h1 className=" text-gray-700 text-xs font-bold">
           Owner: {owner}
         </h1>
-        <h1 className="block text-gray-700 text-xs font-bold m-1 ">
+        <h1 className=" text-gray-700 text-xs font-bold">
           Prompt: {prompt}
         </h1>
-        <h1 className="block text-gray-700 text-xs font-bold m-1 ">
+        <h1 className=" text-gray-700 text-xs font-bold">
           Wins: 1000
         </h1>
       </div>
@@ -77,10 +77,10 @@ export default function LeaderBoard() {
   }, [contract]);
 
   return (
-    <div className=" flex flex-col h-full w-full">
-      <div className=" w-full h-full bg-white shadow-md rounded px-8 pt-6 py-6">
-        {fighters.map((fighter) => fighter)}
+      <div className=" flex overflow-y-scroll w-full h-full bg-white rounded m-8">
+        <div className=" flex flex-col h-0 w-full m-1 gap-1">
+          {fighters.map((fighter) => fighter)}
+        </div>
       </div>
-    </div>
   );
 }

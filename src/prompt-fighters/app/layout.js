@@ -46,7 +46,7 @@ export default function RootLayout({ children }) {
       <body className={montserrat.className}>
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
-            <div className=" w-screen h-screen relative bg-pf-light-blue">
+            <div className=" flex flex-col w-screen h-screen relative bg-pf-light-blue">
               <ConnectWalletModal />
               <nav className="relative select-none bg-grey lg:flex lg:items-stretch w-full p-3">
                 <MenuBar />
