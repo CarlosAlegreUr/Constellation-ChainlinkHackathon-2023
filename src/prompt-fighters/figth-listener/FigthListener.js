@@ -1,34 +1,35 @@
 const { ethers } = require("ethers");
 const {
-  CONTRACT_ABI,
-  CONTRACT_ADDRESS,
+  THE_GRAPH_URL,
+  FIGTH_EXECUITION_ABI,
+  FIGTH_EXECUTOR_ADDRESS,
 } = require("./constants");
 require('dotenv').config();
 
-const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_PROVIDER_URL);
-const signer = new ethers.Wallet(PRIVATE_KEY, provider);
+const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 // Create a contract instance
-const contract = new ethers.Contract(process.emv.CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+const figthExecutor = new ethers.Contract(FIGTH_EXECUTOR_ADDRESS, FIGTH_EXECUITION_ABI, signer);
 
 // Event listener for FightMatchmaker__FightAccepted
-contract.on(
-  "FightMatchmaker__FightAccepted",
-  async (
-    _,
-    _,
-    _,
-    nftIdChallenger,
-    nftIdChallengee,
-    _,
-    _,
-    _
-  ) => {
-
-    submitTransaction(nftIdChallenger.toString(), nftIdChallengee.toString());
-  
-  }
-);
+// figthExecutor.on(
+//   "FightMatchmaker__FightAccepted",
+//   async (
+//     _,
+//     _,
+//     _,
+//     nftIdChallenger,
+//     nftIdChallengee,
+//     _,
+//     _,
+//     _
+//   ) => {
+//
+//     submitTransaction(nftIdChallenger.toString(), nftIdChallengee.toString());
+//   
+//   }
+// );
 
 console.log("Listening for FightMatchmaker__FightAccepted events...");
 console.log("\n");
@@ -37,16 +38,17 @@ async function submitTransaction(id1, id2) {
   try {
 
     // get prompts
-    const prompt1 = getPromptNftById(id1); 
-    const prompt2 = getPromptNftById(id2);
+    const prompt1 = await getPromptNftById(id1); 
+    const prompt2 = await getPromptNftById(id2);
 
     // get stories from GPT
-    resp = fetchOpenAIResponse(prompt1, prompt2);
+    resp = await fetchOpenAIResponse(prompt1, prompt2);
 
     // submit stories to smart contract
-    // contract.fulfillRequestMock(resp.requestId, res.body, resp.err);
+    // figthExecutor.fulfillRequestMock(resp.requestId, res.body, resp.err);
 
-    console.log("The transaction was sent succesfully!")
+    console.log("The transaction was sent succesfully!");
+
   } catch (e) {    
     console.log(e);
   }
@@ -61,9 +63,7 @@ async function getPromptNftById(id) {
       }
     }
   `
-  const url = "https://api.studio.thegraph.com/query/50966/promptfigthers/0.2.15"
-
-  let response = await fetch(url, {
+  let response = await fetch(THE_GRAPH_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -158,4 +158,13 @@ separate the two stories.
 }
 
 
+function test() {
+  try {
+    submitTransaction("1", "2");
+  } catch (e) {
+    console.log(e)
+  }
+}
 
+
+test()
