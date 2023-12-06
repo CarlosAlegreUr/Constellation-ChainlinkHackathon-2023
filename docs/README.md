@@ -4,7 +4,7 @@
 
 - [Whitepaper](./whitepaper.md)
 
-## Techncial Docs 🧑‍💻
+## Technical Docs 🧑‍💻
 
 - [Architercure Diagrams](./architechture.md)
 
