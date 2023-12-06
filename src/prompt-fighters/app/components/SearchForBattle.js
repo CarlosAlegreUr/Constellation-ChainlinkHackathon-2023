@@ -3,12 +3,14 @@ import React from "react";
 import { useContractWrite } from "wagmi";
 import SEPOLIA_PROMPT_FIGHTERS_NFT from "../constants";
 import * as IPromptFightersCollection from "../contracts-artifacts/IPromptFightersCollection.sol/IPromptFightersCollection.json";
+import * as IFightMatchermaker from "../contracts-artifacts/IFightMatchmaker.sol/IFightMatchmaker.json";
 import { getAccount } from "@wagmi/core";
 import { getPublicClient } from "@wagmi/core";
 import { useState } from "react";
 import { useBlockNumber } from "wagmi";
 import { useEffect } from "react";
 import { getContract } from "@wagmi/core";
+import { encodeAbiParameters } from "viem";
 
 export default function SearchForBattle() {
   const [yourFighters, setYourFighters] = useState([]);
@@ -46,10 +48,12 @@ export default function SearchForBattle() {
     });
     const name = prompt.split("-")[0];
     return (
-      <option value={nftId}>
-        <h1 className="block text-gray-700 text-xs font-bold m-1">
-          Id: {Number(nftId)} Name: {name}
-        </h1>
+      <option
+        key={nftId}
+        value={nftId}
+        className="block text-gray-700 text-xs font-bold m-1"
+      >
+        Id: {Number(nftId)} Name: {name}
       </option>
     );
   }
@@ -63,7 +67,7 @@ export default function SearchForBattle() {
     });
   }, [contract]);
 
-  // SUBMIT REQUEST FIGHT
+  // SUBMIT FIGHT REQUEST
 
   const {
     isLoading: requestFightIsLoading,
@@ -71,15 +75,26 @@ export default function SearchForBattle() {
     write: requestFightWrite,
   } = useContractWrite({
     address: SEPOLIA_PROMPT_FIGHTERS_NFT,
-    abi: IPromptFightersCollection.abi,
+    abi: IFightMatchermaker.abi,
     functionName: "requestFight",
   });
 
   async function submitRequestFight(e) {
     e.preventDefault();
-
-    // BUILD request fight params
-    requestFightWrite();
+    const t = e.target;
+    const encodedParams = encodeAbiParameters(
+      IFightMatchermaker.abi[29].inputs,
+      [{
+        challengerNftId: e.target[0].value,
+        minBet: e.target[1].value,
+        acceptanceDeadline: e.target[2].value,
+        challengee: e.target[3].value,
+        challengeeNftId: e.target[4].value,
+      }],
+    )
+    console.log(encodedParams)
+    //FIX ERROR HERE
+    requestFightWrite({ args: [encodedParams] });
   }
 
   return (
@@ -135,7 +150,7 @@ export default function SearchForBattle() {
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="acceptanceDeadline"
                   type="number"
-                  placeholder="time"
+                  placeholder="seconds"
                 />
               </div>
               <div>
