@@ -50,7 +50,7 @@ address constant PLAYER_FOR_FIGHTS = YOUR_OTHER_ADDRESS; // 🟢 <--
    the one you just got.
 
 4. Switch the network and do the same for Fuji if you want to fight
-   in Fuji too. Thus time change `AVL_FUJI_FUNCS_SUBS_ID` [here](../contracts/Utils.sol#L34).
+   in Fuji too. This time change `AVL_FUJI_FUNCS_SUBS_ID` [here](../contracts/Utils.sol#L34).
 
 ---
 
