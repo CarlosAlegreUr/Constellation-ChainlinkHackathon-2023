@@ -90,7 +90,7 @@ forge script script/Deployment.s.sol --sig "initSepoliaCollection()" --rpc-url $
 
 **TODO**: if we have time automate this process with chainlink tool-kit
 
-Now add a consumers from the UI in your Functions Subscription the address `DEPLOYED_SEPOLIA_COLLECTION` and `SEPOLIA_FIGHT_EXECUTOR`.
+Now add the addresses `DEPLOYED_SEPOLIA_COLLECTION` and `SEPOLIA_FIGHT_EXECUTOR` as consumers from the UI in your [Functions Subscription](https://functions.chain.link/). For this, you will need to connect the wallet you used to deploy the contracts, click on your subscription ID, under "My Subscriptions" > "Active", and then on "Add consumer".
 
 ---
 
