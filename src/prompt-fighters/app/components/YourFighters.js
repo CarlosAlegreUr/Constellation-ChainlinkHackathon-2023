@@ -45,7 +45,7 @@ export default function YourFighters() {
     });
     const name = prompt.split("-")[0];
     return (
-      <div className="shadow appearance-none border rounded w-full py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      <div key={nftId} className="shadow appearance-none border rounded w-full py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         <h1 className="block text-gray-700 text-xs font-bold m-1">Id: {Number(nftId)}</h1>
         <h1 className="block text-gray-700 text-xs font-bold m-1">Name: {name}</h1>
         <h1 className="block text-gray-700 text-xs font-bold m-1 ">Prompt: {prompt}</h1>
@@ -63,7 +63,7 @@ export default function YourFighters() {
   }, []);
 
   return (
-    <div className="h-[650px] w-full">
+    <div className="flex flex-col h-full w-full">
       <h1>YourFighters</h1>
       <div className=" w-full h-full  overflow-y-scroll bg-white shadow-md rounded px-8 pt-6 py-6">
         {fighters.map((fighter) => fighter)}

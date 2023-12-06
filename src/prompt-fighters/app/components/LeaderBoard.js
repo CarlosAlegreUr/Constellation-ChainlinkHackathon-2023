@@ -40,7 +40,7 @@ export default function LeaderBoard() {
     });
     const name = prompt.split("-")[0];
     return (
-      <div className="shadow appearance-none border rounded w-full py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      <div key={nftId} className="shadow appearance-none border rounded w-full py-1 my-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         <h1 className="block text-gray-700 text-xs font-bold m-1">
           Id: {Number(nftId)}
         </h1>
