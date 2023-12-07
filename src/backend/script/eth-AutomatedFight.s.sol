@@ -63,25 +63,27 @@ contract AutomatedFight is Script {
 
     function request() public {
         vm.startBroadcast();
-        // TODO: delete after testing
+        // TESTING ONLY
         // console.log("Funding LINK consumption of executor contract...");
         // uint256 funds = 12 ether;
         // linkToken.approve(address(executor), funds);
         // executor.fundMySubscription(funds);
         // console.log("Funded.");
+
         console.log("Trying to request fight...");
         matchmaker.requestFight{value: 0.005 ether}(fr);
         console.log("DONE");
         vm.stopBroadcast();
     }
 
-    function forwarder() public {
-        vm.startBroadcast();
-        console.log("Trying to request fight...");
-        matchmaker.setForwarderDuh(0xe860D194fc6B6078ccc9Aed029B206ffCAEe000E);
-        console.log("DONE");
-        vm.stopBroadcast();
-    }
+    // TESTING ONLY
+    // function forwarder() public {
+    //     vm.startBroadcast();
+    //     console.log("Trying to request fight...");
+    //     matchmaker.setForwarderDuh(0xe860D194fc6B6078ccc9Aed029B206ffCAEe000E);
+    //     console.log("DONE");
+    //     vm.stopBroadcast();
+    // }
 
     function regiterAutomation() public {
         vm.startBroadcast();
@@ -111,7 +113,7 @@ contract AutomatedFight is Script {
         vm.stopBroadcast();
     }
 
-    // TODO: delete when finish tensting
+    // testing only
     // function manualsetup() public {
     //     vm.startBroadcast();
     //     uint256 uid = 98785675887033837089720433517441719857293902855493994579632517239481229958059;

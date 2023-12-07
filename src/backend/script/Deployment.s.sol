@@ -117,10 +117,10 @@ contract PromptFightersDeploy is DeployFightsContracts {
             console.log(string(abi.encodePacked(s, intToString(AVL_FUJI_FUNCS_SUBS_ID))));
             console.log("++++++++++++++++++++++++++++++++++++++++++");
 
-            // TODO: add log for upkeepId
+            // TODO: add log for upkeepId and contracts addresses on block explorers
         }
 
-        // NOTE: not tested
+        // NOTE: not tested, scripts not adapted for this chain
         if (block.chainid == PLY_MUMBAI_CHAIN_ID) {
             console.log("We are in MUMBAI");
             // Deploys all contracts that are shared accross chans.
@@ -171,15 +171,15 @@ contract PromptFightersDeploy is DeployFightsContracts {
         }
     }
 
-    // TODO DELETE AFTER TESTING
-    function trans() public {
-        vm.startBroadcast();
-        PromptFightersNFT collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
-        collectionContract.transferFrom(msg.sender, PLAYER_FOR_FIGHTS, 2);
-        vm.stopBroadcast();
-    }
+    // note: THE FOLLOWING CODE IS FOR TESTING ONLY
+    // function trans() public {
+    //     vm.startBroadcast();
+    //     PromptFightersNFT collectionContract = PromptFightersNFT(DEPLOYED_SEPOLIA_COLLECTION);
+    //     collectionContract.transferFrom(msg.sender, PLAYER_FOR_FIGHTS, 2);
+    //     vm.stopBroadcast();
+    // }
 
-    // NOTE: says auto-approved disabled
+    // NOTE: said auto-approved disabled
     /*
     function initSepoliaMatchmaker() public {
         if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
@@ -205,37 +205,37 @@ contract PromptFightersDeploy is DeployFightsContracts {
             revert("MUST BE SEPOLIA");
         }*/
 
-    function initFujiMatchmaker() public {
-        // NOTE: code to register automation
-        address[] memory referencedContracts = new address[](3);
+    // function initFujiMatchmaker() public {
+    //     // NOTE: code to register automation
+    //     address[] memory referencedContracts = new address[](3);
 
-        referencedContracts[0] = FUJI_FIGHT_EXECUTOR;
-        // referencedContracts[1] = FUJI_BETS_VAULT;//NOTE: needed if testing, delete after
-        referencedContracts[2] = DEPLOYED_FUJI_BARRACKS;
+    //     referencedContracts[0] = FUJI_FIGHT_EXECUTOR;
+    //     // referencedContracts[1] = FUJI_BETS_VAULT;//NOTE: needed if testing, delete after
+    //     referencedContracts[2] = DEPLOYED_FUJI_BARRACKS;
 
-        // IAutomationRegistry automationRegistry  ; //= IAutomationRegistry(AVL_FUJI_REGISTRY);
-        // IAutomationRegistrar automationRegistrar; //= IAutomationRegistrar(AVL_FUJI_REGISTRAR);
-        // uint256 automationBalanceThreshold = FUJI_AUTOMATION_THRESHOLD_BALANCE;
-        // IAutomationRegistrar.RegistrationParams memory automationRegistration;
-        //  = IAutomationRegistrar.RegistrationParams({
-        // name: "Fuji Automation PromptFighters",
-        // encryptedEmail: new bytes(0),
-        // upkeepContract: address(0), // Set at construction time address(this)
-        // gasLimit: GAS_LIMIT_FUJI_AUTOMATION,
-        // adminAddress: address(0), // Set at construction time address(this)
-        // triggerType: 1,
-        // checkData: new bytes(0),
-        // triggerConfig: new bytes(0), // Set at construction time, requires address(this)
-        // offchainConfig: new bytes(0),
-        // amount: LINK_AMOUNT_FOR_REGISTRATION
-        // });
+    //     // IAutomationRegistry automationRegistry  ; //= IAutomationRegistry(AVL_FUJI_REGISTRY);
+    //     // IAutomationRegistrar automationRegistrar; //= IAutomationRegistrar(AVL_FUJI_REGISTRAR);
+    //     // uint256 automationBalanceThreshold = FUJI_AUTOMATION_THRESHOLD_BALANCE;
+    //     // IAutomationRegistrar.RegistrationParams memory automationRegistration;
+    //     //  = IAutomationRegistrar.RegistrationParams({
+    //     // name: "Fuji Automation PromptFighters",
+    //     // encryptedEmail: new bytes(0),
+    //     // upkeepContract: address(0), // Set at construction time address(this)
+    //     // gasLimit: GAS_LIMIT_FUJI_AUTOMATION,
+    //     // adminAddress: address(0), // Set at construction time address(this)
+    //     // triggerType: 1,
+    //     // checkData: new bytes(0),
+    //     // triggerConfig: new bytes(0), // Set at construction time, requires address(this)
+    //     // offchainConfig: new bytes(0),
+    //     // amount: LINK_AMOUNT_FOR_REGISTRATION
+    //     // });
 
-        vm.startBroadcast();
-        // Fund automation registration with LINK
-        LinkTokenInterface(AVL_FUJI_LINK).transfer(FUJI_FIGHT_MATCHMAKER, LINK_AMOUNT_FOR_REGISTRATION);
-        FightMatchmaker(FUJI_FIGHT_MATCHMAKER).initializeReferencesAndAutomation(
-            referencedContracts, automationRegistry, automationRegistrar, automationRegistration
-        );
-        vm.stopBroadcast();
-    }
+    //     vm.startBroadcast();
+    //     // Fund automation registration with LINK
+    //     LinkTokenInterface(AVL_FUJI_LINK).transfer(FUJI_FIGHT_MATCHMAKER, LINK_AMOUNT_FOR_REGISTRATION);
+    //     FightMatchmaker(FUJI_FIGHT_MATCHMAKER).initializeReferencesAndAutomation(
+    //         referencedContracts, automationRegistry, automationRegistrar, automationRegistration
+    //     );
+    //     vm.stopBroadcast();
+    // }
 }

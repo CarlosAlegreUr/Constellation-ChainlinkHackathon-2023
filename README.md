@@ -1,5 +1,9 @@
 # PROMPT FIGHTERS❗❗❗🤯
 
+<p align="center">
+  <img src="./repo-images/game-images/logoImage.jpg" width="250" alt="PromptFightersLogo">
+</p>
+
 Do you remember when you were a kid and you were using your toys to **_`create legendary fights`_**?
 
 Have you ever thought on **`betting and earning real money on`** fair **_`imagination battles`_** with your friends?
@@ -46,7 +50,7 @@ Technologies implemented here, links go directly to code line on files:
 
 ## `A Message for Chainlink` 💌
 
-During our project's development, we identified potential enhancements and problems using Chainlink Services, particularly Chainlink Functions and Chainlink CCIP.
+During our project's development, we detected and thought of potential enhancements and problems using Chainlink Services, particularly Chainlink Functions and Chainlink CCIP.
 
 <details> <summary> 💌 </summary>
 
@@ -61,7 +65,7 @@ During our project's development, we identified potential enhancements and probl
 2. Allow for longer HTTP-API calls. AIs that generate images or a bit long outputs like stories take more than the current limit of 9s. Thus we had to mock in Funtions a response simulating an actual AI-API call. Regardless of this the code that would be used if this restriction didn't exist is added in the project.
 
 3. A tool for simulating DONs reponses in local with forked Chainlink contracts would be very helpful for easier debugging and testing.
-   We don't know if this tool already exists, but we think it would be very useful.
+   We don't know if this tool already exists, but we think it would be very useful. Whether an SDK or a UI app on chainlink's website.
 
 #### Challenges and errors encountered:
 
@@ -73,21 +77,9 @@ With **_`CCIP`_**:
 
 With **`Automation`**:
 
-1. Registration is only working on Sepolia. On Fuji the
-   code reverts due to `evm Error` in the deployed `KeeperRegistryLogicB2_1`. On Mumbai it doen't run.
+1. We have automation coded in our project but it is not working. It's a weird error explained in the [scripts README](./src/backend/script/README.md).
 
-2. Additionally there is an error in your docs for Fuji, registry and registrar are the same address. We tried
-   to find the real registrar address on Snowflake and we think we did but the error still persists. This is the address we used: `0x5Cb7B29e621810Ce9a04Bee137F8427935795d00`.
-
-For this reasons automation code of our project only wokrs
-on Sepolia.
-
-With **`VRF`**:
-
-1. For some reason nodes in Sepolia don't respond to VRF
-   requests. Thus in this project we allowed the DEPLOYER to finish fights too in case VRF doesn't respond.
-
-> 📘**Note**ℹ️: The whole team met in the **SmartCon 2023**, thanks for the great event! 😄
+> 📘**Note**ℹ️: The whole team met in the **SmartCon 2023**, thanks for the great event and the chairs! 😄
 
 ---
 

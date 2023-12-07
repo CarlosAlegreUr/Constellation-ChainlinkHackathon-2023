@@ -173,20 +173,17 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         require(success, "Failure intializing references");
     }
 
-    // TODO: delete after testing
-    function setForwarderDuh(address forwarder) external {
-        require(msg.sender == DEPLOYER);
-        i_AUTOMATION_FORWARDER = IAutomationForwarder(forwarder);
-    }
+    // TESTING ONLY
+    // function setForwarderDuh(address forwarder) external {
+    //     require(msg.sender == DEPLOYER);
+    //     i_AUTOMATION_FORWARDER = IAutomationForwarder(forwarder);
+    // }
 
-    // TODO: delete after testing
-    uint256 public st_upkeepId;
-
-    // TODO: delete after testing
-    function setUpkeepId(uint256 uid) external {
-        require(msg.sender == DEPLOYER);
-        st_upkeepId = uid;
-    }
+    // TESTING ONLY
+    // function setUpkeepId(uint256 uid) external {
+    //     require(msg.sender == DEPLOYER);
+    //     i_UPKEEP_ID = uid;
+    // }
 
     /**
      * @notice In this contract this can only be called from initializeReferencesAndAutomation()
@@ -341,7 +338,6 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
      * If there is an NFT automated and can accept the fight it calls
      * acceptFight() via performUpkeep().
      */
-
     function checkLog(Log calldata log, bytes memory)
         external
         view

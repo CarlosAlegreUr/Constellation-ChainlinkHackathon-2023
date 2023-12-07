@@ -11,24 +11,24 @@ pragma solidity ^0.8.20;
 //******************** */
 
 //******************** */
-// 🟢🟢 WHEN LOCAL SET-UP CHANGE ALONG THE VALUES WITH GREEN DOTS 🟢🟢
+// 🟢🟠 WHEN LOCAL SET-UP CHANGE ALONG THE VALUES WITH GREEN DOTS 🟠🟢
 //******************** *
 
 address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 address constant PLAYER_FOR_FIGHTS = 0x108d618c5baFFb6AE2b84094da4C8314BAD16D71; // 🟢
 address constant BACKEND_DON_MOCK = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0x1074065732cc2CC945818483B2543105ed2BF8F3; // 🟢
-address constant DEPLOYED_FUJI_BARRACKS = 0xE1fD3312b650D8e11ccFaB56Ebd9EC03E323BCf5; // 🟢
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x8b20ADA3498ba4040DC4b353d7A1675699C18C05; // 🟢
+address constant DEPLOYED_FUJI_BARRACKS = 0x300eEB65665EA82fb4d8E4c269F7Bea2F7701bC8; // 🟠
 
-address constant SEPOLIA_FIGHT_MATCHMAKER = 0xa49199D1F79B3A78B2d22Bb9b794Ed942dC7d924; // 🟢
-address constant SEPOLIA_FIGHT_EXECUTOR = 0x0a3b75D370dBA8c09314b6BA1538236D47681EB7; // 🟢
+address constant SEPOLIA_FIGHT_MATCHMAKER = 0xE6835F9799BBb4c7c891cc25b0A9210660E6c9af; // 🟢
+address constant SEPOLIA_FIGHT_EXECUTOR = 0xa5941b5aC7FaD9bFBce7df46274aB926e26B8499; // 🟢
 
-address constant FUJI_FIGHT_MATCHMAKER = 0xd81a1cf02e46E3235bA0BfFA39bF774F2534E68C; // 🟢
-address constant FUJI_FIGHT_EXECUTOR = 0x4Eb5be4078E648239e4685191a0C603aE3036853; // 🟢
+address constant FUJI_FIGHT_MATCHMAKER = 0x4AD4B2C31E53362A34D18221253a114fAfE0716a; // 🟠
+address constant FUJI_FIGHT_EXECUTOR = 0x935836279FEb095b1bba2cb9258f6386457f9aDB; // 🟠
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739; // 🟢
-uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378; // 🟢
+uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378; // 🟠
 
 // For a promt to be valid in the POC it must be short and start with lower-case "a"
 // There must be 5 fields separated by "-"
@@ -199,7 +199,7 @@ uint64 constant PLY_MUMBAI_SELECTOR = 12532609583862916517;
 // CHAINLINK FUNCTIONS SCRIPTS
 //**************************** */
 
-// TODO: add final files
+// TODO: this 2 values can be deleted probably
 bytes32 constant GENERATE_FIGHT_SCRIPT_HASH = keccak256(abi.encode(FIGHT_GENERATION_SCRIPT));
 bytes32 constant GENERATE_NFT_SCRIPT_HASH = keccak256(abi.encode(NFT_GENERATION_SCRIPT));
 

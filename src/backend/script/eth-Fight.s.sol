@@ -94,13 +94,13 @@ contract Fight is Script {
         vm.stopBroadcast();
     }
 
-    // TODO: delete when finish tensting
-    function change() public {
-        vm.startBroadcast();
+    // TESTING ONLY
+    // function change() public {
+    //     vm.startBroadcast();
 
-        address add = SEPOLIA_FIGHT_MATCHMAKER;
-        collectionContract.setMatchmaker(add);
+    //     address add = SEPOLIA_FIGHT_MATCHMAKER;
+    //     collectionContract.setMatchmaker(add);
 
-        vm.stopBroadcast();
-    }
+    //     vm.stopBroadcast();
+    // }
 }

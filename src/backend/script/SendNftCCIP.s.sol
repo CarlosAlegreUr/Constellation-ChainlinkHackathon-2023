@@ -36,15 +36,15 @@ contract SendNftCcip is Script {
     }
 
     // NOTE: Accelerate the process during testing
-    function setNftOnBarracks() public {
-        if (block.chainid == AVL_FUJI_CHAIN_ID) {
-            vm.startBroadcast();
-            barracks.setIsOnChain(NFT_ID_TO_SEND, true, "someone-very-happy-because-yes");
-            vm.stopBroadcast();
-        } else {
-            console.log("This script function runs only on Avalanche Fuji");
-        }
-    }
+    // function setNftOnBarracks() public {
+    //     if (block.chainid == AVL_FUJI_CHAIN_ID) {
+    //         vm.startBroadcast();
+    //         barracks.setIsOnChain(NFT_ID_TO_SEND, true, "someone-very-happy-because-yes");
+    //         vm.stopBroadcast();
+    //     } else {
+    //         console.log("This script function runs only on Avalanche Fuji");
+    //     }
+    // }
 
     // NOTE: sometimes contracts dont verify on Snowflake, the use this.
     function checkBarracksNftState() public {
