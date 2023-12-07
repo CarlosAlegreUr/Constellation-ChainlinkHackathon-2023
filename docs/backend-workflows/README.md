@@ -7,3 +7,4 @@ interact with each other:
 - [Challenge a friend](./challengeFriends.md)
 - [Fight Execution](./fightExeution.md)
 - [Fight Automation](./fightAutomation.md)
+- [Send NFT Cross-Chains](./sendNftCrossCahins.md)

@@ -1,5 +1,7 @@
 # Challenge Friends - Workflow 🌊🦭🌊
 
+# ⚠️ NOT IMPLEMENTED, RUNNING OUT OF TIME ⚠️
+
 **_On `Ethereum`:_**
 
 1️⃣ On the front-end, you will interact with `ENS` contracts to resgister a name for you or your NFT.

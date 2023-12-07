@@ -1,12 +1,12 @@
 # 📖 Docs 📖
 
-## Whitepaer 📜
+## Whitepaper 📜
 
 - [Whitepaper](./whitepaper.md)
 
-## Techncial Docs 🧑‍💻
+## Technical Docs 🧑‍💻
 
-- [Architercure Diagrams](./architechture.md)
+- [Architecture Diagrams](./architechture.md)
 
 - [Features' Workflows](./backend-workflows/)
 

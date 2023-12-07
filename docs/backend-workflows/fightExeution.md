@@ -22,4 +22,4 @@ the default fight prompt and execution script.
 
 ## Improvements 💡
 
-1. Instead of a 50% chance of winning. An AI generated distribution based on nft descriptions mixed with current weather clima from a weather API can be decided as fair probability distribution. This could be use to simulate that players are fighting in X part of the globe in this exact moment as influencing fair factor.
+1. Instead of a 50% chance of winning. An AI generated distribution based on nft descriptions mixed with current weather clima from a weather API can be decided as fair probability distribution. This could be use to simulate that players are fighting in X random part of the globe in this exact moment as an influencing fair factor. A lot of diverse natural data via API can be used to bia the outcome distributed in a realistic way creating a more dynamic, immersive and overall entertaining experience.
