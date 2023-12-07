@@ -44,8 +44,8 @@ import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
 contract FightToExecuteInScripts {
     address public constant REQUESTER = DEPLOYER; // 🟢
     address public constant ACCEPTOR = PLAYER_FOR_FIGHTS; // 🟢
-    uint256 public constant REQUESTER_NFT_ID = 1; // 🟢
-    uint256 public constant ACCEPTOR_NFT_ID = 2; // 🟢
+    uint256 public constant REQUESTER_NFT_ID = 2; // 🟢
+    uint256 public constant ACCEPTOR_NFT_ID = 3; // 🟢
 
     // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
     //

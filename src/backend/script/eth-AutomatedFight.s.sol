@@ -50,9 +50,6 @@ contract AutomatedFight is Script {
         console.log("Funding LINK services for fight contracts...");
         // Fund Chainlink Automation in matchcmaker
         linkToken.approve(address(matchmaker), AUTOMATION_BALANCE_THRESHOLD);
-        // Fund Chainlink Subscriptions in executor
-        // linkToken.approve(address(executor), 1 ether);
-        // executor.fundMySubscription(1 ether);
 
         // Set NFT 2 to be automated
         matchmaker.setNftAutomated(NFT_TO_AUTOMATE, 0.001 ether, 0.001 ether, uint96(AUTOMATION_BALANCE_THRESHOLD));
