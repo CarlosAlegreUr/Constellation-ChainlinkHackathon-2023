@@ -45,14 +45,16 @@ contract AutomatedFight is Script {
     function run() public {
         vm.startBroadcast();
 
-        // Automating NFT 1
         // Fund LINK for automation upkeeps
         console.log("Funding LINK services for fight contracts...");
         // Fund Chainlink Automation in matchcmaker
         linkToken.approve(address(matchmaker), AUTOMATION_BALANCE_THRESHOLD);
 
         // Set NFT 2 to be automated
-        matchmaker.setNftAutomated(NFT_TO_AUTOMATE, 0.001 ether, 0.001 ether, uint96(AUTOMATION_BALANCE_THRESHOLD));
+        uint256 ethToSend = MIN_ETH_BET * 2;
+        matchmaker.setNftAutomated{value: ethToSend}(
+            NFT_TO_AUTOMATE, 0.001 ether, 0.001 ether, uint96(AUTOMATION_BALANCE_THRESHOLD)
+        );
 
         console.log("NFT 2 is now automated...");
         console.log("Fight should be accepted by upkeep in later block after detecting a request...");
@@ -77,13 +79,13 @@ contract AutomatedFight is Script {
     }
 
     // TESTING ONLY
-    // function forwarder() public {
-    //     vm.startBroadcast();
-    //     console.log("Trying to request fight...");
-    //     matchmaker.setForwarderDuh(0xe860D194fc6B6078ccc9Aed029B206ffCAEe000E);
-    //     console.log("DONE");
-    //     vm.stopBroadcast();
-    // }
+    function forwarder() public {
+        vm.startBroadcast();
+        console.log("Trying to request fight...");
+        matchmaker.setForwarderDuh(0x62D172390bFce899903c53A8FEF36190e1CE811f);
+        console.log("DONE");
+        vm.stopBroadcast();
+    }
 
     function regiterAutomation() public {
         vm.startBroadcast();

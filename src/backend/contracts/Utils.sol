@@ -18,11 +18,14 @@ address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 address constant PLAYER_FOR_FIGHTS = 0x108d618c5baFFb6AE2b84094da4C8314BAD16D71; // 🟢
 address constant BACKEND_DON_MOCK = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0x8b20ADA3498ba4040DC4b353d7A1675699C18C05; // 🟢
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0x1074065732cc2CC945818483B2543105ed2BF8F3; // 🟢
+// 0x8b20ADA3498ba4040DC4b353d7A1675699C18C05
 address constant DEPLOYED_FUJI_BARRACKS = 0x300eEB65665EA82fb4d8E4c269F7Bea2F7701bC8; // 🟠
 
-address constant SEPOLIA_FIGHT_MATCHMAKER = 0xE6835F9799BBb4c7c891cc25b0A9210660E6c9af; // 🟢
-address constant SEPOLIA_FIGHT_EXECUTOR = 0xa5941b5aC7FaD9bFBce7df46274aB926e26B8499; // 🟢
+address constant SEPOLIA_FIGHT_MATCHMAKER = 0x9584C884454B7538C366592E0Ff1bDE1f88761f1; // 🟢
+// 0xE6835F9799BBb4c7c891cc25b0A9210660E6c9af
+address constant SEPOLIA_FIGHT_EXECUTOR = 0x666dC2a85634ef761C9aDDb5B545a8C9F070e133; // 🟢
+// 0xa5941b5aC7FaD9bFBce7df46274aB926e26B8499
 
 address constant FUJI_FIGHT_MATCHMAKER = 0x4AD4B2C31E53362A34D18221253a114fAfE0716a; // 🟠
 address constant FUJI_FIGHT_EXECUTOR = 0x935836279FEb095b1bba2cb9258f6386457f9aDB; // 🟠
@@ -44,8 +47,8 @@ import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
 contract FightToExecuteInScripts {
     address public constant REQUESTER = DEPLOYER; // 🟢
     address public constant ACCEPTOR = PLAYER_FOR_FIGHTS; // 🟢
-    uint256 public constant REQUESTER_NFT_ID = 2; // 🟢
-    uint256 public constant ACCEPTOR_NFT_ID = 3; // 🟢
+    uint256 public constant REQUESTER_NFT_ID = 1; // 🟢
+    uint256 public constant ACCEPTOR_NFT_ID = 2; // 🟢
 
     // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
     //
@@ -71,6 +74,8 @@ contract FightToExecuteInScripts {
 
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
+uint256 constant MIN_ETH_BET = 0.001 ether;
+
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 
@@ -78,6 +83,11 @@ string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 // OFFICIAL CONTRACTS
 //******************** */
 
+// POLY
+
+address constant POLY_COLLECTION = 0x7755624f45e09967B1379Fd5c57C36779FD10e71;
+address constant POLY_MATCHMAKER = 0xE1685DC978cbe491c138Ad365942AA423890fE3C;
+address constant POLY_EXECUTOR = 0xA7c50f78b17618d69b3c053f486D334750E67A54;
 address constant DEPLOYED_MUMBAI_BARRACKS = address(0);
 uint64 constant PLY_MUMBAI_SUBS_ID = 1027;
 

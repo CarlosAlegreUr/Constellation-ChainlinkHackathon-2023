@@ -179,8 +179,10 @@ interface IFightMatchmaker {
 
     /**
      * @dev Yout must approve linkFunds amount of LINK to the contract before calling this function.
+     * @dev You must sent the bets you are gonna be betting during automated battles.
+     * @notice We didn't implement a funds recovery mechanism.
      */
-    function setNftAutomated(uint256 nftId, uint256 bet, uint256 minBet, uint96 linkFunds) external;
+    function setNftAutomated(uint256 nftId, uint256 bet, uint256 minBet, uint96 linkFunds) external payable;
 
     //************* */
     // Getters

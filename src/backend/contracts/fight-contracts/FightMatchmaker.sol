@@ -173,17 +173,17 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
         require(success, "Failure intializing references");
     }
 
-    // TESTING ONLY
-    // function setForwarderDuh(address forwarder) external {
-    //     require(msg.sender == DEPLOYER);
-    //     i_AUTOMATION_FORWARDER = IAutomationForwarder(forwarder);
-    // }
+    // TESTING ONLY TODO
+    function setForwarderDuh(address forwarder) external {
+        require(msg.sender == DEPLOYER);
+        i_AUTOMATION_FORWARDER = IAutomationForwarder(forwarder);
+    }
 
-    // TESTING ONLY
-    // function setUpkeepId(uint256 uid) external {
-    //     require(msg.sender == DEPLOYER);
-    //     i_UPKEEP_ID = uid;
-    // }
+    // TESTING ONLY TODO
+    function setUpkeepId(uint256 uid) external {
+        require(msg.sender == DEPLOYER);
+        i_UPKEEP_ID = uid;
+    }
 
     /**
      * @notice In this contract this can only be called from initializeReferencesAndAutomation()
@@ -317,7 +317,8 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
     // Fight Automation
 
-    function setNftAutomated(uint256 _nftId, uint256 _bet, uint256 _minBet, uint96 _linkFunds) external {
+    function setNftAutomated(uint256 _nftId, uint256 _bet, uint256 _minBet, uint96 _linkFunds) external payable {
+        require(msg.value >= MIN_ETH_BET, "You must at least be able to bet MIN_ETH_BET.");
         require(s_nftIdAutomated == 0, "An NFT is already automated, we only allow 1 at a time for now.");
         require(_linkFunds >= i_AUTOMATION_BALANCE_THRESHOLD, "You must send more LINK to use automation.");
         require(msg.sender == i_PROMPT_FIGHTERS_NFT.getOwnerOf(_nftId), "You must own the NFT to automate it.");

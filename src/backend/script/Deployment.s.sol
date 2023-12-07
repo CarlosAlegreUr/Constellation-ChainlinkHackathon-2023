@@ -40,23 +40,23 @@ contract PromptFightersDeploy is DeployFightsContracts {
             // Deploys all contracts that are shared accross chans.
             super.run();
 
-            // Deploy collection
-            console.log("Deploying collection...");
-            PromptFightersNFT promptFighters = new PromptFightersNFT(
-                ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
-            );
-            console.log("+++++++++++++++++++++++++++++++++++++++");
-            console.log("PromptFighters deployed at:");
-            console.log(address(promptFighters));
-            console.log("+++++++++++++++++++++++++++++++++++++++");
+            // Deploy collection TODO
+            // console.log("Deploying collection...");
+            // PromptFightersNFT promptFighters = new PromptFightersNFT(
+            //     ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
+            // );
+            // console.log("+++++++++++++++++++++++++++++++++++++++");
+            // console.log("PromptFighters deployed at:");
+            // console.log(address(promptFighters));
+            // console.log("+++++++++++++++++++++++++++++++++++++++");
 
             // Intialize FightMatchmaker as it required frist the collection address.
             // @notice if we deploy the collection with CREATE2 this can be moved to DeploymentBase.s.sol
             address[] memory referencedContracts = new address[](3);
             referencedContracts[0] = address(fightExecutor);
             referencedContracts[1] = address(betsVault);
-            referencedContracts[2] = address(promptFighters);
-            // referencedContracts[2] = DEPLOYED_SEPOLIA_COLLECTION;
+            // referencedContracts[2] = address(promptFighters); TODO
+            referencedContracts[2] = DEPLOYED_SEPOLIA_COLLECTION;
 
             // Fund automation registration with LINK
             console.log("Initializing matchmaker...");
