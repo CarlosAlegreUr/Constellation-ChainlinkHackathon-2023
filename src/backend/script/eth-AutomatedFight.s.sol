@@ -51,7 +51,7 @@ contract AutomatedFight is Script {
         linkToken.approve(address(matchmaker), AUTOMATION_BALANCE_THRESHOLD);
 
         // Set NFT 2 to be automated
-        uint256 ethToSend = MIN_ETH_BET * 2;
+        uint256 ethToSend = MIN_ETH_BET * 3;
         matchmaker.setNftAutomated{value: ethToSend}(
             NFT_TO_AUTOMATE, 0.001 ether, 0.001 ether, uint96(AUTOMATION_BALANCE_THRESHOLD)
         );
@@ -67,7 +67,7 @@ contract AutomatedFight is Script {
         vm.startBroadcast();
         // TESTING ONLY
         // console.log("Funding LINK consumption of executor contract...");
-        // uint256 funds = 12 ether;
+        // uint256 funds = 2.5 ether; //12 ether;
         // linkToken.approve(address(executor), funds);
         // executor.fundMySubscription(funds);
         // console.log("Funded.");
@@ -78,50 +78,40 @@ contract AutomatedFight is Script {
         vm.stopBroadcast();
     }
 
-    // TESTING ONLY
-    function forwarder() public {
+    function initializeUpkeep() public {
         vm.startBroadcast();
-        console.log("Trying to request fight...");
-        matchmaker.setForwarderDuh(0x62D172390bFce899903c53A8FEF36190e1CE811f);
+        console.log("Trying to initialize upkeep...");
+        matchmaker.setUpkeepId(ETH_SEPOLIA_UPKEEP_ID);
         console.log("DONE");
         vm.stopBroadcast();
     }
 
-    function regiterAutomation() public {
-        vm.startBroadcast();
-        // Automation registration complete params that require address(this)
-        IAutomationRegistrar _registrar = IAutomationRegistrar(ETH_SEPOLIA_REGISTRAR);
-        IAutomationRegistrar.RegistrationParams memory _params;
-        _params.name = "Sepolia Automation PromptFighters";
-        _params.encryptedEmail = new bytes(0);
-        _params.gasLimit = GAS_LIMIT_SEPOLIA_AUTOMATION;
-        _params.triggerType = 1;
-        _params.checkData = new bytes(0);
-        _params.offchainConfig = new bytes(0);
-        _params.amount = LINK_AMOUNT_FOR_REGISTRATION;
-        _params.upkeepContract = SEPOLIA_FIGHT_MATCHMAKER;
-        _params.adminAddress = msg.sender;
-        _params.triggerConfig = abi.encode(
-            SEPOLIA_FIGHT_MATCHMAKER, // Listen to this contract
-            2, // Binary 010, considering only topic2 (fightId)
-            keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
-            0x0, // If you don't want to filter on a specific nftId
-            0x0, // If you don't want to filter on a specific fightId
-            0x0 // If you don't want to filter on a specific bet
-        );
-        LinkTokenInterface(ETH_SEPOLIA_LINK).approve(address(_registrar), _params.amount);
-        uint256 upkeepID = _registrar.registerUpkeep(_params);
-        console.log(upkeepID);
-        vm.stopBroadcast();
-    }
-
-    // testing only
-    // function manualsetup() public {
+    // TEST ONLY
+    // function regiterAutomation() public {
     //     vm.startBroadcast();
-    //     uint256 uid = 98785675887033837089720433517441719857293902855493994579632517239481229958059;
-    //     address forwarder = 0xD497BDE78255a86632445d29B2A74d8f2a913aB9;
-    //     FightMatchmaker(mtch).setForwarderDuh(forwarder);
-    //     FightMatchmaker(mtch).setUpkeepId(uid);
+    //     // Automation registration complete params that require address(this)
+    //     IAutomationRegistrar _registrar = IAutomationRegistrar(ETH_SEPOLIA_REGISTRAR);
+    //     IAutomationRegistrar.RegistrationParams memory _params;
+    //     _params.name = "Sepolia Automation PromptFighters";
+    //     _params.encryptedEmail = new bytes(0);
+    //     _params.gasLimit = GAS_LIMIT_SEPOLIA_AUTOMATION;
+    //     _params.triggerType = 1;
+    //     _params.checkData = new bytes(0);
+    //     _params.offchainConfig = new bytes(0);
+    //     _params.amount = 5 ether; //LINK_AMOUNT_FOR_REGISTRATION;
+    //     _params.upkeepContract = SEPOLIA_FIGHT_MATCHMAKER;
+    //     _params.adminAddress = msg.sender;
+    //     _params.triggerConfig = abi.encode(
+    //         SEPOLIA_FIGHT_MATCHMAKER, // Listen to this contract
+    //         2, // Binary 010, considering only topic2 (fightId)
+    //         keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
+    //         0x0, // If you don't want to filter on a specific nftId
+    //         0x0, // If you don't want to filter on a specific fightId
+    //         0x0 // If you don't want to filter on a specific bet
+    //     );
+    //     LinkTokenInterface(ETH_SEPOLIA_LINK).approve(address(_registrar), _params.amount);
+    //     uint256 upkeepID = _registrar.registerUpkeep(_params);
+    //     console.log(upkeepID);
     //     vm.stopBroadcast();
     // }
 }

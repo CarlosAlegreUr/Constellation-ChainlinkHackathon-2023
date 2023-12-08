@@ -139,50 +139,47 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
      */
     function initializeReferencesAndAutomation(
         address[] memory _references,
-        IAutomationRegistry _registry,
-        IAutomationRegistrar _registrar,
-        IAutomationRegistrar.RegistrationParams memory _params
+        IAutomationRegistry, /*_registry*/
+        IAutomationRegistrar, /*_registrar*/
+        IAutomationRegistrar.RegistrationParams memory /*_params*/
     ) external initializeActions {
         /*SP_MARK_START*/
+        // See scripts/AutomationIssue.md for more details
         // @dev For some reason in Fuji is not working, cant check upkeep id after set
-        if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            // Automation registration complete params that require address(this)
-            _params.upkeepContract = address(this);
-            _params.adminAddress = address(this);
-            _params.triggerConfig = abi.encode(
-                address(this), // Listen to this contract
-                2, // Binary 010, considering only topic2 (fightId)
-                keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
-                0x0, // If you don't want to filter on a specific nftId
-                0x0, // If you don't want to filter on a specific fightId
-                0x0 // If you don't want to filter on a specific bet
-            );
-            i_LINK.approve(address(_registrar), _params.amount);
-            uint256 upkeepID = _registrar.registerUpkeep(_params);
-            require(upkeepID != 0, "Chainlink upkeep registration: auto-approve disabled");
+        // if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
+        //     // Automation registration complete params that require address(this)
+        //     _params.upkeepContract = address(this);
+        //     _params.adminAddress = address(this);
+        //     _params.triggerConfig = abi.encode(
+        //         address(this), // Listen to this contract
+        //         2, // Binary 010, considering only topic2 (fightId)
+        //         keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
+        //         0x0, // If you don't want to filter on a specific nftId
+        //         0x0, // If you don't want to filter on a specific fightId
+        //         0x0 // If you don't want to filter on a specific bet
+        //     );
+        //     i_LINK.approve(address(_registrar), _params.amount);
+        //     uint256 upkeepID = _registrar.registerUpkeep(_params);
+        //     require(upkeepID != 0, "Chainlink upkeep registration: auto-approve disabled");
 
-            // Get&Set forwarder
-            i_UPKEEP_ID = upkeepID;
-            i_AUTOMATION_FORWARDER = _registry.getForwarder(upkeepID);
-            i_AUTOMATION_REGISTRY = _registry;
-            emit FightMatchmaker__AutomatonRegistered(upkeepID);
-        }
+        //     // Get&Set forwarder
+        //     i_UPKEEP_ID = upkeepID;
+        //     i_AUTOMATION_FORWARDER = _registry.getForwarder(upkeepID);
+        //     i_AUTOMATION_REGISTRY = _registry;
+        //     emit FightMatchmaker__AutomatonRegistered(upkeepID);
+        // }
         /*SP_MARK_END*/
 
         (bool success,) = address(this).call(abi.encodeWithSignature("initializeReferences(address[])", _references));
         require(success, "Failure intializing references");
     }
 
-    // TESTING ONLY TODO
-    function setForwarderDuh(address forwarder) external {
-        require(msg.sender == DEPLOYER);
-        i_AUTOMATION_FORWARDER = IAutomationForwarder(forwarder);
-    }
-
-    // TESTING ONLY TODO
+    // @dev This function is only here because the self-registration is giving problems.
+    // @notice In production code this should be deleted or set to 1 time usage.
     function setUpkeepId(uint256 uid) external {
         require(msg.sender == DEPLOYER);
         i_UPKEEP_ID = uid;
+        i_AUTOMATION_FORWARDER = i_AUTOMATION_REGISTRY.getForwarder(i_UPKEEP_ID);
     }
 
     /**
