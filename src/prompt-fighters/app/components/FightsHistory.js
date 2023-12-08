@@ -93,8 +93,6 @@ export default function fightsHistory() {
   }
 
   async function getFight(fight) {
-    console.log(fight);
-
     // enum FightState {AVAILABLE, REQUESTED,ONGOING}
     const FightState = { 1: "AVAILABLE", 2: "REQUESTED", 3: "ONGOING" };
     return (
