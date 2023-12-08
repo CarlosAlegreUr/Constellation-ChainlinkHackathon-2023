@@ -1,6 +1,6 @@
 # ⚠️ SELF-REGISTRATION AUTOMATION ISSUE ⚠️
 
-### read the readme first so you understand under which circumnstances this issue arises
+### read the [script readme](./README.md) first so you understand under which circumnstances this issue arises
 
 I redeployed everything and only works when the Upkeep is set up from the UI, if I set up the upkeep with the code shown
 above eventually appearing as Custom Logic instead of Log Trigger then it doesnt work.
