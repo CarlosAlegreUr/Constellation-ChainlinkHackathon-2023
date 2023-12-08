@@ -77,7 +77,7 @@ With **_`CCIP`_**:
 
 With **`Automation`**:
 
-1. We have automation coded in our project but it is not working. It's a weird error explained in the [scripts README](./src/backend/script/README.md).
+1. We have automation coded in our project but it is only working if upkeep is registered via UI. We don't know whats wrong with our registration code everything looks fine. It's a weird error explained in [this file on scripts directory.](./src/backend/script/AutomationIssue.md).
 
 > 📘**Note**ℹ️: The whole team met in the **SmartCon 2023**, thanks for the great event and the chairs! 😄
 
