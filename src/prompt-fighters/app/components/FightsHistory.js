@@ -103,7 +103,7 @@ export default function fightsHistory() {
         className=" flex flex-col justify-center p-2  border border-gray-400 rounded leading-tight focus:outline-none focus:shadow-outline"
       >
         <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
-          Fight Id: {fight.fightId.slice(0, 8)}
+          Fight Id: {fight.fightId}
         </h1>
         <div className=" flex flex-row gap-3 items-center">
           <div className=" border border-gray-600 rounded w-80 py-1 ">
