@@ -2,13 +2,13 @@
 
 The project has **_not been audited neither comprehensive testing code has been written yet_**.
 
-So far **_it's just a functional ProofOfConcept (POC)_** for the overall idea.
+So far it's just a functional demo with minimal tests implementing the overall idea.
 
 ---
 
 ## Code 🧑‍💻
 
-- Check `smart contracts` on chain [here](./backend)
+- Check `smart contracts & backend` [here](./backend)
 
 - Check `front-end` code [here](./prompt-fighters/)
 
