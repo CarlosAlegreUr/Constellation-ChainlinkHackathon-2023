@@ -20,11 +20,11 @@ export default function Create() {
           priority={"false"}
         />
       </div>
-      <h1 className=" text-4xl">Create Your Fighter</h1>
-      <h2 className=" text-2xl pt-8">
+      <h1 className=" text-4xl font-semibold">Create Your Fighter</h1>
+      <h2 className=" text-2xl pt-4">
         Fighters are customized NFTs stored on-chain
       </h2>
-      <div className=" h-[750px] px-48 w-full flex flex-row justify-between pt-16 gap-8">
+      <div className=" h-[770px] px-48 w-full flex flex-row justify-between pt-8 gap-8">
         <MintFrom />
         <YourFighters />
       </div>

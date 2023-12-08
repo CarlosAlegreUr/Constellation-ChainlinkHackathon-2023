@@ -69,7 +69,7 @@ export default function SearchForFight() {
     });
   }, []);
 
-  // SUBMIT FIGHT REQUEST
+  // request fight
 
   const {
     isLoading: requestFightIsLoading,
@@ -83,7 +83,6 @@ export default function SearchForFight() {
 
   async function submitRequestFight(e) {
     e.preventDefault();
-    const t = e.target;
     const FightRequest = {
       challengerNftId: Number(e.target[0].value),
       minBet: Number(e.target[1].value),
@@ -94,8 +93,21 @@ export default function SearchForFight() {
     requestFightWrite({ args: [FightRequest] });
   }
 
-  async function submitAcceptFight(e) {
+  // Accept fight
 
+  const {
+    isLoading: acceptFightIsLoading,
+    isSuccess: acceptFightIsSuccess,
+    write: acceptFightWrite,
+  } = useContractWrite({
+    address: SEPOLIA_FIGHT_MATCHERMAKER,
+    abi: IFightMatchermaker.abi,
+    functionName: "acceptFight",
+  });
+
+  async function submitAcceptFight(e) {
+    e.preventDefault();
+    acceptFightWrite({ args: [e.target[0].value, Number(e.target[1].value)] });
   }
 
   return (
@@ -197,10 +209,7 @@ export default function SearchForFight() {
           {/* TODO: Fight ids requested to connected account and display as option list in Fight Id, */}
           <h1>Accept Fight Request</h1>
           <div className="bg-white shadow-md rounded p-4">
-            <form
-              className=" flex flex-col gap-2"
-              onSubmit={submitAcceptFight}
-            >
+            <form className=" flex flex-col gap-2" onSubmit={submitAcceptFight}>
               <div>
                 {/* fightId */}
                 <label
@@ -212,7 +221,7 @@ export default function SearchForFight() {
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="fightId"
-                  type="number"
+                  type="text"
                   placeholder="Fight Id"
                 />
               </div>

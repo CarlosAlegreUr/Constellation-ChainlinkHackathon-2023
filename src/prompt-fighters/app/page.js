@@ -16,7 +16,7 @@ export default function Home() {
           priority={"false"}
         />
       </div>
-      <h1 className=" text-4xl">Leaderboard</h1>
+      <h1 className=" text-4xl font-semibold">Leaderboard</h1>
       <LeaderBoard />
     </main>
   );
