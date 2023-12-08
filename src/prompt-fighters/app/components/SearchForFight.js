@@ -94,9 +94,13 @@ export default function SearchForFight() {
     requestFightWrite({ args: [FightRequest] });
   }
 
+  async function submitAcceptFight(e) {
+
+  }
+
   return (
     <>
-      <div className=" flex flex-col justify-between h-full w-1/2">
+      <div className=" flex flex-col justify-between h-full w-1/4">
         <div>
           <h1>Request Fight</h1>
           <div className="bg-white shadow-md rounded p-4">
@@ -195,7 +199,7 @@ export default function SearchForFight() {
           <div className="bg-white shadow-md rounded p-4">
             <form
               className=" flex flex-col gap-2"
-              onSubmit={submitRequestFight}
+              onSubmit={submitAcceptFight}
             >
               <div>
                 {/* fightId */}

@@ -105,7 +105,7 @@ export default function fightsHistory() {
         <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
           Fight Id: {fight.fightId}
         </h1>
-        <div className=" flex flex-row gap-3 items-center">
+        <div className=" flex flex-row justify-center gap-3 items-center">
           <div className=" border border-gray-600 rounded w-80 py-1 ">
             <h1 className="block text-gray-700 text-center text-xs font-bold m-1">
               {await fighterToName(fight.nftRequester)}
@@ -132,7 +132,7 @@ export default function fightsHistory() {
   }
 
   return (
-    <div className=" flex flex-col relative h-full w-1/2">
+    <div className=" flex flex-col relative h-full w-3/4">
       <h1>Fights history</h1>
       <div className=" h-full w-full flex flex-col gap-1 overflow-y-scroll bg-white shadow-md rounded px-8 pt-6 py-6">
         {fights}
