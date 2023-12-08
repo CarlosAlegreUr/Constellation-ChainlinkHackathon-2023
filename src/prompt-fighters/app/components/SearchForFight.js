@@ -1,7 +1,10 @@
 "use client";
 import React from "react";
 import { useContractWrite } from "wagmi";
-import SEPOLIA_PROMPT_FIGHTERS_NFT from "../constants";
+import {
+  SEPOLIA_PROMPT_FIGHTERS_NFT,
+  SEPOLIA_FIGHT_MATCHERMAKER,
+} from "../constants";
 import * as IPromptFightersCollection from "../contracts-artifacts/IPromptFightersCollection.sol/IPromptFightersCollection.json";
 import * as IFightMatchermaker from "../contracts-artifacts/IFightMatchmaker.sol/IFightMatchmaker.json";
 import { getAccount } from "@wagmi/core";
@@ -12,7 +15,7 @@ import { useEffect } from "react";
 import { getContract } from "@wagmi/core";
 import { encodeAbiParameters } from "viem";
 
-export default function SearchForBattle() {
+export default function SearchForFight() {
   const [yourFighters, setYourFighters] = useState([]);
   const account = getAccount();
   const publicClient = getPublicClient();
@@ -73,7 +76,7 @@ export default function SearchForBattle() {
     isSuccess: requestFightIsSuccess,
     write: requestFightWrite,
   } = useContractWrite({
-    address: SEPOLIA_PROMPT_FIGHTERS_NFT,
+    address: SEPOLIA_FIGHT_MATCHERMAKER,
     abi: IFightMatchermaker.abi,
     functionName: "requestFight",
   });
@@ -81,18 +84,6 @@ export default function SearchForBattle() {
   async function submitRequestFight(e) {
     e.preventDefault();
     const t = e.target;
-    const encodedParams = encodeAbiParameters(
-      IFightMatchermaker.abi[29].inputs,
-      [
-        {
-          challengerNftId: e.target[0].value,
-          minBet: e.target[1].value,
-          acceptanceDeadline: e.target[2].value,
-          challengee: e.target[3].value,
-          challengeeNftId: e.target[4].value,
-        },
-      ]
-    );
     const FightRequest = {
       challengerNftId: Number(e.target[0].value),
       minBet: Number(e.target[1].value),
@@ -100,8 +91,6 @@ export default function SearchForBattle() {
       challengee: e.target[3].value,
       challengeeNftId: Number(e.target[4].value),
     };
-    // TODO: FIX SUBMIT FIGHT REQUEST
-    console.log(encodedParams);
     requestFightWrite({ args: [FightRequest] });
   }
 

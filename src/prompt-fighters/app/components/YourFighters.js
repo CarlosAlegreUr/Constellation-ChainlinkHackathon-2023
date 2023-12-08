@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import SEPOLIA_PROMPT_FIGHTERS_NFT from "../constants";
+import {SEPOLIA_PROMPT_FIGHTERS_NFT} from "../constants";
 import * as IPromptFightersCollection from "../contracts-artifacts/IPromptFightersCollection.sol/IPromptFightersCollection.json";
 import { useState, useEffect } from "react";
 import { getAccount, getPublicClient } from "@wagmi/core";

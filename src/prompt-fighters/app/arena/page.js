@@ -1,8 +1,8 @@
 import dynamic from "next/dynamic";
-const SearchForBattle = dynamic(() => import("../components/SearchForBattle"), {
+const SearchForFight = dynamic(() => import("../components/SearchForFight"), {
   ssr: false,
 });
-const BattlesHistory = dynamic(() => import("../components/BattlesHistory"), {
+const FightsHistory = dynamic(() => import("../components/FightsHistory"), {
   ssr: false,
 });
 import Dino from "../../public/landing/Dino.png";
@@ -23,8 +23,8 @@ export default function Arena() {
       <h1 className=" text-4xl">Arena</h1>
       <h2 className=" text-2xl pt-8">Fight against other fighters</h2>
       <div className=" h-[750px] w-full px-48 flex flex-row justify-between pt-8 gap-8">
-        <SearchForBattle />
-        <BattlesHistory />
+        <SearchForFight />
+        <FightsHistory />
       </div>
     </main>
   );

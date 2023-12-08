@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import { useContractWrite } from 'wagmi'
-import SEPOLIA_PROMPT_FIGHTERS_NFT from "../constants";
+import { useContractWrite } from "wagmi";
+import { SEPOLIA_PROMPT_FIGHTERS_NFT } from "../constants";
 import * as IPromptFightersCollection from "../contracts-artifacts/IPromptFightersCollection.sol/IPromptFightersCollection.json";
 import { getAccount } from "@wagmi/core";
 
@@ -19,7 +19,13 @@ export default function MintForm() {
 
     const t = e.target;
 
-    const prompt = [t[0].value, t[1].value, t[2].value, t[3].value, t[4].value].join("-");
+    const prompt = [
+      t[0].value,
+      t[1].value,
+      t[2].value,
+      t[3].value,
+      t[4].value,
+    ].join("-");
 
     await write({ args: [account.address, prompt] });
   }
