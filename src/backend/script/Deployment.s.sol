@@ -40,7 +40,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             // Deploys all contracts that are shared accross chans.
             super.run();
 
-            // Deploy collection
+            // Deploy collection TODO
             console.log("Deploying collection...");
             PromptFightersNFT promptFighters = new PromptFightersNFT(
                 ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker

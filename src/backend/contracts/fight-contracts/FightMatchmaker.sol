@@ -139,51 +139,48 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
      */
     function initializeReferencesAndAutomation(
         address[] memory _references,
-        IAutomationRegistry _registry,
-        IAutomationRegistrar _registrar,
-        IAutomationRegistrar.RegistrationParams memory _params
+        IAutomationRegistry, /*_registry*/
+        IAutomationRegistrar, /*_registrar*/
+        IAutomationRegistrar.RegistrationParams memory /*_params*/
     ) external initializeActions {
         /*SP_MARK_START*/
+        // See scripts/AutomationIssue.md for more details
         // @dev For some reason in Fuji is not working, cant check upkeep id after set
-        if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
-            // Automation registration complete params that require address(this)
-            _params.upkeepContract = address(this);
-            _params.adminAddress = address(this);
-            _params.triggerConfig = abi.encode(
-                address(this), // Listen to this contract
-                2, // Binary 010, considering only topic2 (fightId)
-                keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
-                0x0, // If you don't want to filter on a specific nftId
-                0x0, // If you don't want to filter on a specific fightId
-                0x0 // If you don't want to filter on a specific bet
-            );
-            i_LINK.approve(address(_registrar), _params.amount);
-            uint256 upkeepID = _registrar.registerUpkeep(_params);
-            require(upkeepID != 0, "Chainlink upkeep registration: auto-approve disabled");
+        // if (block.chainid == ETH_SEPOLIA_CHAIN_ID) {
+        //     // Automation registration complete params that require address(this)
+        //     _params.upkeepContract = address(this);
+        //     _params.adminAddress = address(this);
+        //     _params.triggerConfig = abi.encode(
+        //         address(this), // Listen to this contract
+        //         2, // Binary 010, considering only topic2 (fightId)
+        //         keccak256("FightMatchmaker__FightRequested(address,uint256,bytes32,uint256,uint256)"), // Listen for this event
+        //         0x0, // If you don't want to filter on a specific nftId
+        //         0x0, // If you don't want to filter on a specific fightId
+        //         0x0 // If you don't want to filter on a specific bet
+        //     );
+        //     i_LINK.approve(address(_registrar), _params.amount);
+        //     uint256 upkeepID = _registrar.registerUpkeep(_params);
+        //     require(upkeepID != 0, "Chainlink upkeep registration: auto-approve disabled");
 
-            // Get&Set forwarder
-            i_UPKEEP_ID = upkeepID;
-            i_AUTOMATION_FORWARDER = _registry.getForwarder(upkeepID);
-            i_AUTOMATION_REGISTRY = _registry;
-            emit FightMatchmaker__AutomatonRegistered(upkeepID);
-        }
+        //     // Get&Set forwarder
+        //     i_UPKEEP_ID = upkeepID;
+        //     i_AUTOMATION_FORWARDER = _registry.getForwarder(upkeepID);
+        //     i_AUTOMATION_REGISTRY = _registry;
+        //     emit FightMatchmaker__AutomatonRegistered(upkeepID);
+        // }
         /*SP_MARK_END*/
 
         (bool success,) = address(this).call(abi.encodeWithSignature("initializeReferences(address[])", _references));
         require(success, "Failure intializing references");
     }
 
-    // TESTING ONLY
-    // function setForwarderDuh(address forwarder) external {
-    //     require(msg.sender == DEPLOYER);
-    //     i_AUTOMATION_FORWARDER = IAutomationForwarder(forwarder);
-    // }
-
-    // TESTING ONLY
-    // function setUpkeepId(uint256 uid) external {
-    //     require(msg.sender == DEPLOYER);
-    //     i_UPKEEP_ID = uid;
-    // }
+    // @dev This function is only here because the self-registration is giving problems.
+    // @notice In production code this should be deleted or set to 1 time usage.
+    function setUpkeepId(uint256 uid) external {
+        require(msg.sender == DEPLOYER);
+        i_UPKEEP_ID = uid;
+        i_AUTOMATION_FORWARDER = i_AUTOMATION_REGISTRY.getForwarder(i_UPKEEP_ID);
+    }
 
     /**
      * @notice In this contract this can only be called from initializeReferencesAndAutomation()
@@ -317,7 +314,8 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
     // Fight Automation
 
-    function setNftAutomated(uint256 _nftId, uint256 _bet, uint256 _minBet, uint96 _linkFunds) external {
+    function setNftAutomated(uint256 _nftId, uint256 _bet, uint256 _minBet, uint96 _linkFunds) external payable {
+        require(msg.value >= MIN_ETH_BET, "You must at least be able to bet MIN_ETH_BET.");
         require(s_nftIdAutomated == 0, "An NFT is already automated, we only allow 1 at a time for now.");
         require(_linkFunds >= i_AUTOMATION_BALANCE_THRESHOLD, "You must send more LINK to use automation.");
         require(msg.sender == i_PROMPT_FIGHTERS_NFT.getOwnerOf(_nftId), "You must own the NFT to automate it.");

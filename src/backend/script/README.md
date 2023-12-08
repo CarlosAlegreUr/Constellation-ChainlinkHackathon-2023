@@ -215,25 +215,40 @@ forge script script/eth-SettleFightWhenVRFNotReponding.s.sol --rpc-url $S_RPC_UR
 
 <details><summary> Use Automation to execute fights 🤖 </summary>
 
-# ⚠️ CODED BUT ⚠️ : For some reason Automation is reverting, a getter that should return a valid value doesn't whereas calling from normal execution it does. We don't find where is the bug as there is no delete and in the contract on-chain says that object and getter work. Plus as seen in [this simulation](https://dashboard.tenderly.co/shared/simulation/589f1ce7-b7ac-47af-bee3-af4adf133b2c?trace=0.4) UpKeep is using the right calls and arguments.
+To use automation you will need to register an upkeep for the matchmaker contract.
+For that use the [Chainlink Automation App](https://automation.chain.link/sepolia/).
 
-Whenever we manage to make it work this commands should
-request a fight and that fight would be later accepted by the Keeper.
+> 🚧 **Note** ⚠️: We tried to create a self upkeep registering contract but we run into an issue
+> we cant figure out how to solve. Explained in more detail [here](./AutomationIssue.md).
+
+Click on `Create Upkeep`. Choose `Log Trigger`.
+Add as upkeep contract and emitting logs contract the same `SEPOLIA_FIGHT_MATCHMAKER` address.
+
+Gas limit --> `790.000`
+Event to listen to --> `FightMatchmaker__FightRequested`
+Initial funding can be 0 but then fund it with 3 to 5 times the minimum balance you will se displayed.
+
+Once the subscription is created copy the upkeep ID into [this varibale in Utils.sol](../contracts/Utils.sol#L39) and run:
 
 ```bash
+# Initializes Upkeep
+forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "initializeUpkeep()"
+
 # Automates nft id 2.
 forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_PLAYER --broadcast
 ```
 
 Before continuing make sure `REQUESTER_NFT_ID` and `ACCEPTOR_NFT_ID` are set
-to 1 and 2 respectively [here](../contracts/Utils.sol#L47).
+to 2 and 3 respectively [here](../contracts/Utils.sol#L47).
 
 ```bash
-# Nft id 1 requests a fight, as nftid 2 is automated it should be accepted in the next block.
+# Nft id 3 requests a fight, as nftid 2 is automated it should be accepted in the next block by Automation.
 forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "request()"
 ```
 
-Now Cahinlink Automation should work and accept your request.
+Now Cahinlink Automation should work and accept your request. If so it will be displayed in
+the automation UI, then you should also see the Functions UI and later the VRF UI complete
+the request.
 
 ---
 

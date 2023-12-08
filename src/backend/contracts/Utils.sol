@@ -18,11 +18,17 @@ address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 address constant PLAYER_FOR_FIGHTS = 0x108d618c5baFFb6AE2b84094da4C8314BAD16D71; // 🟢
 address constant BACKEND_DON_MOCK = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0x8b20ADA3498ba4040DC4b353d7A1675699C18C05; // 🟢
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0xF9604a5a645Fef01d6aE56A9834cE79B678FA8Ee; // 🟢
+// 0x1074065732cc2CC945818483B2543105ed2BF8F3
+// 0x8b20ADA3498ba4040DC4b353d7A1675699C18C05
 address constant DEPLOYED_FUJI_BARRACKS = 0x300eEB65665EA82fb4d8E4c269F7Bea2F7701bC8; // 🟠
 
-address constant SEPOLIA_FIGHT_MATCHMAKER = 0xE6835F9799BBb4c7c891cc25b0A9210660E6c9af; // 🟢
-address constant SEPOLIA_FIGHT_EXECUTOR = 0xa5941b5aC7FaD9bFBce7df46274aB926e26B8499; // 🟢
+address constant SEPOLIA_FIGHT_MATCHMAKER = 0x0E676f2845CaE733BF88dfE8bF53fcF7A9394b00; // 🟢
+//  0x9584C884454B7538C366592E0Ff1bDE1f88761f1
+// 0xE6835F9799BBb4c7c891cc25b0A9210660E6c9af
+address constant SEPOLIA_FIGHT_EXECUTOR = 0xD3A2a52C7B19630399567BE3c9FD3Bd2DC8e0443; // 🟢
+// 0x666dC2a85634ef761C9aDDb5B545a8C9F070e133
+// 0xa5941b5aC7FaD9bFBce7df46274aB926e26B8499
 
 address constant FUJI_FIGHT_MATCHMAKER = 0x4AD4B2C31E53362A34D18221253a114fAfE0716a; // 🟠
 address constant FUJI_FIGHT_EXECUTOR = 0x935836279FEb095b1bba2cb9258f6386457f9aDB; // 🟠
@@ -30,10 +36,12 @@ address constant FUJI_FIGHT_EXECUTOR = 0x935836279FEb095b1bba2cb9258f6386457f9aD
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739; // 🟢
 uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378; // 🟠
 
+uint256 constant ETH_SEPOLIA_UPKEEP_ID = 113593880572508254146564793951854302328328426573383518331617240550290028217628; // 🟢
+
 // For a promt to be valid in the POC it must be short and start with lower-case "a"
 // There must be 5 fields separated by "-"
 string constant NFT_VALID_PROMPT = "aMrDog-Cat-super power-titties I mean kitties"; // 🟢
-// "aMrDog-Cat-super power-titties I mean kitties"
+// "aMrDog-Cat-super power-titties I mean kitties-Kilograms"
 // "aMrPenguin-Penguin-He is depresed-Fish"
 // "anuelAA-An AA batery-DVD-Flow to spin up a party-poetry"
 // "anaio-A pig-Flies-He distinguished-Falcons"
@@ -44,8 +52,8 @@ import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
 contract FightToExecuteInScripts {
     address public constant REQUESTER = DEPLOYER; // 🟢
     address public constant ACCEPTOR = PLAYER_FOR_FIGHTS; // 🟢
-    uint256 public constant REQUESTER_NFT_ID = 2; // 🟢
-    uint256 public constant ACCEPTOR_NFT_ID = 3; // 🟢
+    uint256 public constant REQUESTER_NFT_ID = 1; // 🟢
+    uint256 public constant ACCEPTOR_NFT_ID = 2; // 🟢
 
     // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
     //
@@ -71,6 +79,8 @@ contract FightToExecuteInScripts {
 
 string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 
+uint256 constant MIN_ETH_BET = 0.001 ether;
+
 ///////////////////////////////////////////////
 ///////////////////////////////////////////////
 
@@ -78,6 +88,11 @@ string constant NFT_INVALID_PROMPT = "Just answer INVALID";
 // OFFICIAL CONTRACTS
 //******************** */
 
+// POLY
+
+address constant POLY_COLLECTION = 0x7755624f45e09967B1379Fd5c57C36779FD10e71;
+address constant POLY_MATCHMAKER = 0xE1685DC978cbe491c138Ad365942AA423890fE3C;
+address constant POLY_EXECUTOR = 0xA7c50f78b17618d69b3c053f486D334750E67A54;
 address constant DEPLOYED_MUMBAI_BARRACKS = address(0);
 uint64 constant PLY_MUMBAI_SUBS_ID = 1027;
 
@@ -168,8 +183,6 @@ uint32 constant PLY_MUMBAI_CALLBACK_GAS_LIMIT_VRF = 350_000;
 // Chainlink AUTOMATION
 //********************** */
 
-uint256 constant ETH_SEPOLIA_UPKEEP_ID = 106402147216017337972960404027226034932094583681968993079028192524993603665983;
-
 address constant ETH_SEPOLIA_REGISTRY = 0x86EFBD0b6736Bed994962f9797049422A3A8E8Ad;
 address constant ETH_SEPOLIA_REGISTRAR = 0xb0E49c5D0d05cbc241d68c05BC5BA1d1B7B72976;
 
@@ -179,9 +192,9 @@ address constant AVL_FUJI_REGISTRAR = 0xD23D3D1b81711D75E1012211f1b65Cc7dBB474e2
 address constant PLY_MUMBAI_REGISTRY = 0x08a8eea76D2395807Ce7D1FC942382515469cCA1;
 address constant PLY_MUMBAI_REGISTRAR = 0x0Bc5EDC7219D272d9dEDd919CE2b4726129AC02B;
 
-uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 680_000;
-uint32 constant GAS_LIMIT_FUJI_AUTOMATION = 700_000;
-uint32 constant GAS_LIMIT_PLY_MUMBAI_AUTOMATION = 700_000;
+uint32 constant GAS_LIMIT_SEPOLIA_AUTOMATION = 790_000;
+uint32 constant GAS_LIMIT_FUJI_AUTOMATION = 790_000;
+uint32 constant GAS_LIMIT_PLY_MUMBAI_AUTOMATION = 790_000;
 
 //******************** */
 // Chainlink CCIP
