@@ -18,34 +18,31 @@ address constant DEPLOYER = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 address constant PLAYER_FOR_FIGHTS = 0x108d618c5baFFb6AE2b84094da4C8314BAD16D71; // 🟢
 address constant BACKEND_DON_MOCK = 0x9B89eDB87D1219f21d4E33ad655da9CC542dF53c; // 🟢
 
-address constant DEPLOYED_SEPOLIA_COLLECTION = 0xF9604a5a645Fef01d6aE56A9834cE79B678FA8Ee; // 🟢
-// 0x1074065732cc2CC945818483B2543105ed2BF8F3
-// 0x8b20ADA3498ba4040DC4b353d7A1675699C18C05
-address constant DEPLOYED_FUJI_BARRACKS = 0x300eEB65665EA82fb4d8E4c269F7Bea2F7701bC8; // 🟠
+address constant DEPLOYED_SEPOLIA_COLLECTION = 0xBCB84541336df77D253355AD2dc8767459A2e815; // 🟢
+address constant DEPLOYED_FUJI_BARRACKS = 0x6796548e8c54Bbd1E9F5952C544B5D5555ba51c6; // 🟠
 
-address constant SEPOLIA_FIGHT_MATCHMAKER = 0x0E676f2845CaE733BF88dfE8bF53fcF7A9394b00; // 🟢
-//  0x9584C884454B7538C366592E0Ff1bDE1f88761f1
-// 0xE6835F9799BBb4c7c891cc25b0A9210660E6c9af
-address constant SEPOLIA_FIGHT_EXECUTOR = 0xD3A2a52C7B19630399567BE3c9FD3Bd2DC8e0443; // 🟢
-// 0x666dC2a85634ef761C9aDDb5B545a8C9F070e133
-// 0xa5941b5aC7FaD9bFBce7df46274aB926e26B8499
+address constant SEPOLIA_FIGHT_MATCHMAKER = 0xA95a35C29f6f3eF0C5e5e37203425a6aac50114b; // 🟢
+address constant SEPOLIA_FIGHT_EXECUTOR = 0x82e49C15F0ff8ACBf5304564bba9BEC9933761DE; // 🟢
 
-address constant FUJI_FIGHT_MATCHMAKER = 0x4AD4B2C31E53362A34D18221253a114fAfE0716a; // 🟠
-address constant FUJI_FIGHT_EXECUTOR = 0x935836279FEb095b1bba2cb9258f6386457f9aDB; // 🟠
+address constant FUJI_FIGHT_MATCHMAKER = 0x9d943B91110ced87aa28c2C47CA6822084aF1735; // 🟠
+address constant FUJI_FIGHT_EXECUTOR = 0xfAA35956193f9B15d8B8dCB8b871eEDACF7AAd51; // 🟠
 
 uint64 constant ETH_SEPOLIA_FUNCS_SUBS_ID = 1739; // 🟢
 uint64 constant AVL_FUJI_FUNCS_SUBS_ID = 1378; // 🟠
 
-uint256 constant ETH_SEPOLIA_UPKEEP_ID = 113593880572508254146564793951854302328328426573383518331617240550290028217628; // 🟢
+uint256 constant ETH_SEPOLIA_UPKEEP_ID = 62064730658697785466987607064229763156295620501272747618295610747046696990715; // 🟢
+uint256 constant AVL_FUJI_UPKEEP_ID = 0; // 🟠
 
 // For a promt to be valid in the POC it must be short and start with lower-case "a"
 // There must be 5 fields separated by "-"
-string constant NFT_VALID_PROMPT = "aMrPenguin-Penguin-He is depresed-Fish"; // 🟢
-// "aMrDog-Cat-super power-titties I mean kitties-Kilograms"
-// "aMrPenguin-Penguin-He is depresed-Fish"
-// "anuelAA-An AA batery-DVD-Flow to spin up a party-poetry"
-// "anaio-A pig-Flies-He distinguished-Falcons"
-// "anastasio-A cool falcon-Flies-He is distinguished-Pigeons";
+string constant NFT_VALID_PROMPT = "anastasio-A cool falcon-Flies-Joker-Pigeons"; // 🟢
+// "aName-Race-Weapon-SpecialSkill-Fear"
+
+// "anuelAA-An AA batery-DVD-Flow to spin up a party-Poetry"
+// "aMrPenguin-Penguin-Fish-He is depressed-Rex Fontaine"
+// "aMrDog-Cat-Knife-Chef-Titties I mean kitties"
+// "aAnaio-A pig-Flies-He is distinguished-Falcons"
+// "anastasio-A cool falcon-Flies-Joker-Pigeons";
 
 import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
 
@@ -53,7 +50,7 @@ contract FightToExecuteInScripts {
     address public constant REQUESTER = DEPLOYER; // 🟢
     address public constant ACCEPTOR = PLAYER_FOR_FIGHTS; // 🟢
     uint256 public constant REQUESTER_NFT_ID = 1; // 🟢
-    uint256 public constant ACCEPTOR_NFT_ID = 2; // 🟢
+    uint256 public constant ACCEPTOR_NFT_ID = 4; // 🟢
 
     // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
     //

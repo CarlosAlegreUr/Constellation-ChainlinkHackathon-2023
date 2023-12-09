@@ -235,15 +235,15 @@ Once the subscription is created copy the upkeep ID into [this varibale in Utils
 forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "initializeUpkeep()"
 
 # Automates nft id 2.
-forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_PLAYER --broadcast
+forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast
 ```
 
 Before continuing make sure `REQUESTER_NFT_ID` and `ACCEPTOR_NFT_ID` are set
-to 2 and 3 respectively [here](../contracts/Utils.sol#L47).
+to 3 and 2 respectively [here](../contracts/Utils.sol#L47). Also switch the addresses place, now `PLAYER` will be the `REQUESTER` and `DEPLOYER` the `ACCEPTOR`.
 
 ```bash
 # Nft id 3 requests a fight, as nftid 2 is automated it should be accepted in the next block by Automation.
-forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_DEPLOYER --broadcast --sig "request()"
+forge script script/eth-AutomatedFight.s.sol --rpc-url $S_RPC_URL_SEPOLIA --private-key $S_SK_PLAYER --broadcast --sig "request()"
 ```
 
 Now Cahinlink Automation should work and accept your request. If so it will be displayed in

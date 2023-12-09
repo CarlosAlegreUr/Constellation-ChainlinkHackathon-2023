@@ -80,9 +80,15 @@ contract AutomatedFight is Script {
 
     function initializeUpkeep() public {
         vm.startBroadcast();
-        console.log("Trying to initialize upkeep...");
-        matchmaker.setUpkeepId(ETH_SEPOLIA_UPKEEP_ID);
-        console.log("DONE");
+        if (block.chainid != ETH_SEPOLIA_CHAIN_ID) {
+            console.log("Trying to initialize upkeep...");
+            matchmaker.setUpkeepId(AVL_FUJI_UPKEEP_ID, AVL_FUJI_REGISTRY);
+            console.log("DONE");
+        } else {
+            console.log("Trying to initialize upkeep...");
+            matchmaker.setUpkeepId(ETH_SEPOLIA_UPKEEP_ID, ETH_SEPOLIA_REGISTRY);
+            console.log("DONE");
+        }
         vm.stopBroadcast();
     }
 

@@ -176,9 +176,10 @@ contract FightMatchmaker is IFightMatchmaker, ILogAutomation, ReferencesInitiali
 
     // @dev This function is only here because the self-registration is giving problems.
     // @notice In production code this should be deleted or set to 1 time usage.
-    function setUpkeepId(uint256 uid) external {
+    function setUpkeepId(uint256 uid, address registry) external {
         require(msg.sender == DEPLOYER);
         i_UPKEEP_ID = uid;
+        i_AUTOMATION_REGISTRY = IAutomationRegistry(registry);
         i_AUTOMATION_FORWARDER = i_AUTOMATION_REGISTRY.getForwarder(i_UPKEEP_ID);
     }
 

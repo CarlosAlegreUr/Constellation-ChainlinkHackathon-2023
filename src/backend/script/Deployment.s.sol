@@ -40,7 +40,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             // Deploys all contracts that are shared accross chans.
             super.run();
 
-            // Deploy collection TODO
+            // Deploy collection
             console.log("Deploying collection...");
             PromptFightersNFT promptFighters = new PromptFightersNFT(
                 ETH_SEPOLIA_FUNCTIONS_ROUTER, funcs_subsId, ETH_SEPOLIA_CCIP_ROUTER, fightMatchmaker
@@ -101,6 +101,7 @@ contract PromptFightersDeploy is DeployFightsContracts {
             referencedContracts[0] = address(fightExecutor);
             referencedContracts[1] = address(betsVault);
             referencedContracts[2] = address(barracks);
+            // referencedContracts[2] = DEPLOYED_FUJI_BARRACKS;
             // TODO: registering automation in Fuji not working, revert message says its a direct EVM error
             // in Chainlinks Register Logic B2_1 contract
             // Fund automation registration with LINK
