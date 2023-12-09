@@ -175,7 +175,7 @@ Fear: Looking himself in the mirror
 
 </details>
 
-<details> <summary> Leonardo and C4 fght lore and fighting iamge 🔅🐆</summary>
+<details> <summary> Leonardo and C4 fght lore plus after and during their fight images 🔅🐆</summary>
 
 The fight:
 
@@ -190,6 +190,8 @@ With C4 disarmed and Leonardo triumphant, the duel ended, marking a legendary vi
 ```
 
 <img src="../repo-images/game-images/fight-leonardo-c4.png">
+
+<img src="../repo-images/game-images/c4-leonardo.png">
 
 </details>
 
