@@ -176,9 +176,40 @@ mv ./node_modules ./node_modules_ccip
 
 Run the DON mock:
 
+The DON mocker that listens for figths is a scripts
+that's found inside next.js project, inside the folder `figthListener`
+
+*First* construct the .env
+
 ```bash
-# Node script for mocking a listening DON.
+cd src/prompt-figthers/figth-listener/
+
 ```
+
+
+Inside this folder you will find an `example.env`
+
+Create an `.env` with the values required
+
+```bash
+# create the env file
+touch .env
+
+# edit it with the best text editor ever
+nvim .env 
+```
+
+And now we can run the script
+```bash
+# root of next.js project
+cd ../..
+
+# This requires node
+npm run donMock
+
+```
+
+
 
 4. **Running the Frontend**
 
