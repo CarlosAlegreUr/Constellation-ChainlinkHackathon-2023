@@ -14,6 +14,14 @@ Well say no more, we present... **_`PROMPT FIGHTERS`_** ❗
 
 ---
 
+### `VIDEO PRESENTATION` 📹
+
+Click on the image to watch the video on **`Youtube`**.
+
+<a href="https://www.youtube.com/watch?v=NpHMpbXRhPA" target="_blank"><img src="https://img.youtube.com/vi/NpHMpbXRhPA/maxresdefault.jpg" width="400"></a>
+
+---
+
 ## Quick view on technlogies code for judges 🧑‍⚖️👩‍⚖️
 
 #### (we recommend to read this entire README though :D)
@@ -24,7 +32,7 @@ Technologies implemented here, links go directly to code line on files:
 - **`Chainlink CCIP`**: [CcipNftBridge.sol](./src/backend/contracts/CcipNftBridge.sol#L97)
 - **`Chainlink Automation`**: [FightMatchmaker.sol](./src/backend/contracts/fight-contracts/FightMatchmaker.sol#L321)
 - **`Chainlink VRF`**: [FightExecutor.sol](./src/backend/contracts/fight-contracts/FightExecutor.sol#L161)
-- **`The Graph`**: TO ADD
+- **`The Graph`**: [Subgraph](./src/subgraph/)
 - **`AI related`**: [mintFighter.js](./src/backend/script/chainlinkFunctionsScripts/mintFigther.js#L56), [fightings.js](./src/backend/script/chainlinkFunctionsScripts/figthings.js#L43), [validateNftPrompt](./src/prompts/nft-generation.txt), [fightGenerationPrompt](./src/prompts/fight-generation.txt)
 
 <details> <summary> What each technology brings to the table 🧑‍💻 🆕 </summary>
@@ -178,10 +186,11 @@ locally:
 
 ```bash
 # cd to the front end directory
-```
+cd src/prompt-fighters
 
-```bash
-# NextJs commands etc etc...
+yarn install
+
+yarn dev
 ```
 
 ---

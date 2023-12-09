@@ -1,6 +1,7 @@
-## TODO
+## TODO IF WITH TIME 🕥
 
-- Create new model that won't use chainlink functions
+- Create new model that won't use chainlink functions and use a MOCKED DON so as to not have the 9s limitation for the
+POC.
 
 ### Prompt engineering
 
