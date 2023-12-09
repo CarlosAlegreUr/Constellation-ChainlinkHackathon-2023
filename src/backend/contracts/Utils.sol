@@ -40,7 +40,7 @@ uint256 constant ETH_SEPOLIA_UPKEEP_ID = 113593880572508254146564793951854302328
 
 // For a promt to be valid in the POC it must be short and start with lower-case "a"
 // There must be 5 fields separated by "-"
-string constant NFT_VALID_PROMPT = "aMrDog-Cat-super power-titties I mean kitties"; // 🟢
+string constant NFT_VALID_PROMPT = "aMrPenguin-Penguin-He is depresed-Fish"; // 🟢
 // "aMrDog-Cat-super power-titties I mean kitties-Kilograms"
 // "aMrPenguin-Penguin-He is depresed-Fish"
 // "anuelAA-An AA batery-DVD-Flow to spin up a party-poetry"
@@ -52,8 +52,8 @@ import {IFightMatchmaker} from "./interfaces/IFightMatchmaker.sol";
 contract FightToExecuteInScripts {
     address public constant REQUESTER = DEPLOYER; // 🟢
     address public constant ACCEPTOR = PLAYER_FOR_FIGHTS; // 🟢
-    uint256 public constant REQUESTER_NFT_ID = 2; // 🟢
-    uint256 public constant ACCEPTOR_NFT_ID = 3; // 🟢
+    uint256 public constant REQUESTER_NFT_ID = 1; // 🟢
+    uint256 public constant ACCEPTOR_NFT_ID = 2; // 🟢
 
     // 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑
     //

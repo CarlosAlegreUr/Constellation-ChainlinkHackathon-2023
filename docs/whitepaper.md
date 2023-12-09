@@ -117,6 +117,14 @@ WINNER == Ana.
 
 **NOTICE** WHEN AI VIDEO GENERATION GETS BETTER IMAGINE THIS STORY WITH A VIDEO OF THE FIGHT❗❗❗
 
+<details> <summary> Fernando and Ana after and during their fight 🦄☕</summary>
+
+<img src="../repo-images/game-images/fiight-ana.png">
+
+<img src="../repo-images/game-images/after-fight-ana.png">
+
+</details>
+
 ---
 
 ## Automated Fighting 💥👊🤖🤜💥
@@ -167,9 +175,21 @@ Fear: Looking himself in the mirror
 
 </details>
 
-<details> <summary> Leonardo and C4 after their fight 🔅🐆</summary>
+<details> <summary> Leonardo and C4 fght lore and fighting iamge 🔅🐆</summary>
 
-<img src="../repo-images/game-images/c4-leonardo.png">
+The fight:
+
+```text
+In Luminara's mystical forest, C4, the glowing light bulb, unleashed a volley of gunfire, initiating a dazzling duel against Leonardo, the swift two-tailed leopard. Leonardo, agile and quick, dodged with feline grace, his tails a blur, countering with sharp swipes of his knife.
+
+C4, pulsating with magical energy, countered with blinding flashes of light, creating a dance of shadows and luminescence. Leonardo, using the terrain, merged into the underbrush, striking swiftly, his knife glinting in the sun.
+
+In a masterful display, Leonardo mirrored C4's light, using his knife to cast a blinding reflection. Confused by his own explosive nature, C4 faltered. Seizing the moment, Leonardo disarmed C4 with a deft move, showcasing his strategic prowess.
+
+With C4 disarmed and Leonardo triumphant, the duel ended, marking a legendary victory of agility and wit over brute force in the annals of Luminara.
+```
+
+<img src="../repo-images/game-images/fight-leonardo-c4.png">
 
 </details>
 
