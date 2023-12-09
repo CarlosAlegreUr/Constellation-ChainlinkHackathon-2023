@@ -236,9 +236,9 @@ Run tests' instructions in here: [tests](./src/backend/test).
 - **`Carlos Alegre`**: Full-stack developer and auditor
   [Github](https://github.com/CarlosAlegreUr) | [Linked-In](https://www.linkedin.com/in/carlos-alegre-urquiz%C3%BA-0b19701b3/)
 
-- **`Antonio`** Full-stack developer mainly interested in Smart Contracts.
+- **`Antonio Rodríguez-Ynyesto`** Full-stack developer mainly interested in Smart Contracts.
   [Github](https://github.com/arynyestos) | [Linked-In](https://www.linkedin.com/in/antonio-maria-rodriguez-ynyesto-sanchez/)
 
-- **`Ethan`** (COMPLETE)
+- **`Ethan Rouimi`** (COMPLETE)
   
 ---
