@@ -99,7 +99,8 @@ With **`Automation`**:
 - **`Carlos Alegre`**: Full-stack developer and auditor
   [Github](https://github.com/CarlosAlegreUr) | [Linked-In](https://www.linkedin.com/in/carlos-alegre-urquiz%C3%BA-0b19701b3/)
 
-- **`Antonio`** (COMPLETE)
+- **`Antonio`** Full-stack develope mainly interested in Smart Contract development.
+  [Github](https://github.com/arynyestos) | [Linked-In](https://www.linkedin.com/in/antonio-maria-rodriguez-ynyesto-sanchez/)
 
 - **`Ethan`** (COMPLETE)
 
