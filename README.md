@@ -54,8 +54,6 @@ Technologies implemented here, links go directly to code line on files:
 
 ---
 
----
-
 ## `A Message for Chainlink` 💌
 
 During our project's development, we detected and thought of potential enhancements and problems using Chainlink Services, particularly Chainlink Functions and Chainlink CCIP.
@@ -89,20 +87,6 @@ With **`Automation`**:
 1. We have automation coded in our project but it is only working if upkeep is registered via UI. We don't know whats wrong with our registration code everything looks fine. It's a weird error explained in [this file on scripts directory.](./src/backend/script/AutomationIssue.md).
 
 > 📘**Note**ℹ️: The whole team met in the **SmartCon 2023**, thanks for the great event and the chairs! 😄
-
----
-
-# `Spam ;D` 📧
-
-3 of us are seeking for job opportunities inside the blockchain world. If you have any for us we would be very happy to hear from you.
-
-- **`Carlos Alegre`**: Full-stack developer and auditor
-  [Github](https://github.com/CarlosAlegreUr) | [Linked-In](https://www.linkedin.com/in/carlos-alegre-urquiz%C3%BA-0b19701b3/)
-
-- **`Antonio`** Full-stack develope mainly interested in Smart Contract development.
-  [Github](https://github.com/arynyestos) | [Linked-In](https://www.linkedin.com/in/antonio-maria-rodriguez-ynyesto-sanchez/)
-
-- **`Ethan`** (COMPLETE)
 
 </details>
 
@@ -240,6 +224,24 @@ Run tests' instructions in here: [tests](./src/backend/test).
 
 ---
 
+</details>
+
+<details>
+
+---
+
+# `Spam ;D` 📧
+
+3 of us are seeking for job opportunities inside the blockchain world. If you have any for us we would be very happy to hear from you.
+
+- **`Carlos Alegre`**: Full-stack developer and auditor
+  [Github](https://github.com/CarlosAlegreUr) | [Linked-In](https://www.linkedin.com/in/carlos-alegre-urquiz%C3%BA-0b19701b3/)
+
+- **`Antonio`** Full-stack develope mainly interested in Smart Contract development.
+  [Github](https://github.com/arynyestos) | [Linked-In](https://www.linkedin.com/in/antonio-maria-rodriguez-ynyesto-sanchez/)
+
+- **`Ethan`** (COMPLETE)
+  
 </details>
 
 ---
