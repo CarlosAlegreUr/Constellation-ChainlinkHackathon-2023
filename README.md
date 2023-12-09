@@ -28,10 +28,10 @@ Click on the image to watch the video on **`Youtube`**.
 
 Technologies implemented here, links go directly to code line on files:
 
-- **`Chainlink Functions`**: [eth-PromptFighters.sol](./src/backend/contracts/nft-contracts/eth-PromptFightersNft.sol#L181), [FightExecutor.sol](./src/backend/contracts/fight-contracts/FightExecutor.sol#L114)
-- **`Chainlink CCIP`**: [CcipNftBridge.sol](./src/backend/contracts/CcipNftBridge.sol#L97)
-- **`Chainlink Automation`**: [FightMatchmaker.sol](./src/backend/contracts/fight-contracts/FightMatchmaker.sol#L321)
-- **`Chainlink VRF`**: [FightExecutor.sol](./src/backend/contracts/fight-contracts/FightExecutor.sol#L161)
+- **`Chainlink Functions`**: [eth-PromptFighters.sol](./src/backend/contracts/nft-contracts/eth-PromptFightersNft.sol#L194), [FightExecutor.sol](./src/backend/contracts/fight-contracts/FightExecutor.sol#L139)
+- **`Chainlink CCIP`**: [CcipNftBridge.sol](./src/backend/contracts/CcipNftBridge.sol#L116)
+- **`Chainlink Automation`**: [FightMatchmaker.sol](./src/backend/contracts/fight-contracts/FightMatchmaker.sol#L340)
+- **`Chainlink VRF`**: [FightExecutor.sol](./src/backend/contracts/fight-contracts/FightExecutor.sol#L164)
 - **`The Graph`**: [Subgraph](./src/subgraph/)
 - **`AI related`**: [mintFighter.js](./src/backend/script/chainlinkFunctionsScripts/mintFigther.js#L56), [fightings.js](./src/backend/script/chainlinkFunctionsScripts/figthings.js#L43), [validateNftPrompt](./src/prompts/nft-generation.txt), [fightGenerationPrompt](./src/prompts/fight-generation.txt)
 
