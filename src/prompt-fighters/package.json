@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "donMock": "node figth-listener/FigthListener.js"
   },
   "dependencies": {
     "dotenv": "^16.3.1",
