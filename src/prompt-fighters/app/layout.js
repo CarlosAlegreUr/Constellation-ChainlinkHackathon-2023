@@ -1,27 +1,31 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "@rainbow-me/rainbowkit/styles.css";
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, base, zora } from "wagmi/chains";
+import { sepolia, avalancheFuji } from "wagmi/chains";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import "./globals.css";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import dynamic from "next/dynamic";
+const ConnectWalletModal = dynamic(
+  () => import("./components/ConnectWalletModal"),
+  { ssr: false }
+);
+const MenuBar = dynamic(() => import("./components/MenuBar"), { ssr: false });
 
-const inter = Inter({ subsets: ["latin"] });
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 /*Configure Rainbow Kit*/
 const { chains, publicClient } = configureChains(
-  [mainnet, polygon, optimism, arbitrum, base, zora],
-  [alchemyProvider({ apiKey: process.env.ALCHEMY_ID }), publicProvider()]
+  [sepolia, avalancheFuji],
+  [alchemyProvider({ apiKey: "QGCJ46bYN5eef_-YWFqOMROVbfIO3WcI" }), publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
-  appName: "My RainbowKit App",
-  projectId: "YOUR_PROJECT_ID",
+  appName: "PromptFighters",
+  projectId: "PFT",
   chains,
 });
 
@@ -39,37 +43,16 @@ const wagmiConfig = createConfig({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={montserrat.className}>
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
-            <nav class="relative select-none bg-grey lg:flex lg:items-stretch w-full p-3">
-              <div class="flex flex-no-shrink items-stretch h-12">
-                <Link
-                  href="/"
-                  class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal text-white no-underline flex items-center hover:bg-grey-dark"
-                >
-                  Home
-                </Link>
-                <Link
-                  href="/create"
-                  class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal text-white no-underline flex items-center hover:bg-grey-dark"
-                >
-                  Create a Fighter
-                </Link>
-                <Link
-                  href="/arena"
-                  class="flex-no-grow flex-no-shrink relative py-2 px-4 leading-normal text-white no-underline flex items-center hover:bg-grey-dark"
-                >
-                  Arena
-                </Link>
-              </div>
-              <div class="lg:flex lg:items-stretch lg:flex-no-shrink lg:flex-grow">
-                <div class="lg:flex lg:items-stretch lg:justify-end ml-auto">
-                  <ConnectButton />
-                </div>
-              </div>
-            </nav>
-            {children}
+            <div className=" flex flex-col w-screen h-screen relative bg-pf-light-blue">
+              <ConnectWalletModal />
+              <nav className="relative select-none bg-grey lg:flex lg:items-stretch w-full p-3">
+                <MenuBar />
+              </nav>
+              {children}
+            </div>
           </RainbowKitProvider>
         </WagmiConfig>
       </body>

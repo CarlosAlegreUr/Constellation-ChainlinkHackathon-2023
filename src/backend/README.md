@@ -1,84 +1,66 @@
-## Naming convention 📝
+## Foundry
 
-<details> <summary> Naming convention 📝 </summary>
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-If a smart contract starts with:
+Foundry consists of:
 
-- _`avl`-Name_ : means that contract will only be deployed in `Avalanche`.
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-- _`eth`-Name_ : means that contract will only be deployed in `Ethereum`.
+## Documentation
 
-- `Name`: means that contract will be deployed in `both chains`.
+https://book.getfoundry.sh/
 
-</details>
+## Usage
 
----
+### Build
 
-## Contracts' Structure 📜
-
-<details> <summary> Contracts' Structure 📜 </summary>
-
-```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
-
-// import "path/to/Dependency.sol";
-
-/**
- * @title ContractTitle
- * @dev Brief description of the contract's purpose.
- * @notice Additional notices or warnings about the contract.
- */
-contract ContractName {
-    // Used libraries statements
-
-    //******************************* */
-    // CONTRACT'S STATE && CONSTANTS
-    //******************************* */
-    // e.g., uint256 private count;
-
-    //******************** */
-    // MODIFIERS
-    //******************** */
-    // e.g., modifier onlyOwner { ...; _; }
-
-    //******************** */
-    // CONSTRUCTOR
-    //******************** */
-    /**
-     * @dev Constructor for initializing the contract.
-     */
-    constructor() {
-        // Constructor code
-    }
-
-    //******************** */
-    // EXTERNAL FUNCTIONS
-    //******************** */
-    // e.g., function externalFunction() external { ... }
-
-    //******************** */
-    // PUBLIC FUNCTIONS
-    //******************** */
-    // e.g., function publicFunction() public { ... }
-
-    //******************** */
-    // INTERNAL FUNCTIONS
-    //******************** */
-    // e.g., function internalFunction() internal { ... }
-
-    //******************** */
-    // PRIVATE FUNCTIONS
-    //******************** */
-    // e.g., function privateFunction() private { ... }
-
-    //************************ */
-    // VIEW / PURE FUNCTIONS
-    //************************ */
-    // e.g., function getCount() public view returns (uint256) { ... }
-}
+```shell
+$ forge build
 ```
 
-</details>
+### Test
 
----
+```shell
+$ forge test
+```
+
+### Format
+
+```shell
+$ forge fmt
+```
+
+### Gas Snapshots
+
+```shell
+$ forge snapshot
+```
+
+### Anvil
+
+```shell
+$ anvil
+```
+
+### Deploy
+
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
+
+### Cast
+
+```shell
+$ cast <subcommand>
+```
+
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
