@@ -226,11 +226,12 @@ Run tests' instructions in here: [tests](./src/backend/test).
 
 </details>
 
-<details>
 
 ---
 
 # `Spam ;D` 📧
+
+<details>
 
 3 of us are seeking for job opportunities inside the blockchain world. If you have any for us we would be very happy to hear from you.
 
