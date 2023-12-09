@@ -239,6 +239,8 @@ Run tests' instructions in here: [tests](./src/backend/test).
 - **`Antonio Rodríguez-Ynyesto`** Full-stack developer mainly interested in Smart Contracts.
   [Github](https://github.com/arynyestos) | [Linked-In](https://www.linkedin.com/in/antonio-maria-rodriguez-ynyesto-sanchez/)
 
-- **`Ethan Rouimi`** (COMPLETE)
+- **`Ethan Rouimi`** Full-stack developer and a web3 fanatic.
+  [Github](https://github.com/Ethanol48) | [Linked-In](https://www.linkedin.com/in/ethan-rouimi/)
+
   
 ---
