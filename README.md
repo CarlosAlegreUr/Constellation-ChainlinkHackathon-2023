@@ -113,7 +113,7 @@ With **`Automation`**:
 
 ---
 
-## `USING THE FINAL DEPLOYED CONTRACTS` 🌐-⚙️
+## `LOCAL-USAGE` 🌐-⚙️
 
 <details> <summary> Local set-up ⚙️ </summary>
 
