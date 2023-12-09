@@ -231,8 +231,6 @@ Run tests' instructions in here: [tests](./src/backend/test).
 
 # `Spam ;D` 📧
 
-<details>
-
 3 of us are seeking for job opportunities inside the blockchain world. If you have any for us we would be very happy to hear from you.
 
 - **`Carlos Alegre`**: Full-stack developer and auditor
@@ -243,6 +241,4 @@ Run tests' instructions in here: [tests](./src/backend/test).
 
 - **`Ethan`** (COMPLETE)
   
-</details>
-
 ---
