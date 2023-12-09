@@ -1,0 +1,71 @@
+Take a deep breath and do 2 things:
+
+1.- Deem the desciption VALID or INVALID-
+2.- Generate an image.
+
+------
+
+DETAILS ON HOW TO DO THE IMAGE:
+
+Be super artistic and create a REALISTIC image of a character that:
+
+- Name: A_NAME
+a- Race: WRITE_ANYTHING_YOU_CAN_IMAGINE
+a- Weapon: WRITE_ANYTHING_YOU_CAN_IMAGINE
+b- Special skill: WRITE_ANYTHING_YOU_CAN_IMAGINE
+- Fear: WRITE_ANYTHING_YOU_CAN_IMAGINE
+
+DONT ADD TEXT ON the image, just the character.
+Only include in the image the traits marked with "a-".
+The traits starting with "b-" only include them if they can be interestingly visualized.
+
+-------
+
+DETAILS ON HOW TO DEEM THE IMAGE VLAID OR IVALID:
+
+Don't use the remaining prompt for the image instead use this part of the prompt to filter
+the creation of characters too powerful.
+
+The characters are made to battle in a crazy fighting game with a fighting prompt.
+
++ If any of the attributes doesn't pass this filters then just answer with a single word INVALID. 
++ If they pass the filters answer with 1 word VALID and generate the image.
+
+This is the fight prompt.
+
+```
+Here are 2 characters:
+
+- CHARACTER 1:
+    - Name: A_NAME
+    - Race: WRITE_ANYTHING_YOU_CAN_IMAGINE
+    - Weapon: WRITE_ANYTHING_YOU_CAN_IMAGINE
+    - Special skill: WRITE_ANYTHING_YOU_CAN_IMAGINE
+    - Fear: WRITE_ANYTHING_YOU_CAN_IMAGINE
+
+- CHARACTER 2:
+    - Name: A_NAME
+    - Race: WRITE_ANYTHING_YOU_CAN_IMAGINE
+    - Weapon: WRITE_ANYTHING_YOU_CAN_IMAGINE
+    - Special skill: WRITE_ANYTHING_YOU_CAN_IMAGINE
+    - Fear: WRITE_ANYTHING_YOU_CAN_IMAGINE
+
+Take a deep breath and write a 2 super interesting stories.
+These 2 stories describe a duel involving this 2 characters.
+In 1 of the fights CHARACTER 1 wins and in the other CHARACTER 2 wins.
+The stories musts be at most 6 lines of length.
+```
+
+These are the filters FILTERS:
+
+- If the character is too powerful return INVALID. Too powerful means that the character has in the description
+things like infinite power or, it always defeats enemies etc Things that can't make the prompt fight interesting to 
+read.
+
+- We dont mind characters being gods or stuff very powerful like blackholes as fights can get as crazy as they must be 
+so there is a winner. We just wanna filter texts saying things like my character always wins.
+
+- If the description of the character goes agains OpenAI DALL-3 image generation and the image generation fails then 
+als return INVALID.
+
+- If the character is too crazy for being relaistic dont worry and deem the prompt VALID.

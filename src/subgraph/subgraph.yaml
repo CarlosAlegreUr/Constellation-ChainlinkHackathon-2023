@@ -1,0 +1,46 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Contract
+    network: mumbai
+    source:
+      address: "0x0bbb72308B1F7fe6ac25B998F2d7035d09170B29"
+      abi: Contract
+      startBlock: 43063143
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - FigthAccepted
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: FightMatchmaker__FightAccepted(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,uint256)
+          handler: handleFightMatchmaker__FightAccepted
+      file: ./src/contract.ts
+
+  - kind: ethereum
+    name: RealContract
+    network: mumbai
+    source:
+      address: "0x265B6dB2db073a64ca5Bb0b336e0A61162a25091"
+      abi: RealContract
+      startBlock: 43147100
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Figther
+      abis:
+        - name: RealContract
+          file: ./abis/RealContract.json
+      eventHandlers:
+        - event: PromptFighters__NftMinted(indexed address,uint256,bytes,bytes,uint256)
+          handler: handleFigthers
+
+      file: ./src/realContract.ts

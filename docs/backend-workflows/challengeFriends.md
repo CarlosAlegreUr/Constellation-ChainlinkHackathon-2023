@@ -1,18 +1,15 @@
 # Challenge Friends - Workflow 🌊🦭🌊
 
+# ⚠️ NOT IMPLEMENTED, RUNNING OUT OF TIME ⚠️
+
 **_On `Ethereum`:_**
 
-1️⃣ The `FightsMatchmaker` will call the `ENS-NameResolver` to resolve the name of your friend, or the name of its NFT to the corresponding address.
+1️⃣ On the front-end, you will interact with `ENS` contracts to resgister a name for you or your NFT.
 
-2️⃣ Then `FightsMatchmaker` will save in the blockchains state that you are proposing your friend a fight and an event will be emitted. TheGraph will see it and your friend will receive a notification on the browser.
+2️⃣ Then, through the front-end it will be posible for you to just write someone's name and the front-end will execute
+the address resolution and call the `requestFight()` function as explained in the [matchmaking workflow](./matchmaking.md).
 
-3️⃣ Your friend accepts the fight calling `FightsMatchmaker` and it will call `FightsExecutor` and execute the fight logic.
-
----
-
-**_On `Other Chains`:_**
-
-1️⃣ As ENS is only availabe in `Ethereum` then a CCIP call will be done to `Ethereum` to resolve the name. Once that finishes the nexts steps are the same.
+3️⃣ Notice as you are challenging someone, this time only that person will be able to use `acceptFight()` to execute the fight.
 
 ---
 

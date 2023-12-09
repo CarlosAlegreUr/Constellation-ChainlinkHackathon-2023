@@ -1,49 +1,111 @@
-# PROMPT FIGHTERS❗🤯
+# PROMPT FIGHTERS❗❗❗🤯
 
-Do you remember when you were a kid and you were using your toys to create legendary fights?
+<p align="center">
+  <img src="./repo-images/game-images/logoImage.jpg" width="250" alt="PromptFightersLogo">
+</p>
 
-Have you ever thought on betting real money on fair imagination battles with your friends? (its not fair to say my punch has infinity power + 1 so I defeat you)
+Do you remember when you were a kid and you were using your toys to **_`create legendary fights`_**?
 
-Do you wanna let your imagination fight for you and possibly earn passive income while you are doing whatever other thing?
+Have you ever thought on **`betting and earning real money on`** fair **_`imagination battles`_** with your friends?
 
-Well here we present... PROMPT BATTLE!
+**`Are you too busy`** to play with your imagination like when you were a kid but **`you wish you had the time`** for it?
+
+Well say no more, we present... **_`PROMPT FIGHTERS`_** ❗
+
+---
+
+### `VIDEO PRESENTATION` 📹
+
+Click on the image to watch the video on **`Youtube`**.
+
+<a href="https://www.youtube.com/watch?v=NpHMpbXRhPA" target="_blank"><img src="https://img.youtube.com/vi/NpHMpbXRhPA/maxresdefault.jpg" width="400"></a>
+
+---
+
+## Quick view on technlogies code for judges 🧑‍⚖️👩‍⚖️
+
+#### (we recommend to read this entire README though :D)
+
+Technologies implemented here, links go directly to code line on files:
+
+- **`Chainlink Functions`**: [eth-PromptFighters.sol](./src/backend/contracts/nft-contracts/eth-PromptFightersNft.sol#L194), [FightExecutor.sol](./src/backend/contracts/fight-contracts/FightExecutor.sol#L139)
+- **`Chainlink CCIP`**: [CcipNftBridge.sol](./src/backend/contracts/CcipNftBridge.sol#L116)
+- **`Chainlink Automation`**: [FightMatchmaker.sol](./src/backend/contracts/fight-contracts/FightMatchmaker.sol#L340)
+- **`Chainlink VRF`**: [FightExecutor.sol](./src/backend/contracts/fight-contracts/FightExecutor.sol#L164)
+- **`The Graph`**: [Subgraph](./src/subgraph/)
+- **`AI related`**: [mintFighter.js](./src/backend/script/chainlinkFunctionsScripts/mintFigther.js#L56), [fightings.js](./src/backend/script/chainlinkFunctionsScripts/figthings.js#L43), [validateNftPrompt](./src/prompts/nft-generation.txt), [fightGenerationPrompt](./src/prompts/fight-generation.txt)
+
+<details> <summary> What each technology brings to the table 🧑‍💻 🆕 </summary>
+
+#### Read technical details and see architecture diagrams at [docs](./docs).
+
+#### **_`Tech's Utility`_**
+
+- **Chainlink VRF**: deciding fair winners
+- **Chainlink CCIP**: automating process in cheaper chains. (**_Like Avalanche_**)
+- **Chainlink Functions**: Calling APIs to generate NFTs and make them fight in amazing scenarios.
+- **Chainlink Automation** (up-keeps): Automating the fight process for those who have no time to play but some time in the night to read the amazing fight stories before sleep.
+- **OpenAI - APIs**: To generate interesting fight stories and NFT images.
+- **The Graph Indexer**: for cheaper, faster matchmaking and events tracking in website.
+
+#### Check the full-stack source code at [src](./src)
+
+</details>
+
+---
+
+## `A Message for Chainlink` 💌
+
+During our project's development, we detected and thought of potential enhancements and problems using Chainlink Services, particularly Chainlink Functions and Chainlink CCIP.
+
+<details> <summary> 💌 </summary>
+
+#### Key Features for Consideration:
+
+1. Library support in Deno files, especially for hashing (notably keccak256) and asymmetric encryption (ECDSA). Additionally, the addition of a library that simplifies the retrieval of logs from previous blocks would have helped a lot in optimizing and scaling the automated matchmaking and fight system while keeping costs low.
+
+   Practical Application:
+
+   - In our project, implementing hashing would enable private, unique NFT prompts. Currently, NFT prompts are public, allowing duplication. Hashing prompts in Function scripts would allow on-chain storage of hashes and off-chain verification of prompt ownership by the DON, improving privacy and reducing NFT creation costs.
+
+2. Allow for longer HTTP-API calls. AIs that generate images or a bit long outputs like stories take more than the current limit of 9s. Thus we had to mock in Funtions a response simulating an actual AI-API call. Regardless of this the code that would be used if this restriction didn't exist is added in the project.
+
+3. A tool for simulating DONs reponses in local with forked Chainlink contracts would be very helpful for easier debugging and testing.
+   We don't know if this tool already exists, but we think it would be very useful. Whether an SDK or a UI app on chainlink's website.
+
+#### Challenges and errors encountered:
+
+With **_`CCIP`_**:
+
+1. Difficulty integrating CCIP with `forge`-based projects.
+2. Variable clash (`i_router`) when using Functions and CCIP concurrently.
+3. Non-virtual `supportsInterface()` function in `CCIPReceiver.sol`, creating inheritance conflicts in contrats that inherit different contracts using the EIP-165. (e.g., [eth-PromptFightersNFT.sol](./src/backend/contracts/nft-contracts/eth-PromptFightersNft.sol#L271)). Also `supportsInterface()` is defined as `pure` and when mixed with other `supportsInterface()`
+   functions like ERC721 OpenZeppelin's implementation creates a conflict as OZ's one is `view`.
+
+With **`Automation`**:
+
+1. We have automation coded in our project but it is only working if upkeep is registered via UI. We don't know whats wrong with our registration code everything looks fine. It's a weird error explained in [this file on scripts directory.](./src/backend/script/AutomationIssue.md).
+
+> 📘**Note**ℹ️: The whole team met in the **SmartCon 2023**, thanks for the great event and the chairs! 😄
+
+</details>
+
+---
 
 ---
 
 ## `Deep dive details` 💻
 
-<details> <summary> Detailed Mechanics 📜 </summary>
+<details> <summary> Mechanics 📜 </summary>
 
-#### Read the details of all mechanics and its reason why at [whitepaper](./docs/whitepaper.md).
+#### Read the details of all mechanics, future scenarios, and its reason why at [whitepaper](./docs/whitepaper.md).
 
 #### **_`Mechanics Implemented`_**
 
-- Personalized NFTs.
-- Fight against other NFTs.
-- Social Media Reputation of NFTs.
-- Automated Fighting.
-- Lending&Borrowing of NFTs.
-- Friends System.
-
-</details>
-
-<details> <summary> Technical details 🧑‍💻 </summary>
-
-#### Read technical details at [docs](./docs).
-
-#### Check the full-stack source code at [src](./src)
-
-#### **_`Tech Used`_**
-
-- Chainlink VRF
-- Chainlink CCIP
-- Chainlink Functions
-- Chainlink Upkeep
-- Lens
-- ENS for challenging friends
-- OpenAI - APIs
-- The Graph Indexer for matchmaking, events tracking in website...
-- PolygonID (maybe)
+- **Personalized NFTs** : describe your NFT as you want over a template.
+- **NFT creation AI filtered** : so there are no too powerful or copyright infringement prompts.
+- **Fight and bet against other NFTs**.
+- **Automated Fighting** : send some funds and enjoy the fight automation.
 
 </details>
 
@@ -51,147 +113,132 @@ Well here we present... PROMPT BATTLE!
 
 ---
 
-## OVERALL MECHANICS & LOCAL SET-UP 🌐-⚙️
-
-<details> <summary> Overall Mechanics 🌐 </summary>
-
-## What is it❓
-
-Prompt Fighters is a game that allows you to create your own NFT that can be literally anything and then use it to fight against other players.
-
-How is that possible? Using AI and blockchain techology we have managed to create real world imaginary battles that are fair and transparent.
-
----
-
-## How does it work❓
-
----
-
-### Create your character 🧑‍🤝‍🧑
-
-You enter the website, you connect your wallet, you fill up the template prompt to create your character and badamboom!
-
-An AI that generates images will make your character come true and save its description and image on blockchain.
-
-As we are using _`Chainlink Functions`_ for that all the players have the same tempalte prompt and all characters will be balanced creating a fair metagame.
-
-> **WARNING ⚠️**: If your NFT contains non-appropiate contect according to OpenAI filters you won't be able to generate it.
-
-<details> <summary> Promt Template 📜 </summary>
-
-```
-CREATE A REALISTIC IMAGE OF A CHARACTER THAT:
-Name: A_NAME
-Race: WRITE_ANYTHING_YOU_CAN_IMAGINE
-Weapon: WRITE_ANYTHING_YOU_CAN_IMAGINE
-Special skill: WRITE_ANYTHING_YOU_CAN_IMAGINE
-Fear: WRITE_ANYTHING_YOU_CAN_IMAGINE
-
-FILTERS:
-
-- If the character is too powerful do nothing and just return the word: INVALID. Too powerful means that he has things like infinite power. Things like in any of the descirptions having words that indicate traits that would make the characters always win in a story: my character always wins, he is invincible... Keep in mind that the characters have to be able to create interesting battle stories against other characters.
-
-- The characters can be as wacky as they want to be, just say INVALID if the character has some words that describe it as unvincible which would ruin the fight experience for other players.
-```
-
-</details>
-
-<details> <summary> C4: the magical light bulb that explodes 🔅</summary>
-
-```
-CREATE A REALISTIC IMAGE OF A CHARACTER THAT:
-Name: C4
-Race: An explosive in the shape of a magical ligth bulb
-Weapon: A machinegun
-Special skill: Explode, but he loses if he does, its just a last resource
-Fear: Exploding
-
-(Rest of the promt...)
-```
-
-</details>
-
-<details> <summary> Leonardo: the 2 tails leopard that has a knife and plays golf really well 🐆</summary>
-
-```
-CREATE A REALISTIC IMAGE OF A CHARACTER THAT:
-Name: Leonardo
-Race: A leopard with 4 legs and 2 tails
-Weapon: A knife
-Special skill: Runs very fast and is very good at playing golf
-Fear: Looking himself in the mirror
-
-(Rest of the promt...)
-```
-
-</details>
-
-<details> <summary> Leonardo and C4 after their fight</summary>
-
-<img src="./repo-images/game-images/c4-leonardo.png">
-
-</details>
-
----
-
-### FIGHT! 👊
-
-You will decide to bet some money and when someone accepts your offer your characters will fight!
-
-In the imagination world (chatGPT ivnents a story with a specific prompt) your NFTs will fight and after that you will receive a short story on how the fight went. (When AI generates better videos this could be a video)
-(Again using Chainlink Functions for transparently using the same prompt when calling OpenAI-APIs)
-
-The winner will be decided by statistics based on your nfts traits and your opponents ones, and using VRF a fair winner will be decided. You never know who will fight in the imagination realm! But sometimes if circumstances are favourable your character might have more chances! (This is how we use Chainlink VRF)
-
-Example duel between Leonardo and C4:
-
-```
-Under the shimmering moon, C4, the magical light bulb with explosive tendencies, faced Leonardo, the swift leopard with two tails. C4's machine gun gleamed in the night as Leonardo brandished his knife, his four legs poised to sprint.
-
-The air crackled with tension, the duelists’ eyes locked in a fierce stare. C4 calculated, knowing his greatest strength was his final move, while Leonardo flexed his tails, ready to dash. They circled, Leonardo's speed a blur, C4's barrel a steady hum.
-
-Then, in a flash, Leonardo used his golf skills to chip a stone towards C4. It was a feint; as C4 braced for impact, Leonardo pounced from behind, pinning C4 without triggering an explosion. The bulb, fearing its end, surrendered.
-
-WINNER == Leonardo.
-```
-
----
-
-### FAME AND GLORY! 🏆
-
-Your NFTs will have a life on their own and social media profiles on Lens with their own history stats, number of fights won, reputation etc
-(Lens)
-
----
-
-### AUTOMATED GAMING 🎲🎮
-
-Would you like to play with your imagination like your kid inside but you don't have time cause of adulthood???
-
-DONT WORRY! You can leave a fighter in the ETHERNAL ARENA and let it automatically fight non-stop until you want so every night, when coming back from work, you can just enter the website and read the amazing battles your NFT has been battleing around while you were working.
-
-For cheap ETHERNAL FIGHTING we use CCIP to load-off computing costs and Chainlink Upkeep to make it automated.
-
-</details>
+## `USING THE FINAL DEPLOYED CONTRACTS` 🌐-⚙️
 
 <details> <summary> Local set-up ⚙️ </summary>
 
-Run a node bla bla... (TODO)
+<br/>
 
-</details>
+1. **Clone the Repository**
 
----
+```bash
+git clone https://github.com/CarlosAlegreUr/ConstellationChainlinkHackathon2023.git
+```
+
+2. **Initialize foundry, forge and dependencies**
+
+```bash
+cd ./ConstellationChainlinkHackathon2023/src/backend
+foundryup
+forge init --force --no-commit
+forge install --no-commit OpenZeppelin/openzeppelin-contracts@932fddf69a699a9a80fd2396fd1a2ab91cdda123
+
+forge install --no-commit smartcontractkit/chainlink@cdb0c6a6089d3a69dd09a9b0a9fbdd070eaeb442
+
+# Chainlink ccip contracts cant be installed with forge
+
+# Use this to install CCIP contracts in "./src/backend" (you should already be here)
+
+# Just leave everythin empty and press enter
+cd lib
+npm init
+npm install @chainlink/contracts-ccip --save
+
+# Change the name to node_modules_ccip
+mv ./node_modules ./node_modules_ccip
+
+# Notice ℹ️ you can remove package.jon and package-lock.json
+# if you want.
+```
+
+**_The /lib directory should now look like this:_**
+
+<img src="./repo-images/lib-example.png">
 
 <br/>
 
-<details> <summary> Future Ideas 🪄🔮 </summary>
+> **Note ⚠️** Current Chainlink Functions only allows for 9s long HTTP-API calls. Our fight generation requires more than 9s thus we have mocked in the backend a node from a DON executing Chainlink Functions. Functions for NFT validation does work and is implemented interacting with the real DON.
 
-> 📘 **Note** ℹ️: We had more features in plan but due to the deadline we decided to leave them here as an interesting example on what else can be done with this kind of game.
+Run the DON mock:
 
-### THE MARKET OF WARRIORS 🪖💸
+The DON mocker that listens for figths is a scripts
+that's found inside next.js project, inside the folder `figthListener`
 
-As your fighters are NFT you can trade them as much as you want.
+*First* construct the .env
 
-You can even lend your imaginative fighters (NFTs) to other plaers anad earn interest on the fights they win when other players use them.
+```bash
+cd src/prompt-figthers/figth-listener/
+
+```
+
+
+Inside this folder you will find an `example.env`
+
+Create an `.env` with the values required
+
+```bash
+# create the env file
+touch .env
+
+# edit it with the best text editor ever
+nvim .env 
+```
+
+And now we can run the script
+```bash
+# root of next.js project
+cd ../..
+
+# This requires node
+npm run donMock
+
+```
+
+
+
+4. **Running the Frontend**
+
+All the backend is ready to so now execute the front-end
+locally:
+
+```bash
+# cd to the front end directory
+cd src/prompt-fighters
+
+yarn install
+
+yarn dev
+```
+
+---
+
+## Run Scripts locally to see how all interacts iteratively 🏗️🏛️
+
+Run scripts' instructions in here: [scripts](./src/backend/script).
+
+---
+
+## Run Tests 🤖
+
+Run tests' instructions in here: [tests](./src/backend/test).
+
+---
 
 </details>
+
+
+---
+
+# `Spam ;D` 📧
+
+3 of us are seeking for job opportunities inside the blockchain world. If you have any for us we would be very happy to hear from you.
+
+- **`Carlos Alegre`**: Full-stack developer and auditor
+  [Github](https://github.com/CarlosAlegreUr) | [Linked-In](https://www.linkedin.com/in/carlos-alegre-urquiz%C3%BA-0b19701b3/)
+
+- **`Antonio Rodríguez-Ynyesto`** Full-stack developer mainly interested in Smart Contracts.
+  [Github](https://github.com/arynyestos) | [Linked-In](https://www.linkedin.com/in/antonio-maria-rodriguez-ynyesto-sanchez/)
+
+- **`Ethan Rouimi`** (COMPLETE)
+  
+---

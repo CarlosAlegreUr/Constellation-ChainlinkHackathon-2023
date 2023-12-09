@@ -1,0 +1,2339 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "ChainlinkSubsManager__SubsFunded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint64",
+          "name": "vrfSubId",
+          "type": "uint64"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "requestId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "FightExecutor__FightResultVrfReqSent",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "fightId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "winnerBit",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "FightExecutor__FightResultVrfWinnerIs",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "fightId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "requId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "promptRequester",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "promptAcceptor",
+          "type": "string"
+        }
+      ],
+      "name": "FightExecutor__FightStarted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "requestId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes",
+          "name": "err",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "FightExecutor__FightStoryFuncsError",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "requestId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes",
+          "name": "response",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "FightExecutor__FightStoryFuncsResponse",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes",
+          "name": "firstEnd",
+          "type": "bytes"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes",
+          "name": "secondEnd",
+          "type": "bytes"
+        }
+      ],
+      "name": "FightExecutor__FightsStoriesGenerated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_user",
+          "type": "address"
+        }
+      ],
+      "name": "canPlay",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "fundMySubscription",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getChainlinkServicesParams",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "keyHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint16",
+              "name": "requConfirmations",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint32",
+              "name": "callbackGasLimit",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint64",
+              "name": "funcSubsId",
+              "type": "uint64"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "donId",
+              "type": "bytes32"
+            }
+          ],
+          "internalType": "struct IFightExecutor.FightExecutor__ChainlinkServicesInitParmas",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getFuncsSubsId",
+      "outputs": [
+        {
+          "internalType": "uint64",
+          "name": "",
+          "type": "uint64"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getLinkTokenInterface",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "req",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getReqIsValid",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "requestId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getRequestsIdToFightId",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "requestId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getRequestsIdToUser",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        }
+      ],
+      "name": "getUserSubsBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getVrfSubsId",
+      "outputs": [
+        {
+          "internalType": "uint64",
+          "name": "",
+          "type": "uint64"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getWinnerBitSize",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getWinnerIsAcceptor",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getWinnerIsRequester",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "fightId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "startFight",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "canPlay(address)": "0823d5f3",
+    "fundMySubscription(uint256)": "61f65040",
+    "getChainlinkServicesParams()": "434cdd65",
+    "getFuncsSubsId()": "905150d9",
+    "getLinkTokenInterface()": "c4b9a6f8",
+    "getReqIsValid(bytes32)": "6095f260",
+    "getRequestsIdToFightId(bytes32)": "5b392035",
+    "getRequestsIdToUser(bytes32)": "8ef9e32e",
+    "getUserSubsBalance(address)": "eb888c49",
+    "getVrfSubsId()": "07b38d25",
+    "getWinnerBitSize()": "0a32ac45",
+    "getWinnerIsAcceptor()": "bb53bdae",
+    "getWinnerIsRequester()": "34b8dcc0",
+    "startFight(bytes32)": "29fd1306"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.20+commit.a1b79de6\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"ChainlinkSubsManager__SubsFunded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint64\",\"name\":\"vrfSubId\",\"type\":\"uint64\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"requestId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"FightExecutor__FightResultVrfReqSent\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"fightId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"winnerBit\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"FightExecutor__FightResultVrfWinnerIs\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"fightId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requId\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"promptRequester\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"promptAcceptor\",\"type\":\"string\"}],\"name\":\"FightExecutor__FightStarted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes\",\"name\":\"err\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"FightExecutor__FightStoryFuncsError\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes\",\"name\":\"response\",\"type\":\"bytes\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"FightExecutor__FightStoryFuncsResponse\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes\",\"name\":\"firstEnd\",\"type\":\"bytes\"},{\"indexed\":true,\"internalType\":\"bytes\",\"name\":\"secondEnd\",\"type\":\"bytes\"}],\"name\":\"FightExecutor__FightsStoriesGenerated\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"}],\"name\":\"canPlay\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"fundMySubscription\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getChainlinkServicesParams\",\"outputs\":[{\"components\":[{\"internalType\":\"bytes32\",\"name\":\"keyHash\",\"type\":\"bytes32\"},{\"internalType\":\"uint16\",\"name\":\"requConfirmations\",\"type\":\"uint16\"},{\"internalType\":\"uint32\",\"name\":\"callbackGasLimit\",\"type\":\"uint32\"},{\"internalType\":\"uint64\",\"name\":\"funcSubsId\",\"type\":\"uint64\"},{\"internalType\":\"bytes32\",\"name\":\"donId\",\"type\":\"bytes32\"}],\"internalType\":\"struct IFightExecutor.FightExecutor__ChainlinkServicesInitParmas\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getFuncsSubsId\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getLinkTokenInterface\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"req\",\"type\":\"bytes32\"}],\"name\":\"getReqIsValid\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"}],\"name\":\"getRequestsIdToFightId\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"requestId\",\"type\":\"bytes32\"}],\"name\":\"getRequestsIdToUser\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"user\",\"type\":\"address\"}],\"name\":\"getUserSubsBalance\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getVrfSubsId\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getWinnerBitSize\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getWinnerIsAcceptor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getWinnerIsRequester\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"fightId\",\"type\":\"bytes32\"}],\"name\":\"startFight\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"author\":\"PromptFighters team: @CarlosAlegreUr\",\"details\":\"Interface for the FightExecutor contract.\",\"kind\":\"dev\",\"methods\":{\"canPlay(address)\":{\"details\":\"Checks if user has enough LINK sent to use the services. > 15 LINK in this specific case.\"},\"fundMySubscription(uint256)\":{\"details\":\"msg.sender sends LINK to the contract. and the LINK is evenly distributed among all Chainlink Services subscriptions.\"},\"getUserSubsBalance(address)\":{\"details\":\"Returns how much LINK user has deposited in the contract.\"},\"startFight(bytes32)\":{\"details\":\"This function must always be called by `FightMatchmaker`. It starts the fight execution process using Chainlink Functions requests.\"}},\"title\":\"IFightExecutor\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/interfaces/IFightExecutor.sol\":\"IFightExecutor\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@chainlink-ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/\",\":@chainlink/=lib/chainlink/contracts/src/v0.8/\",\":@openzeppelin/=lib/openzeppelin-contracts/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/\",\":chainlink/=lib/chainlink/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/\",\":forge-std/=lib/forge-std/src/\",\":node_modules_ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"contracts/interfaces/IChainlinkSubsManager.sol\":{\"keccak256\":\"0x8c8570de4b6e33353e18226dda35eca48c1d11ba702224009e851d6969c326aa\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://28b7543cfedb5b91f2ebaed386d62ce4e63da64e21bee590f0b65cca72e41cd4\",\"dweb:/ipfs/QmenwoHuMobXURTk4LpMqj1ACFzkpFidtNXCv5hPpmHGjt\"]},\"contracts/interfaces/IFightExecutor.sol\":{\"keccak256\":\"0x187a02e9a52e983a486111e3007e3923e90710649e47b88048e4f83ebe969d6e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://804b0e7c31806520f476ef2aa75937cbbcaeb287a046c5719f7ac3d70beb31b4\",\"dweb:/ipfs/QmXSTpxeUZX6QpNogTxDRicFnvzaChu6v9tHQrdurjg1HV\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.20+commit.a1b79de6"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "ChainlinkSubsManager__SubsFunded",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint64",
+              "name": "vrfSubId",
+              "type": "uint64",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "requestId",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "FightExecutor__FightResultVrfReqSent",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "fightId",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "winnerBit",
+              "type": "uint256",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "FightExecutor__FightResultVrfWinnerIs",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "fightId",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "bytes32",
+              "name": "requId",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "string",
+              "name": "promptRequester",
+              "type": "string",
+              "indexed": false
+            },
+            {
+              "internalType": "string",
+              "name": "promptAcceptor",
+              "type": "string",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "FightExecutor__FightStarted",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "requestId",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "bytes",
+              "name": "err",
+              "type": "bytes",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "FightExecutor__FightStoryFuncsError",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "requestId",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "bytes",
+              "name": "response",
+              "type": "bytes",
+              "indexed": true
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256",
+              "indexed": false
+            }
+          ],
+          "type": "event",
+          "name": "FightExecutor__FightStoryFuncsResponse",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes",
+              "name": "firstEnd",
+              "type": "bytes",
+              "indexed": true
+            },
+            {
+              "internalType": "bytes",
+              "name": "secondEnd",
+              "type": "bytes",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "FightExecutor__FightsStoriesGenerated",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "_user",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "canPlay",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "fundMySubscription"
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getChainlinkServicesParams",
+          "outputs": [
+            {
+              "internalType": "struct IFightExecutor.FightExecutor__ChainlinkServicesInitParmas",
+              "name": "",
+              "type": "tuple",
+              "components": [
+                {
+                  "internalType": "bytes32",
+                  "name": "keyHash",
+                  "type": "bytes32"
+                },
+                {
+                  "internalType": "uint16",
+                  "name": "requConfirmations",
+                  "type": "uint16"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "callbackGasLimit",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "funcSubsId",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "bytes32",
+                  "name": "donId",
+                  "type": "bytes32"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getFuncsSubsId",
+          "outputs": [
+            {
+              "internalType": "uint64",
+              "name": "",
+              "type": "uint64"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getLinkTokenInterface",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "req",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getReqIsValid",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "",
+              "type": "bool"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "requestId",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getRequestsIdToFightId",
+          "outputs": [
+            {
+              "internalType": "bytes32",
+              "name": "",
+              "type": "bytes32"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "requestId",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getRequestsIdToUser",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "user",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getUserSubsBalance",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getVrfSubsId",
+          "outputs": [
+            {
+              "internalType": "uint64",
+              "name": "",
+              "type": "uint64"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "getWinnerBitSize",
+          "outputs": [
+            {
+              "internalType": "uint32",
+              "name": "",
+              "type": "uint32"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "getWinnerIsAcceptor",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "getWinnerIsRequester",
+          "outputs": [
+            {
+              "internalType": "uint256",
+              "name": "",
+              "type": "uint256"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "fightId",
+              "type": "bytes32"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "startFight"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "canPlay(address)": {
+            "details": "Checks if user has enough LINK sent to use the services. > 15 LINK in this specific case."
+          },
+          "fundMySubscription(uint256)": {
+            "details": "msg.sender sends LINK to the contract. and the LINK is evenly distributed among all Chainlink Services subscriptions."
+          },
+          "getUserSubsBalance(address)": {
+            "details": "Returns how much LINK user has deposited in the contract."
+          },
+          "startFight(bytes32)": {
+            "details": "This function must always be called by `FightMatchmaker`. It starts the fight execution process using Chainlink Functions requests."
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        ":@chainlink-ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/",
+        ":@chainlink/=lib/chainlink/contracts/src/v0.8/",
+        ":@openzeppelin/=lib/openzeppelin-contracts/contracts/",
+        ":@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+        ":chainlink/=lib/chainlink/",
+        ":ds-test/=lib/forge-std/lib/ds-test/src/",
+        ":erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+        ":forge-std/=lib/forge-std/src/",
+        ":node_modules_ccip/=lib/node_modules_ccip/@chainlink/contracts-ccip/src/",
+        ":openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "contracts/interfaces/IFightExecutor.sol": "IFightExecutor"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "contracts/interfaces/IChainlinkSubsManager.sol": {
+        "keccak256": "0x8c8570de4b6e33353e18226dda35eca48c1d11ba702224009e851d6969c326aa",
+        "urls": [
+          "bzz-raw://28b7543cfedb5b91f2ebaed386d62ce4e63da64e21bee590f0b65cca72e41cd4",
+          "dweb:/ipfs/QmenwoHuMobXURTk4LpMqj1ACFzkpFidtNXCv5hPpmHGjt"
+        ],
+        "license": "MIT"
+      },
+      "contracts/interfaces/IFightExecutor.sol": {
+        "keccak256": "0x187a02e9a52e983a486111e3007e3923e90710649e47b88048e4f83ebe969d6e",
+        "urls": [
+          "bzz-raw://804b0e7c31806520f476ef2aa75937cbbcaeb287a046c5719f7ac3d70beb31b4",
+          "dweb:/ipfs/QmXSTpxeUZX6QpNogTxDRicFnvzaChu6v9tHQrdurjg1HV"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "contracts/interfaces/IFightExecutor.sol",
+    "id": 3916,
+    "exportedSymbols": {
+      "IChainlinkSubsManager": [
+        3799
+      ],
+      "IFightExecutor": [
+        3915
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "32:2187:11",
+    "nodes": [
+      {
+        "id": 3801,
+        "nodeType": "PragmaDirective",
+        "src": "32:24:11",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".20"
+        ]
+      },
+      {
+        "id": 3803,
+        "nodeType": "ImportDirective",
+        "src": "58:78:11",
+        "nodes": [],
+        "absolutePath": "contracts/interfaces/IChainlinkSubsManager.sol",
+        "file": "../interfaces/IChainlinkSubsManager.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 3916,
+        "sourceUnit": 3800,
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 3802,
+              "name": "IChainlinkSubsManager",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "referencedDeclaration": 3799,
+              "src": "66:21:11",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "id": 3915,
+        "nodeType": "ContractDefinition",
+        "src": "269:1949:11",
+        "nodes": [
+          {
+            "id": 3818,
+            "nodeType": "StructDefinition",
+            "src": "419:234:11",
+            "nodes": [],
+            "canonicalName": "IFightExecutor.FightExecutor__ChainlinkServicesInitParmas",
+            "documentation": {
+              "id": 3807,
+              "nodeType": "StructuredDocumentation",
+              "src": "341:73:11",
+              "text": " @dev Params needed for intializing Chainlink Services."
+            },
+            "members": [
+              {
+                "constant": false,
+                "id": 3809,
+                "mutability": "mutable",
+                "name": "keyHash",
+                "nameLocation": "502:7:11",
+                "nodeType": "VariableDeclaration",
+                "scope": 3818,
+                "src": "494:15:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 3808,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "494:7:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 3811,
+                "mutability": "mutable",
+                "name": "requConfirmations",
+                "nameLocation": "526:17:11",
+                "nodeType": "VariableDeclaration",
+                "scope": 3818,
+                "src": "519:24:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint16",
+                  "typeString": "uint16"
+                },
+                "typeName": {
+                  "id": 3810,
+                  "name": "uint16",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "519:6:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint16",
+                    "typeString": "uint16"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 3813,
+                "mutability": "mutable",
+                "name": "callbackGasLimit",
+                "nameLocation": "560:16:11",
+                "nodeType": "VariableDeclaration",
+                "scope": 3818,
+                "src": "553:23:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint32",
+                  "typeString": "uint32"
+                },
+                "typeName": {
+                  "id": 3812,
+                  "name": "uint32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "553:6:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint32",
+                    "typeString": "uint32"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 3815,
+                "mutability": "mutable",
+                "name": "funcSubsId",
+                "nameLocation": "613:10:11",
+                "nodeType": "VariableDeclaration",
+                "scope": 3818,
+                "src": "606:17:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint64",
+                  "typeString": "uint64"
+                },
+                "typeName": {
+                  "id": 3814,
+                  "name": "uint64",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "606:6:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint64",
+                    "typeString": "uint64"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 3817,
+                "mutability": "mutable",
+                "name": "donId",
+                "nameLocation": "641:5:11",
+                "nodeType": "VariableDeclaration",
+                "scope": 3818,
+                "src": "633:13:11",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 3816,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "633:7:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "FightExecutor__ChainlinkServicesInitParmas",
+            "nameLocation": "426:42:11",
+            "scope": 3915,
+            "visibility": "public"
+          },
+          {
+            "id": 3828,
+            "nodeType": "EventDefinition",
+            "src": "674:144:11",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "ecace63293754e48e8ea2a1a345d7b7b00f5dd8eebd34ac5abf180815232394c",
+            "name": "FightExecutor__FightStarted",
+            "nameLocation": "680:27:11",
+            "parameters": {
+              "id": 3827,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3820,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "fightId",
+                  "nameLocation": "733:7:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3828,
+                  "src": "717:23:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3819,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "717:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3822,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "requId",
+                  "nameLocation": "758:6:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3828,
+                  "src": "742:22:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3821,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "742:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3824,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "promptRequester",
+                  "nameLocation": "773:15:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3828,
+                  "src": "766:22:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 3823,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "766:6:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3826,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "promptAcceptor",
+                  "nameLocation": "797:14:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3828,
+                  "src": "790:21:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 3825,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "790:6:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "707:110:11"
+            }
+          },
+          {
+            "id": 3834,
+            "nodeType": "EventDefinition",
+            "src": "824:93:11",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "87f288f38a4a18499d6231aa1c83e0e13506c5747f0b7c8cb31a56d66adec0ab",
+            "name": "FightExecutor__FightsStoriesGenerated",
+            "nameLocation": "830:37:11",
+            "parameters": {
+              "id": 3833,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3830,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "firstEnd",
+                  "nameLocation": "882:8:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3834,
+                  "src": "868:22:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 3829,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "868:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3832,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "secondEnd",
+                  "nameLocation": "906:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3834,
+                  "src": "892:23:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 3831,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "892:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "867:49:11"
+            }
+          },
+          {
+            "id": 3842,
+            "nodeType": "EventDefinition",
+            "src": "922:115:11",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "212ac76bd689dd8fc1400575e93ce078f8ea756d7e97100b83c0a0796ca5c716",
+            "name": "FightExecutor__FightStoryFuncsResponse",
+            "nameLocation": "928:38:11",
+            "parameters": {
+              "id": 3841,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3836,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "requestId",
+                  "nameLocation": "983:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3842,
+                  "src": "967:25:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3835,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "967:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3838,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "response",
+                  "nameLocation": "1008:8:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3842,
+                  "src": "994:22:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 3837,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "994:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3840,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "timestamp",
+                  "nameLocation": "1026:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3842,
+                  "src": "1018:17:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3839,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1018:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "966:70:11"
+            }
+          },
+          {
+            "id": 3850,
+            "nodeType": "EventDefinition",
+            "src": "1042:107:11",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "9e943ccf64ac220d22fb7e36524ec0bf05e6b397821dc47d3c67cb884479c4f6",
+            "name": "FightExecutor__FightStoryFuncsError",
+            "nameLocation": "1048:35:11",
+            "parameters": {
+              "id": 3849,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3844,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "requestId",
+                  "nameLocation": "1100:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3850,
+                  "src": "1084:25:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3843,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1084:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3846,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "err",
+                  "nameLocation": "1125:3:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3850,
+                  "src": "1111:17:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 3845,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1111:5:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3848,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "timestamp",
+                  "nameLocation": "1138:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3850,
+                  "src": "1130:17:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3847,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1130:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1083:65:11"
+            }
+          },
+          {
+            "id": 3858,
+            "nodeType": "EventDefinition",
+            "src": "1155:114:11",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "74f8407628975d2b1cd9481f0055cb1d672b510ac30d48449fdf776c258f6fb8",
+            "name": "FightExecutor__FightResultVrfReqSent",
+            "nameLocation": "1161:36:11",
+            "parameters": {
+              "id": 3857,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3852,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "vrfSubId",
+                  "nameLocation": "1213:8:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3858,
+                  "src": "1198:23:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint64",
+                    "typeString": "uint64"
+                  },
+                  "typeName": {
+                    "id": 3851,
+                    "name": "uint64",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1198:6:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint64",
+                      "typeString": "uint64"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3854,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "requestId",
+                  "nameLocation": "1239:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3858,
+                  "src": "1223:25:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3853,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1223:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3856,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "timestamp",
+                  "nameLocation": "1258:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3858,
+                  "src": "1250:17:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3855,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1250:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1197:71:11"
+            }
+          },
+          {
+            "id": 3866,
+            "nodeType": "EventDefinition",
+            "src": "1274:115:11",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "c21f0b42c6f447637a98c4df164e53dc7cd0f3818277de318b0fc6e45961d903",
+            "name": "FightExecutor__FightResultVrfWinnerIs",
+            "nameLocation": "1280:37:11",
+            "parameters": {
+              "id": 3865,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3860,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "fightId",
+                  "nameLocation": "1334:7:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3866,
+                  "src": "1318:23:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3859,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1318:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3862,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "winnerBit",
+                  "nameLocation": "1359:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3866,
+                  "src": "1343:25:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3861,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1343:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 3864,
+                  "indexed": false,
+                  "mutability": "mutable",
+                  "name": "timestamp",
+                  "nameLocation": "1378:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3866,
+                  "src": "1370:17:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3863,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1370:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1317:71:11"
+            }
+          },
+          {
+            "id": 3872,
+            "nodeType": "FunctionDefinition",
+            "src": "1562:46:11",
+            "nodes": [],
+            "documentation": {
+              "id": 3867,
+              "nodeType": "StructuredDocumentation",
+              "src": "1395:162:11",
+              "text": " @dev This function must always be called by `FightMatchmaker`.\n It starts the fight execution process using Chainlink Functions requests."
+            },
+            "functionSelector": "29fd1306",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "startFight",
+            "nameLocation": "1571:10:11",
+            "parameters": {
+              "id": 3870,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3869,
+                  "mutability": "mutable",
+                  "name": "fightId",
+                  "nameLocation": "1590:7:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3872,
+                  "src": "1582:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3868,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1582:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1581:17:11"
+            },
+            "returnParameters": {
+              "id": 3871,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1607:0:11"
+            },
+            "scope": 3915,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 3879,
+            "nodeType": "FunctionDefinition",
+            "src": "1630:65:11",
+            "nodes": [],
+            "functionSelector": "6095f260",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getReqIsValid",
+            "nameLocation": "1639:13:11",
+            "parameters": {
+              "id": 3875,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3874,
+                  "mutability": "mutable",
+                  "name": "req",
+                  "nameLocation": "1661:3:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3879,
+                  "src": "1653:11:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3873,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1653:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1652:13:11"
+            },
+            "returnParameters": {
+              "id": 3878,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3877,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3879,
+                  "src": "1689:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 3876,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1689:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1688:6:11"
+            },
+            "scope": 3915,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 3886,
+            "nodeType": "FunctionDefinition",
+            "src": "1701:83:11",
+            "nodes": [],
+            "functionSelector": "5b392035",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getRequestsIdToFightId",
+            "nameLocation": "1710:22:11",
+            "parameters": {
+              "id": 3882,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3881,
+                  "mutability": "mutable",
+                  "name": "requestId",
+                  "nameLocation": "1741:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3886,
+                  "src": "1733:17:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3880,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1733:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1732:19:11"
+            },
+            "returnParameters": {
+              "id": 3885,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3884,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3886,
+                  "src": "1775:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3883,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1775:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1774:9:11"
+            },
+            "scope": 3915,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 3893,
+            "nodeType": "FunctionDefinition",
+            "src": "1790:80:11",
+            "nodes": [],
+            "functionSelector": "8ef9e32e",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getRequestsIdToUser",
+            "nameLocation": "1799:19:11",
+            "parameters": {
+              "id": 3889,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3888,
+                  "mutability": "mutable",
+                  "name": "requestId",
+                  "nameLocation": "1827:9:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3893,
+                  "src": "1819:17:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 3887,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1819:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1818:19:11"
+            },
+            "returnParameters": {
+              "id": 3892,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3891,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3893,
+                  "src": "1861:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 3890,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1861:7:11",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1860:9:11"
+            },
+            "scope": 3915,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 3899,
+            "nodeType": "FunctionDefinition",
+            "src": "1876:136:11",
+            "nodes": [],
+            "functionSelector": "434cdd65",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getChainlinkServicesParams",
+            "nameLocation": "1885:26:11",
+            "parameters": {
+              "id": 3894,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1911:2:11"
+            },
+            "returnParameters": {
+              "id": 3898,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3897,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3899,
+                  "src": "1961:49:11",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_FightExecutor__ChainlinkServicesInitParmas_$3818_memory_ptr",
+                    "typeString": "struct IFightExecutor.FightExecutor__ChainlinkServicesInitParmas"
+                  },
+                  "typeName": {
+                    "id": 3896,
+                    "nodeType": "UserDefinedTypeName",
+                    "pathNode": {
+                      "id": 3895,
+                      "name": "FightExecutor__ChainlinkServicesInitParmas",
+                      "nameLocations": [
+                        "1961:42:11"
+                      ],
+                      "nodeType": "IdentifierPath",
+                      "referencedDeclaration": 3818,
+                      "src": "1961:42:11"
+                    },
+                    "referencedDeclaration": 3818,
+                    "src": "1961:42:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_FightExecutor__ChainlinkServicesInitParmas_$3818_storage_ptr",
+                      "typeString": "struct IFightExecutor.FightExecutor__ChainlinkServicesInitParmas"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1960:51:11"
+            },
+            "scope": 3915,
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 3904,
+            "nodeType": "FunctionDefinition",
+            "src": "2018:59:11",
+            "nodes": [],
+            "functionSelector": "0a32ac45",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getWinnerBitSize",
+            "nameLocation": "2027:16:11",
+            "parameters": {
+              "id": 3900,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2043:2:11"
+            },
+            "returnParameters": {
+              "id": 3903,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3902,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3904,
+                  "src": "2069:6:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint32",
+                    "typeString": "uint32"
+                  },
+                  "typeName": {
+                    "id": 3901,
+                    "name": "uint32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2069:6:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint32",
+                      "typeString": "uint32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2068:8:11"
+            },
+            "scope": 3915,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 3909,
+            "nodeType": "FunctionDefinition",
+            "src": "2083:64:11",
+            "nodes": [],
+            "functionSelector": "34b8dcc0",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getWinnerIsRequester",
+            "nameLocation": "2092:20:11",
+            "parameters": {
+              "id": 3905,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2112:2:11"
+            },
+            "returnParameters": {
+              "id": 3908,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3907,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3909,
+                  "src": "2138:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3906,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2138:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2137:9:11"
+            },
+            "scope": 3915,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "id": 3914,
+            "nodeType": "FunctionDefinition",
+            "src": "2153:63:11",
+            "nodes": [],
+            "functionSelector": "bb53bdae",
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getWinnerIsAcceptor",
+            "nameLocation": "2162:19:11",
+            "parameters": {
+              "id": 3910,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2181:2:11"
+            },
+            "returnParameters": {
+              "id": 3913,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 3912,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 3914,
+                  "src": "2207:7:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 3911,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2207:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2206:9:11"
+            },
+            "scope": 3915,
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 3805,
+              "name": "IChainlinkSubsManager",
+              "nameLocations": [
+                "297:21:11"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 3799,
+              "src": "297:21:11"
+            },
+            "id": 3806,
+            "nodeType": "InheritanceSpecifier",
+            "src": "297:21:11"
+          }
+        ],
+        "canonicalName": "IFightExecutor",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 3804,
+          "nodeType": "StructuredDocumentation",
+          "src": "138:130:11",
+          "text": " @title IFightExecutor\n @author PromptFighters team: @CarlosAlegreUr\n @dev Interface for the FightExecutor contract."
+        },
+        "fullyImplemented": false,
+        "linearizedBaseContracts": [
+          3915,
+          3799
+        ],
+        "name": "IFightExecutor",
+        "nameLocation": "279:14:11",
+        "scope": 3916,
+        "usedErrors": [],
+        "usedEvents": [
+          3761,
+          3828,
+          3834,
+          3842,
+          3850,
+          3858,
+          3866
+        ]
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 11
+}
