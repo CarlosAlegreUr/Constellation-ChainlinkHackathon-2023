@@ -1,12 +1,22 @@
 {
-  "mumbai": {
-    "Contract": {
-      "address": "0x0bbb72308B1F7fe6ac25B998F2d7035d09170B29",
+  "sepolia": {
+    "PromptFigthers": {
+      "address": "0x23328076007B6F3BF673868381BC899FF899419c",
       "startBlock": 43063143
     },
-    "Contract2": {
-      "address": "0xA12Fe020137D1a1315976758A056e459FDdEdC7D",
+    "figthMatchMaker": {
+      "address": "0xE6835F9799BBb4c7c891cc25b0A9210660E6c9af",
       "startBlock": 43104804
+    },
+    "BetsVaullt": {
+      "address": "0x1F04d7628bBaAAF8B1101C16758B81D02A0E09c4",
+      "startBlock": 40000000
+    }
+  },
+  "fuji": {
+    "FightersBarracks": {
+      "address": "0x6796548e8c54Bbd1E9F5952C544B5D5555ba51c6",
+      "startBlock": 28434032
     }
   }
 }

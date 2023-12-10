@@ -1,0 +1,884 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "_link",
+        "type": "address",
+        "internalType": "contract LinkTokenInterface"
+      },
+      {
+        "name": "_automationBalanceThreshold",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "acceptFight",
+    "inputs": [
+      { "name": "_fightId", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "_nftId", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "cancelFight",
+    "inputs": [
+      { "name": "_fightId", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "checkLog",
+    "inputs": [
+      {
+        "name": "log",
+        "type": "tuple",
+        "internalType": "struct Log",
+        "components": [
+          { "name": "index", "type": "uint256", "internalType": "uint256" },
+          {
+            "name": "timestamp",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "txHash", "type": "bytes32", "internalType": "bytes32" },
+          {
+            "name": "blockNumber",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "blockHash",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          { "name": "source", "type": "address", "internalType": "address" },
+          {
+            "name": "topics",
+            "type": "bytes32[]",
+            "internalType": "bytes32[]"
+          },
+          { "name": "data", "type": "bytes", "internalType": "bytes" }
+        ]
+      },
+      { "name": "", "type": "bytes", "internalType": "bytes" }
+    ],
+    "outputs": [
+      { "name": "upkeepNeeded", "type": "bool", "internalType": "bool" },
+      { "name": "performData", "type": "bytes", "internalType": "bytes" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getApocalipsisSafetyNet",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "getAutomationBalanceThreshold",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAutomationForwarder",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAutomationRegistry",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getBetsVault",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getContractUpkeepId",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getFight",
+    "inputs": [
+      { "name": "_fightId", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct IFightMatchmaker.Fight",
+        "components": [
+          {
+            "name": "nftRequester",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "nftAcceptor",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "minBet", "type": "uint256", "internalType": "uint256" },
+          {
+            "name": "acceptanceDeadline",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "startedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "state",
+            "type": "uint8",
+            "internalType": "enum IFightMatchmaker.FightState"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getFightExecutorContract",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getFightId",
+    "inputs": [
+      { "name": "_challenger", "type": "address", "internalType": "address" },
+      {
+        "name": "_challengerNftId",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      { "name": "_challengee", "type": "address", "internalType": "address" },
+      {
+        "name": "_challengeeNftId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "getFightIdToFight",
+    "inputs": [
+      { "name": "fightId", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct IFightMatchmaker.Fight",
+        "components": [
+          {
+            "name": "nftRequester",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "nftAcceptor",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "minBet", "type": "uint256", "internalType": "uint256" },
+          {
+            "name": "acceptanceDeadline",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "startedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "state",
+            "type": "uint8",
+            "internalType": "enum IFightMatchmaker.FightState"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getLinkTokenInterface",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getNftAutomationBalance",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getNftIdAutomated",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getNftsFromFightId",
+    "inputs": [
+      { "name": "_fightId", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [
+      { "name": "", "type": "uint256", "internalType": "uint256" },
+      { "name": "", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getNftsOwnersFromFightId",
+    "inputs": [
+      { "name": "_fightId", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [
+      { "name": "", "type": "address", "internalType": "address" },
+      { "name": "", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getNftsPromptsFromFightId",
+    "inputs": [
+      { "name": "_fightId", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [
+      { "name": "", "type": "string", "internalType": "string" },
+      { "name": "", "type": "string", "internalType": "string" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPromptFightersNft",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserCurrentFight",
+    "inputs": [
+      { "name": "_user", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct IFightMatchmaker.Fight",
+        "components": [
+          {
+            "name": "nftRequester",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "nftAcceptor",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "minBet", "type": "uint256", "internalType": "uint256" },
+          {
+            "name": "acceptanceDeadline",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "startedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "state",
+            "type": "uint8",
+            "internalType": "enum IFightMatchmaker.FightState"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserCurrentFightId",
+    "inputs": [
+      { "name": "_user", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getUserToFightId",
+    "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "initializeReferences",
+    "inputs": [
+      {
+        "name": "_references",
+        "type": "address[]",
+        "internalType": "address[]"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "initializeReferencesAndAutomation",
+    "inputs": [
+      {
+        "name": "_references",
+        "type": "address[]",
+        "internalType": "address[]"
+      },
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract IAutomationRegistry"
+      },
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract IAutomationRegistrar"
+      },
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct IAutomationRegistrar.RegistrationParams",
+        "components": [
+          { "name": "name", "type": "string", "internalType": "string" },
+          {
+            "name": "encryptedEmail",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          {
+            "name": "upkeepContract",
+            "type": "address",
+            "internalType": "address"
+          },
+          { "name": "gasLimit", "type": "uint32", "internalType": "uint32" },
+          {
+            "name": "adminAddress",
+            "type": "address",
+            "internalType": "address"
+          },
+          { "name": "triggerType", "type": "uint8", "internalType": "uint8" },
+          { "name": "checkData", "type": "bytes", "internalType": "bytes" },
+          {
+            "name": "triggerConfig",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          {
+            "name": "offchainConfig",
+            "type": "bytes",
+            "internalType": "bytes"
+          },
+          { "name": "amount", "type": "uint96", "internalType": "uint96" }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "performUpkeep",
+    "inputs": [
+      { "name": "performData", "type": "bytes", "internalType": "bytes" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "requestFight",
+    "inputs": [
+      {
+        "name": "_fightReq",
+        "type": "tuple",
+        "internalType": "struct IFightMatchmaker.FightRequest",
+        "components": [
+          {
+            "name": "challengerNftId",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "minBet", "type": "uint256", "internalType": "uint256" },
+          {
+            "name": "acceptanceDeadline",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "challengee",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "challengeeNftId",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "setNftAutomated",
+    "inputs": [
+      { "name": "_nftId", "type": "uint256", "internalType": "uint256" },
+      { "name": "_bet", "type": "uint256", "internalType": "uint256" },
+      { "name": "_minBet", "type": "uint256", "internalType": "uint256" },
+      { "name": "_linkFunds", "type": "uint96", "internalType": "uint96" }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "setUpkeepId",
+    "inputs": [
+      { "name": "uid", "type": "uint256", "internalType": "uint256" },
+      { "name": "registry", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "settleFight",
+    "inputs": [
+      { "name": "_fightId", "type": "bytes32", "internalType": "bytes32" },
+      {
+        "name": "_winner",
+        "type": "uint8",
+        "internalType": "enum IFightMatchmaker.WinningAction"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__AutomatonRegistered",
+    "inputs": [
+      {
+        "name": "upkeepId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__FightAccepted",
+    "inputs": [
+      {
+        "name": "challenger",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "challengee",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "nftIdChallenger",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "nftIdChallengee",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "betChallenger",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "betChallengee",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__FightAcceptedByUpkeep",
+    "inputs": [
+      {
+        "name": "challenger",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "nftIdChallenger",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "nftIdChallengee",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "betChallenger",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "betChallengee",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__FightIdToFightSet",
+    "inputs": [
+      {
+        "name": "fightId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "fight",
+        "type": "tuple",
+        "indexed": true,
+        "internalType": "struct IFightMatchmaker.Fight",
+        "components": [
+          {
+            "name": "nftRequester",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "nftAcceptor",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          { "name": "minBet", "type": "uint256", "internalType": "uint256" },
+          {
+            "name": "acceptanceDeadline",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "startedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "state",
+            "type": "uint8",
+            "internalType": "enum IFightMatchmaker.FightState"
+          }
+        ]
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__FightRequested",
+    "inputs": [
+      {
+        "name": "challenger",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "nftId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "fightId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "bet",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__FightRequestedTo",
+    "inputs": [
+      {
+        "name": "challenger",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "challengee",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "nftIdChallenger",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "nftIdChallengee",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "bet",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__FightStateChange",
+    "inputs": [
+      {
+        "name": "fightId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "oldState",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum IFightMatchmaker.FightState"
+      },
+      {
+        "name": "newState",
+        "type": "uint8",
+        "indexed": true,
+        "internalType": "enum IFightMatchmaker.FightState"
+      },
+      {
+        "name": "calledFrom",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__NftAutomateStart",
+    "inputs": [
+      {
+        "name": "nftId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "startTimestamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__NftAutomateStop",
+    "inputs": [
+      {
+        "name": "nftId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "startTimestamp",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "endTimestamp",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "earnings",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__UserNoLongerFighting",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FightMatchmaker__UserToFightIdSet",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "fightId",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ReferencesInitialized",
+    "inputs": [
+      {
+        "name": "_references",
+        "type": "address[]",
+        "indexed": true,
+        "internalType": "address[]"
+      },
+      {
+        "name": "contractInitialized",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  }
+]
