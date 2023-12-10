@@ -1,22 +1,41 @@
-type FigthAccepted @entity {
-  id: Bytes!
-  challenger: Bytes! # address
-  challengee: Bytes! # address
-  timestamp: BigInt! # uint256
-  fighterChallengerId: BigInt! # Id reference to Fighter
-  fighterChallengeeId: BigInt! # Id reference to Fighter
-  betChallenguer: BigInt! # uint256
-  betChallenguee: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Figth @entity {
+  # use FigthId as id??
+  id: ID! # the FigthID
+  # requestId:  # chainlink functions
+  challenger: User!
+  challengee: User!
+  nftChallenger: Figther! # nft
+  nftChallengee: Figther! # nft
+  bet: BigInt!
+  status: String!
+  stories: String
+  winner: User
 }
 
 type Figther @entity {
-  id: ID!
-  owner: Bytes! # address
-  funcResponse: String! # string
-  funcError: String! # string
-  timestamp: BigInt! # uint256
-  blockNumber: BigInt!
+  id: ID! # ID here is the same as the nft id in the smart contract
+  owner: User!
+  Name: String!
+  Race: String!
+  Weapon: String!
+  SpecialSkill: String!
+  Fear: String!
+  created: BigInt! # timestamp
+  inEthereum: Boolean!
+  inAvalanche: Boolean!
+  automatedFigthingActivated: Boolean!
+  numberOfFights: BigInt!
+  numberWins: BigInt!
+  numberLosses: BigInt!
+  Figths: [Figth!] # array of figths
+}
+
+type User @entity {
+  id: ID! # eth address
+  created: BigInt!
+  numberOfFigths: BigInt!
+  numberWins: BigInt!
+  numberLosses: BigInt!
+  Figthers: [Figther!] @derivedFrom(field: "owner")
+  Figths: [Figth!] # all the figths of a user
 }

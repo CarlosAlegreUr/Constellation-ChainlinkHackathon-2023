@@ -3,44 +3,99 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: Contract
-    network: mumbai
+    name: PromptFigther
+    network: sepolia
     source:
-      address: "0x0bbb72308B1F7fe6ac25B998F2d7035d09170B29"
-      abi: Contract
-      startBlock: 43063143
+      address: "0x23328076007B6F3BF673868381BC899FF899419c"
+      abi: PromptFigthers
+      startBlock: 4833145
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - FigthAccepted
+        # - Figth
+        - Figthers
+        - User
       abis:
-        - name: Contract
-          file: ./abis/Contract.json
-      eventHandlers:
-        - event: FightMatchmaker__FightAccepted(indexed address,indexed address,indexed uint256,uint256,uint256,uint256,uint256)
-          handler: handleFightMatchmaker__FightAccepted
-      file: ./src/contract.ts
-
-  - kind: ethereum
-    name: RealContract
-    network: mumbai
-    source:
-      address: "0x265B6dB2db073a64ca5Bb0b336e0A61162a25091"
-      abi: RealContract
-      startBlock: 43147100
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Figther
-      abis:
-        - name: RealContract
-          file: ./abis/RealContract.json
+        - name: PromptFigthers
+          file: ./abis/PromptFigthers.json
       eventHandlers:
         - event: PromptFighters__NftMinted(indexed address,uint256,bytes,bytes,uint256)
-          handler: handleFigthers
+          handler: handleFighterMinted
+        - event: ICCIPNftBridge__NftSent(indexed address,indexed uint256,indexed uint256,bytes32,uint256)
+          handler: handleNFTSent
+        - event: ICCIPNftBridge__NftReceived(indexed address,indexed uint256,indexed uint256,uint256)
+          handler: handleNFTRecieved
+      file: ./src/promptFigthers.ts
 
-      file: ./src/realContract.ts
+  - kind: ethereum
+    name: FigthMatchMaker
+    network: sepolia
+    context:
+      prompt_figther_address:
+        type: String
+        data: "0x23328076007B6F3BF673868381BC899FF899419c"
+    source:
+      address: "0xE6835F9799BBb4c7c891cc25b0A9210660E6c9af"
+      abi: FigthMatchMaker
+      startBlock: 4833145
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Figth
+      abis:
+        - name: FigthMatchMaker
+          file: ./abis/figthMatchMaker.json
+        - name: PromptFigthers
+          file: ./abis/PromptFigthers.json
+      eventHandlers:
+        # - event: FightMatchmaker__NftAutomateStart(indexed uint256,uint256)
+        #   handler: handleNftAutomateStart
+
+        # - event:  FightMatchmaker__NftAutomateStop(indexed uint256,indexed uint256,indexed uint256,uint256)
+        #   handler: handleNftAutomateStop
+
+        - event: FightMatchmaker__FightRequested(address,indexed uint256,indexed bytes32,indexed uint256,uint256)
+          handler: handleRequestedFigth
+        - event: FightMatchmaker__FightAccepted(indexed address,indexed address,uint256,uint256,uint256,uint256,indexed uint256)
+          handler: handleAcceptedFigth
+        - event: FightMatchmaker__FightAcceptedByUpkeep(indexed address,indexed uint256,uint256,uint256,uint256,indexed uint256)
+          handler: handleAcceptedFigthUpkeep
+      file: ./src/figthMatchMaker.ts
+
+  - kind: ethereum
+    name: BetsVault
+    network: sepolia
+    context:
+      MatchMakerAddress:
+        type: String
+        data: "0xE6835F9799BBb4c7c891cc25b0A9210660E6c9af"
+    source:
+      address: "0x1F04d7628bBaAAF8B1101C16758B81D02A0E09c4"
+      abi: BetsVault
+      startBlock: 4833145
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Figth
+      abis:
+        - name: BetsVault
+          file: ./abis/BetsVault.json
+        # - name: FigthMatchMaker
+        #   file: ./abis/figthMatchMaker.json
+
+      eventHandlers:
+        # - event: FightMatchmaker__NftAutomateStart(indexed uint256,uint256)
+        #   handler: handleNftAutomateStart
+        # - event:  FightMatchmaker__NftAutomateStop(indexed uint256,indexed uint256,indexed uint256,uint256)
+        #   handler: handleNftAutomateStop
+        # When settling figth
+        - event: BetsVault__BetsSentToWinner(indexed address,indexed bytes32,uint256,uint256)
+          handler: handleFightSettled
+
+      file: ./src/figthSettled.ts
